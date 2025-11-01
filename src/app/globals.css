@@ -10,6 +10,21 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Custom colors */
+  --color-primary: #6DA34D;
+  --color-secondary: #F6BD60;
+  --color-accent: #D94E41;
+  --color-bg: #FAF9F6;
+  --color-surface: #FFFFFF;
+  --color-text: #2F2F2F;
+  --color-text-secondary: #6B6B6B;
+  --color-border: #DCE2D8;
+  --color-success: #4CAF50;
+  --color-warning: #F79D65;
+  --color-error: #C73E1D;
+  --color-muted: #EEF3EC;
+  --color-shadow: #C8BBAE;
 }
 
 @media (prefers-color-scheme: dark) {
