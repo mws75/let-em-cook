@@ -8,7 +8,9 @@ export default function LandingPage() {
       {/* Header */}
       <div className="text-center mb-6">
         <h1 className="text-5xl font-bold text-text mb-2">Let Em Cook</h1>
-        <p className="text-lg text-text-secondary">Plan meals. Save time. Eat well.</p>
+        <p className="text-lg text-text-secondary">
+          Plan meals. Save time. Eat well.
+        </p>
       </div>
 
       {/* Main Card with 3 Steps */}
@@ -34,7 +36,9 @@ export default function LandingPage() {
           <div className="w-16 h-16 bg-accent rounded-xl border-2 border-border flex items-center justify-center shadow-md hover:scale-105 transition-transform">
             <span className="text-3xl">🛒</span>
           </div>
-          <h2 className="text-2xl font-bold text-text">Generate Grocery List</h2>
+          <h2 className="text-2xl font-bold text-text">
+            Generate Grocery List
+          </h2>
         </div>
       </div>
 
