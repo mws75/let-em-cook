@@ -8,7 +8,7 @@ export default function Dashboard() {
         <h1 className="text-4xl text-text font-bold">🔪 Let's Get Cooking!</h1>
       </div>
 
-      {/* Recipes */}
+      {/* Meal Prep Section */}
       <div className="flex justify-center">
         <div className="w-2/3 border-2 border-border rounded-3xl p-6 bg-surface shadow-lg">
           <div className="flex gap-4 mb-4">
@@ -123,6 +123,39 @@ export default function Dashboard() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Recipes */}
+      <div className="flex flex-col justify-center mt-10 mx-auto w-2/3 border-2 border-border rounded-3xl bg-surface shadow-lg p-6 mb-20">
+        {/* Search Bar */}
+        <div className="flex p-2">
+          <h2 className="text-3xl text-text text-center font-bold pr-10">
+            Recipes{" "}
+          </h2>
+          <form className="flex gap-2 ml-auto w-max">
+            <input
+              type="text"
+              placeholder="Search recipes..."
+              className="w-96 px-4 py-2 border-2 border-border rounded-xl bg-surface text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
+            />
+            <button className="px-6 py-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all">
+              Search
+            </button>
+          </form>
+        </div>
+        {/* Category */}
+        <div className="flex flex-col justify-center w-full mt-10 border-2 border-border rounded-2xl bg-surface">
+          <h2 className="text-3xl text-text text-left font-bold ml-5 mt-5 mb-5">
+            Snacks
+          </h2>
+          <div className="flex flex-row">
+            <div className="w-50 h-50 border-2 border-border rounded-2xl bg-surface shadow-lg m-5">
+              <p>Recipe this is the one</p>
+            </div>
+            <div className="w-50 h-50 border-2 border-border rounded-2xl bg-surface shadow-lg m-5">
+              <p>Recipe this is the one</p>
             </div>
           </div>
         </div>
