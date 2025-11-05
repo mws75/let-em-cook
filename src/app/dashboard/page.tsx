@@ -1,4 +1,5 @@
 "use client";
+import RecipeCard from "@/components/RecipeCard";
 
 export default function Dashboard() {
   return (
@@ -146,17 +147,13 @@ export default function Dashboard() {
           </form>
         </div>
         {/* Category */}
-        <div className="flex flex-col justify-center w-full mt-10 border-2 border-border rounded-2xl bg-surface">
+        <div className="flex flex-col justify-center w-full mt-5 border-2 border-border rounded-2xl bg-surface">
           <h2 className="text-3xl text-text text-left font-bold ml-5 mt-5 mb-5">
             Snacks
           </h2>
           <div className="flex flex-row">
-            <div className="w-50 h-50 border-2 border-border rounded-2xl bg-surface shadow-lg m-5">
-              <p>Recipe this is the one</p>
-            </div>
-            <div className="w-50 h-50 border-2 border-border rounded-2xl bg-surface shadow-lg m-5">
-              <p>Recipe this is the one</p>
-            </div>
+            <RecipeCard />
+            <RecipeCard />
           </div>
         </div>
       </div>
