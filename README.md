@@ -1,4 +1,4 @@
-# Let-Em_Cook!
+# Let-Em-Cook!
 
 **Purpose** - A an application that allows you to
 _ Input Recipes
