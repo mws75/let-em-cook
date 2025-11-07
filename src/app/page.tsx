@@ -1,6 +1,19 @@
 import Image from "next/image";
 import LandingPage from "@/components/LandingPage";
-export default function Home() {
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+
+export default async function Home() {
+  const { userId } = await auth();
+
+  //if user is signed in go to dashboard
+  if (userId) {
+    console.log("user is signed in..");
+    redirect("/dashboard");
+  } else {
+    console.log("user IS NOT signed in..");
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
       <main className="">
