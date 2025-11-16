@@ -1,0 +1,767 @@
+{
+  "users": [
+    {
+      "user_id": 1,
+      "user_name": "Michael Spencer",
+      "email": "michael@example.com",
+      "profile_pic_url": "https://i.pravatar.cc/150?img=12",
+      "plan_tier": "free",
+      "is_deleted": 0,
+      "role": "admin"
+    },
+    {
+      "user_id": 2,
+      "user_name": "Jane Chef",
+      "email": "jane@example.com",
+      "profile_pic_url": "https://i.pravatar.cc/150?img=5",
+      "plan_tier": "premium",
+      "is_deleted": 0,
+      "role": "user"
+    }
+  ],
+  "categories": [
+    {
+      "category_id": 1,
+      "user_id": 1,
+      "category_name": "Breakfast",
+      "color_hex": "#FFD700"
+    },
+    {
+      "category_id": 2,
+      "user_id": 1,
+      "category_name": "Lunch",
+      "color_hex": "#87CEEB"
+    },
+    {
+      "category_id": 3,
+      "user_id": 1,
+      "category_name": "Dinner",
+      "color_hex": "#FF6347"
+    },
+    {
+      "category_id": 4,
+      "user_id": 1,
+      "category_name": "Snacks",
+      "color_hex": "#98FB98"
+    },
+    {
+      "category_id": 5,
+      "user_id": 1,
+      "category_name": "Desserts",
+      "color_hex": "#DDA0DD"
+    }
+  ],
+  "emojis": [
+    {
+      "emoji_id": 1,
+      "emoji": "<W"
+    },
+    {
+      "emoji_id": 2,
+      "emoji": ">W"
+    },
+    {
+      "emoji_id": 3,
+      "emoji": "<]"
+    },
+    {
+      "emoji_id": 4,
+      "emoji": ">^"
+    },
+    {
+      "emoji_id": 5,
+      "emoji": "<j"
+    },
+    {
+      "emoji_id": 6,
+      "emoji": ">Q"
+    },
+    {
+      "emoji_id": 7,
+      "emoji": "<U"
+    },
+    {
+      "emoji_id": 8,
+      "emoji": "<."
+    }
+  ],
+  "recipes": [
+    {
+      "recipe_id": 1,
+      "user_id": 1,
+      "category_id": 3,
+      "name": "Chicken Consommé",
+      "num_servings": 4,
+      "ingredients_json": [
+        {
+          "name": "chicken carcass",
+          "quantity": 1,
+          "unit": "each",
+          "prep": "skin and fat removed",
+          "section": "meat"
+        },
+        {
+          "name": "onion",
+          "quantity": 1,
+          "unit": "medium",
+          "prep": "skin on, halved",
+          "section": "produce"
+        },
+        {
+          "name": "egg whites",
+          "quantity": 3,
+          "unit": "each",
+          "section": "dairy"
+        },
+        {
+          "name": "Kitchen Bouquet",
+          "quantity": 0.25,
+          "unit": "tsp",
+          "optional": true,
+          "section": "condiments"
+        }
+      ],
+      "instructions_json": [
+        {
+          "step": 1,
+          "text": "Combine carcass and aromatics in a large pot."
+        },
+        {
+          "step": 2,
+          "text": "Cover with cold water and bring to a gentle boil."
+        },
+        {
+          "step": 3,
+          "text": "Reduce heat and simmer for 2 hours, skimming occasionally."
+        },
+        {
+          "step": 4,
+          "text": "Strain through cheesecloth and clarify with egg whites."
+        }
+      ],
+      "emoji_id": 1,
+      "is_public": 0
+    },
+    {
+      "recipe_id": 2,
+      "user_id": 1,
+      "category_id": 1,
+      "name": "Fluffy Pancakes",
+      "num_servings": 6,
+      "ingredients_json": [
+        {
+          "name": "all-purpose flour",
+          "quantity": 2,
+          "unit": "cups",
+          "section": "baking"
+        },
+        {
+          "name": "sugar",
+          "quantity": 2,
+          "unit": "tbsp",
+          "section": "baking"
+        },
+        {
+          "name": "baking powder",
+          "quantity": 2,
+          "unit": "tsp",
+          "section": "baking"
+        },
+        {
+          "name": "salt",
+          "quantity": 0.5,
+          "unit": "tsp",
+          "section": "baking"
+        },
+        {
+          "name": "milk",
+          "quantity": 1.5,
+          "unit": "cups",
+          "section": "dairy"
+        },
+        {
+          "name": "eggs",
+          "quantity": 2,
+          "unit": "each",
+          "section": "dairy"
+        },
+        {
+          "name": "butter",
+          "quantity": 3,
+          "unit": "tbsp",
+          "prep": "melted",
+          "section": "dairy"
+        }
+      ],
+      "instructions_json": [
+        {
+          "step": 1,
+          "text": "Mix dry ingredients in a large bowl."
+        },
+        {
+          "step": 2,
+          "text": "Whisk together wet ingredients in a separate bowl."
+        },
+        {
+          "step": 3,
+          "text": "Pour wet ingredients into dry and mix until just combined."
+        },
+        {
+          "step": 4,
+          "text": "Heat griddle to 375°F and cook pancakes until bubbles form."
+        },
+        {
+          "step": 5,
+          "text": "Flip and cook until golden brown on both sides."
+        }
+      ],
+      "emoji_id": 4,
+      "is_public": 1
+    },
+    {
+      "recipe_id": 3,
+      "user_id": 1,
+      "category_id": 2,
+      "name": "Avocado Toast",
+      "num_servings": 2,
+      "ingredients_json": [
+        {
+          "name": "sourdough bread",
+          "quantity": 2,
+          "unit": "slices",
+          "section": "bakery"
+        },
+        {
+          "name": "avocado",
+          "quantity": 1,
+          "unit": "each",
+          "prep": "ripe",
+          "section": "produce"
+        },
+        {
+          "name": "lemon juice",
+          "quantity": 1,
+          "unit": "tsp",
+          "section": "produce"
+        },
+        {
+          "name": "salt",
+          "quantity": 0.25,
+          "unit": "tsp",
+          "section": "baking"
+        },
+        {
+          "name": "red pepper flakes",
+          "quantity": 0.125,
+          "unit": "tsp",
+          "optional": true,
+          "section": "spices"
+        }
+      ],
+      "instructions_json": [
+        {
+          "step": 1,
+          "text": "Toast the bread until golden and crispy."
+        },
+        {
+          "step": 2,
+          "text": "Mash avocado with lemon juice and salt."
+        },
+        {
+          "step": 3,
+          "text": "Spread avocado mixture on toasted bread."
+        },
+        {
+          "step": 4,
+          "text": "Sprinkle with red pepper flakes if desired."
+        }
+      ],
+      "emoji_id": 6,
+      "is_public": 1
+    },
+    {
+      "recipe_id": 4,
+      "user_id": 1,
+      "category_id": 3,
+      "name": "Spaghetti Carbonara",
+      "num_servings": 4,
+      "ingredients_json": [
+        {
+          "name": "spaghetti",
+          "quantity": 1,
+          "unit": "lb",
+          "section": "pasta"
+        },
+        {
+          "name": "pancetta",
+          "quantity": 8,
+          "unit": "oz",
+          "prep": "diced",
+          "section": "meat"
+        },
+        {
+          "name": "eggs",
+          "quantity": 4,
+          "unit": "each",
+          "section": "dairy"
+        },
+        {
+          "name": "parmesan cheese",
+          "quantity": 1,
+          "unit": "cup",
+          "prep": "grated",
+          "section": "dairy"
+        },
+        {
+          "name": "black pepper",
+          "quantity": 1,
+          "unit": "tsp",
+          "prep": "freshly ground",
+          "section": "spices"
+        }
+      ],
+      "instructions_json": [
+        {
+          "step": 1,
+          "text": "Cook spaghetti according to package directions, reserve 1 cup pasta water."
+        },
+        {
+          "step": 2,
+          "text": "Cook pancetta in a large skillet until crispy."
+        },
+        {
+          "step": 3,
+          "text": "Whisk eggs, cheese, and pepper in a bowl."
+        },
+        {
+          "step": 4,
+          "text": "Drain pasta and add to pancetta, remove from heat."
+        },
+        {
+          "step": 5,
+          "text": "Quickly stir in egg mixture, adding pasta water to create a creamy sauce."
+        }
+      ],
+      "emoji_id": 3,
+      "is_public": 0
+    },
+    {
+      "recipe_id": 5,
+      "user_id": 1,
+      "category_id": 4,
+      "name": "Greek Salad",
+      "num_servings": 4,
+      "ingredients_json": [
+        {
+          "name": "cucumber",
+          "quantity": 1,
+          "unit": "each",
+          "prep": "diced",
+          "section": "produce"
+        },
+        {
+          "name": "tomatoes",
+          "quantity": 3,
+          "unit": "each",
+          "prep": "chopped",
+          "section": "produce"
+        },
+        {
+          "name": "red onion",
+          "quantity": 0.5,
+          "unit": "each",
+          "prep": "thinly sliced",
+          "section": "produce"
+        },
+        {
+          "name": "feta cheese",
+          "quantity": 1,
+          "unit": "cup",
+          "prep": "crumbled",
+          "section": "dairy"
+        },
+        {
+          "name": "kalamata olives",
+          "quantity": 0.5,
+          "unit": "cup",
+          "section": "condiments"
+        },
+        {
+          "name": "olive oil",
+          "quantity": 3,
+          "unit": "tbsp",
+          "section": "oils"
+        },
+        {
+          "name": "lemon juice",
+          "quantity": 2,
+          "unit": "tbsp",
+          "section": "produce"
+        }
+      ],
+      "instructions_json": [
+        {
+          "step": 1,
+          "text": "Combine cucumber, tomatoes, and red onion in a large bowl."
+        },
+        {
+          "step": 2,
+          "text": "Add feta cheese and olives."
+        },
+        {
+          "step": 3,
+          "text": "Drizzle with olive oil and lemon juice."
+        },
+        {
+          "step": 4,
+          "text": "Toss gently and serve immediately."
+        }
+      ],
+      "emoji_id": 2,
+      "is_public": 1
+    },
+    {
+      "recipe_id": 6,
+      "user_id": 1,
+      "category_id": 5,
+      "name": "Chocolate Chip Cookies",
+      "num_servings": 24,
+      "ingredients_json": [
+        {
+          "name": "butter",
+          "quantity": 1,
+          "unit": "cup",
+          "prep": "softened",
+          "section": "dairy"
+        },
+        {
+          "name": "brown sugar",
+          "quantity": 0.75,
+          "unit": "cup",
+          "section": "baking"
+        },
+        {
+          "name": "granulated sugar",
+          "quantity": 0.75,
+          "unit": "cup",
+          "section": "baking"
+        },
+        {
+          "name": "eggs",
+          "quantity": 2,
+          "unit": "each",
+          "section": "dairy"
+        },
+        {
+          "name": "vanilla extract",
+          "quantity": 2,
+          "unit": "tsp",
+          "section": "baking"
+        },
+        {
+          "name": "all-purpose flour",
+          "quantity": 2.25,
+          "unit": "cups",
+          "section": "baking"
+        },
+        {
+          "name": "baking soda",
+          "quantity": 1,
+          "unit": "tsp",
+          "section": "baking"
+        },
+        {
+          "name": "salt",
+          "quantity": 1,
+          "unit": "tsp",
+          "section": "baking"
+        },
+        {
+          "name": "chocolate chips",
+          "quantity": 2,
+          "unit": "cups",
+          "section": "baking"
+        }
+      ],
+      "instructions_json": [
+        {
+          "step": 1,
+          "text": "Preheat oven to 375°F."
+        },
+        {
+          "step": 2,
+          "text": "Cream butter and sugars until fluffy."
+        },
+        {
+          "step": 3,
+          "text": "Beat in eggs and vanilla."
+        },
+        {
+          "step": 4,
+          "text": "Mix flour, baking soda, and salt in a separate bowl."
+        },
+        {
+          "step": 5,
+          "text": "Gradually blend dry ingredients into butter mixture."
+        },
+        {
+          "step": 6,
+          "text": "Stir in chocolate chips."
+        },
+        {
+          "step": 7,
+          "text": "Drop rounded tablespoons onto ungreased cookie sheets."
+        },
+        {
+          "step": 8,
+          "text": "Bake 9-11 minutes until golden brown."
+        }
+      ],
+      "emoji_id": 5,
+      "is_public": 1
+    },
+    {
+      "recipe_id": 7,
+      "user_id": 1,
+      "category_id": 3,
+      "name": "Chicken Tacos",
+      "num_servings": 6,
+      "ingredients_json": [
+        {
+          "name": "chicken breast",
+          "quantity": 1.5,
+          "unit": "lbs",
+          "section": "meat"
+        },
+        {
+          "name": "taco seasoning",
+          "quantity": 2,
+          "unit": "tbsp",
+          "section": "spices"
+        },
+        {
+          "name": "corn tortillas",
+          "quantity": 12,
+          "unit": "each",
+          "section": "bakery"
+        },
+        {
+          "name": "lettuce",
+          "quantity": 2,
+          "unit": "cups",
+          "prep": "shredded",
+          "section": "produce"
+        },
+        {
+          "name": "tomatoes",
+          "quantity": 2,
+          "unit": "each",
+          "prep": "diced",
+          "section": "produce"
+        },
+        {
+          "name": "cheddar cheese",
+          "quantity": 1,
+          "unit": "cup",
+          "prep": "shredded",
+          "section": "dairy"
+        },
+        {
+          "name": "sour cream",
+          "quantity": 0.5,
+          "unit": "cup",
+          "optional": true,
+          "section": "dairy"
+        }
+      ],
+      "instructions_json": [
+        {
+          "step": 1,
+          "text": "Cook chicken breast until fully cooked, then shred."
+        },
+        {
+          "step": 2,
+          "text": "Mix shredded chicken with taco seasoning and a splash of water."
+        },
+        {
+          "step": 3,
+          "text": "Warm tortillas in a dry skillet."
+        },
+        {
+          "step": 4,
+          "text": "Fill tortillas with chicken, lettuce, tomatoes, and cheese."
+        },
+        {
+          "step": 5,
+          "text": "Top with sour cream if desired and serve."
+        }
+      ],
+      "emoji_id": 8,
+      "is_public": 1
+    },
+    {
+      "recipe_id": 8,
+      "user_id": 1,
+      "category_id": 3,
+      "name": "Margherita Pizza",
+      "num_servings": 4,
+      "ingredients_json": [
+        {
+          "name": "pizza dough",
+          "quantity": 1,
+          "unit": "lb",
+          "section": "bakery"
+        },
+        {
+          "name": "tomato sauce",
+          "quantity": 0.5,
+          "unit": "cup",
+          "section": "condiments"
+        },
+        {
+          "name": "fresh mozzarella",
+          "quantity": 8,
+          "unit": "oz",
+          "prep": "sliced",
+          "section": "dairy"
+        },
+        {
+          "name": "fresh basil",
+          "quantity": 10,
+          "unit": "leaves",
+          "section": "produce"
+        },
+        {
+          "name": "olive oil",
+          "quantity": 2,
+          "unit": "tbsp",
+          "section": "oils"
+        },
+        {
+          "name": "salt",
+          "quantity": 0.25,
+          "unit": "tsp",
+          "section": "baking"
+        }
+      ],
+      "instructions_json": [
+        {
+          "step": 1,
+          "text": "Preheat oven to 475°F with pizza stone inside."
+        },
+        {
+          "step": 2,
+          "text": "Roll out pizza dough to desired thickness."
+        },
+        {
+          "step": 3,
+          "text": "Spread tomato sauce evenly over dough."
+        },
+        {
+          "step": 4,
+          "text": "Top with mozzarella slices and basil leaves."
+        },
+        {
+          "step": 5,
+          "text": "Drizzle with olive oil and sprinkle with salt."
+        },
+        {
+          "step": 6,
+          "text": "Bake for 12-15 minutes until crust is golden and cheese is bubbly."
+        }
+      ],
+      "emoji_id": 7,
+      "is_public": 1
+    }
+  ],
+  "macros_cache": [
+    {
+      "hash_id": "recipe_1_serving_1",
+      "source_recipe_id": 1,
+      "per_serving_calories": 180.5,
+      "per_serving_protein_g": 22.0,
+      "per_serving_fat_g": 8.0,
+      "per_serving_carbs_g": 5.0,
+      "per_serving_sugar_g": 2.0,
+      "num_servings_used": 1.0,
+      "expires_on": "2026-12-31"
+    },
+    {
+      "hash_id": "recipe_2_serving_1",
+      "source_recipe_id": 2,
+      "per_serving_calories": 320.0,
+      "per_serving_protein_g": 8.5,
+      "per_serving_fat_g": 9.0,
+      "per_serving_carbs_g": 52.0,
+      "per_serving_sugar_g": 8.0,
+      "num_servings_used": 1.0,
+      "expires_on": "2026-12-31"
+    },
+    {
+      "hash_id": "recipe_3_serving_1",
+      "source_recipe_id": 3,
+      "per_serving_calories": 285.0,
+      "per_serving_protein_g": 7.5,
+      "per_serving_fat_g": 18.0,
+      "per_serving_carbs_g": 25.0,
+      "per_serving_sugar_g": 2.5,
+      "num_servings_used": 1.0,
+      "expires_on": "2026-12-31"
+    },
+    {
+      "hash_id": "recipe_4_serving_1",
+      "source_recipe_id": 4,
+      "per_serving_calories": 580.0,
+      "per_serving_protein_g": 28.0,
+      "per_serving_fat_g": 22.0,
+      "per_serving_carbs_g": 65.0,
+      "per_serving_sugar_g": 3.0,
+      "num_servings_used": 1.0,
+      "expires_on": "2026-12-31"
+    },
+    {
+      "hash_id": "recipe_5_serving_1",
+      "source_recipe_id": 5,
+      "per_serving_calories": 210.0,
+      "per_serving_protein_g": 8.0,
+      "per_serving_fat_g": 15.0,
+      "per_serving_carbs_g": 12.0,
+      "per_serving_sugar_g": 6.0,
+      "num_servings_used": 1.0,
+      "expires_on": "2026-12-31"
+    },
+    {
+      "hash_id": "recipe_6_serving_1",
+      "source_recipe_id": 6,
+      "per_serving_calories": 150.0,
+      "per_serving_protein_g": 2.0,
+      "per_serving_fat_g": 7.5,
+      "per_serving_carbs_g": 20.0,
+      "per_serving_sugar_g": 12.0,
+      "num_servings_used": 1.0,
+      "expires_on": "2026-12-31"
+    },
+    {
+      "hash_id": "recipe_7_serving_1",
+      "source_recipe_id": 7,
+      "per_serving_calories": 385.0,
+      "per_serving_protein_g": 28.0,
+      "per_serving_fat_g": 14.0,
+      "per_serving_carbs_g": 35.0,
+      "per_serving_sugar_g": 3.5,
+      "num_servings_used": 1.0,
+      "expires_on": "2026-12-31"
+    },
+    {
+      "hash_id": "recipe_8_serving_1",
+      "source_recipe_id": 8,
+      "per_serving_calories": 420.0,
+      "per_serving_protein_g": 18.0,
+      "per_serving_fat_g": 16.0,
+      "per_serving_carbs_g": 52.0,
+      "per_serving_sugar_g": 4.0,
+      "num_servings_used": 1.0,
+      "expires_on": "2026-12-31"
+    }
+  ]
+}

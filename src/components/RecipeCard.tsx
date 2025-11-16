@@ -1,8 +1,26 @@
 import React, { useState } from "react";
+import type { recipe, instructions, ingredients } from "@/types/types";
 
-export default function RecipeCard() {
-  const [recipeName, setRecipeName] = useState("Recipe 1");
+type RecipeCardProps = {
+  recipe: recipe;
+};
+
+export default function RecipeCard({ recipe }: RecipeCardProps) {
+  /*const [recipeName, setRecipeName] = useState("Recipe 1");*/
   const [isRecipeBoxChecked, setIsRecipeBoxChecked] = useState("false");
+  const {
+    user,
+    category,
+    name,
+    servings,
+    per_serving_calories,
+    per_serving_protein_g,
+    per_serving_fat_g,
+    per_serving_carbs_g,
+    per_serving_sugar_g,
+    ingredients_json,
+    instructions_json,
+  } = recipe;
 
   const handleRecipeCheckBoxChange = (event) => {
     setIsRecipeBoxChecked(event.target.checked);
@@ -11,7 +29,7 @@ export default function RecipeCard() {
   return (
     <div className="relative w-75 h-75 border-2 border-border rounded-2xl bg-surface shadow-lg ml-5 mr-5 mb-5">
       <div className="flex">
-        <h2 className="text-xl text-text font-bold m-3">{recipeName}</h2>
+        <h2 className="text-xl text-text font-bold m-3">{name}</h2>
         <input
           type="checkbox"
           className="m-3 absolute top-0 right-0 w-7 h-7 cursor-pointer accent-accent"
@@ -21,13 +39,14 @@ export default function RecipeCard() {
       <div>
         <h3 className="text-base text-text font-bold ml-3 mr-1">Ingredients</h3>
         <p className="text-base text-text mt-2 ml-3 mr-1">
-          Ingredient 1 \n Ingredient 2 \n Ingredient 3
+          {ingredients_json[0].name}: {ingredients_json[0].quantity} ...
         </p>
         <h3 className="text-base text-text font-bold ml-3 mr-1 mt-6">
           Instructions
         </h3>
         <p className="text-base text-text mt-2 ml-3 mr-1">
-          1. This 2. That 3. And the other thing
+          {instructions_json[0].step}:{" "}
+          {instructions_json[0].text.substring(0, 10)}
         </p>
       </div>
       <div className="flex absolute bottom-0 right-0">
