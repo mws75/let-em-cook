@@ -29,7 +29,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
   };
 
   return (
-    <div className="relative w-75 h-75 border-2 border-border rounded-2xl bg-surface shadow-lg ml-5 mr-5 mb-5">
+    <div className="relative w-70 h-75 border-2 border-border rounded-2xl bg-surface shadow-lg ml-2 mr-5 mb-5">
       <div className="flex">
         <h2 className="text-xl text-text font-bold m-3">{name}</h2>
         <input

@@ -8,15 +8,17 @@ export default function Dashboard() {
     sampleData.recipes as Recipe[]; /* Converts JSON to recipe data type */
 
   return (
-    <div className="justify-center">
-      {/* Header Information */}
-      <div className="flex justify-center mt-10 mb-10">
-        <h1 className="text-4xl text-text font-bold">🔪 Let's Get Cooking!</h1>
-      </div>
+    <div className="min-h-screen bg-background">
+      <div className="w-full max-w-5xl mx-auto px-4 pb-20 space-y-10">
+        {/* Header Information */}
+        <div className="flex justify-center mt-10 mb-10">
+          <h1 className="text-4xl text-text font-bold">
+            🔪 Let's Get Cooking!
+          </h1>
+        </div>
 
-      {/* Meal Prep Section */}
-      <div className="flex justify-center">
-        <div className="w-2/3 border-2 border-border rounded-3xl p-6 bg-surface shadow-lg">
+        {/* Meal Prep Section */}
+        <section className="border-2 border-border rounded-3xl p-6 bg-surface shadow-lg">
           <div className="flex gap-4 mb-4">
             <div className="flex-1 border-2 border-border rounded-3xl p-8 bg-surface">
               <h2 className="text-3xl text-text text-center">My Recipes </h2>
@@ -31,12 +33,9 @@ export default function Dashboard() {
           <button className="w-full bg-accent hover:bg-accent/80 border-2 border-border rounded-3xl py-4 shadow-md hover:shadow-lg transition-all">
             <span className="text-2xl font-bold text-text">Create Recipe</span>
           </button>
-        </div>
-      </div>
-
-      {/* Dashboard */}
-      <div className="flex justify-center mt-10">
-        <div className="w-2/3 border-2 border-border rounded-3xl p-8 bg-surface shadow-lg">
+        </section>
+        {/* Dashboard */}
+        <section className="border-2 border-border rounded-3xl p-6 bg-surface shadow-lg">
           <h2 className="text-3xl text-text font-bold mb-6 text-center">
             📊 Your Kitchen Stats
           </h2>
@@ -131,37 +130,37 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      {/* Recipes */}
-      <div className="flex flex-col justify-center mt-10 mx-auto w-2/3 border-2 border-border rounded-3xl bg-surface shadow-lg p-6 mb-20">
-        {/* Search Bar */}
-        <div className="flex p-2">
-          <h2 className="text-3xl text-text text-center font-bold pr-10">
-            Recipes{" "}
-          </h2>
-          <form className="flex gap-2 ml-auto w-max">
-            <input
-              type="text"
-              placeholder="Search recipes..."
-              className="w-96 px-4 py-2 border-2 border-border rounded-xl bg-surface text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
-            />
-            <button className="px-6 py-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all">
-              Search
-            </button>
-          </form>
-        </div>
-        {/* Category */}
-        <div className="flex flex-col justify-center w-full mt-5 border-2 border-border rounded-2xl bg-surface">
-          <h2 className="text-3xl text-text text-left font-bold ml-5 mt-5 mb-5">
-            Snacks
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-            {recipes.map((recipe) => (
-              <RecipeCard key={recipe.recipe_id} recipe={recipe} />
-            ))}
+        </section>
+        {/* Recipes */}
+        <section className="border-2 border-border rounded-3xl bg-surface shadow-lg p-6">
+          {/* Search Bar */}
+          <div className="flex p-2">
+            <h2 className="text-3xl text-text text-center font-bold pr-10">
+              Recipes{" "}
+            </h2>
+            <form className="flex gap-2 ml-auto w-max">
+              <input
+                type="text"
+                placeholder="Search recipes..."
+                className="w-96 px-4 py-2 border-2 border-border rounded-xl bg-surface text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
+              />
+              <button className="px-6 py-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all">
+                Search
+              </button>
+            </form>
           </div>
-        </div>
+          {/* Category */}
+          <div className="flex flex-col justify-center w-full mt-5 border-2 border-border rounded-2xl bg-surface">
+            <h2 className="text-3xl text-text text-left font-bold ml-5 mt-5 mb-5">
+              Snacks
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+              {recipes.map((recipe) => (
+                <RecipeCard key={recipe.recipe_id} recipe={recipe} />
+              ))}
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );
