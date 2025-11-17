@@ -1,4 +1,4 @@
-export type user = {
+export type User = {
   user_id: number;
   user_name: string;
   email: string;
@@ -8,17 +8,17 @@ export type user = {
   role: string;
 };
 
-export type category = {
+export type Category = {
   category_id: number;
   user_id: number;
   category_name: string;
   color_hex: string;
 };
 
-export type recipe = {
+export type Recipe = {
   recipe_id: number;
   user_id: number;
-  user: string;
+  user_name: string;
   is_public: 0 | 1;
   category: string;
   name: string;
@@ -28,14 +28,14 @@ export type recipe = {
   per_serving_fat_g: number;
   per_serving_carbs_g: number;
   per_serving_sugar_g: number;
-  ingredients_json: ingredients[];
-  instructions_json: instructions[];
+  ingredients_json: Ingredients[];
+  instructions_json: Instructions[];
   emoji: string;
   tags: string[];
-  time: cook_time;
+  time: CookTime;
 };
 
-export type ingredients = {
+export type Ingredients = {
   name: string;
   quantity: number;
   unit: string;
@@ -44,12 +44,12 @@ export type ingredients = {
   section: string;
 };
 
-export type instructions = {
+export type Instructions = {
   step: number;
   text: string;
 };
 
-export type cook_time = {
+export type CookTime = {
   active_min: number;
   total_time: number;
 };

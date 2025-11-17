@@ -51,47 +51,20 @@
       "color_hex": "#DDA0DD"
     }
   ],
-  "emojis": [
-    {
-      "emoji_id": 1,
-      "emoji": "<W"
-    },
-    {
-      "emoji_id": 2,
-      "emoji": ">W"
-    },
-    {
-      "emoji_id": 3,
-      "emoji": "<]"
-    },
-    {
-      "emoji_id": 4,
-      "emoji": ">^"
-    },
-    {
-      "emoji_id": 5,
-      "emoji": "<j"
-    },
-    {
-      "emoji_id": 6,
-      "emoji": ">Q"
-    },
-    {
-      "emoji_id": 7,
-      "emoji": "<U"
-    },
-    {
-      "emoji_id": 8,
-      "emoji": "<."
-    }
-  ],
   "recipes": [
     {
       "recipe_id": 1,
       "user_id": 1,
-      "category_id": 3,
-      "name": "Chicken Consomm�",
-      "num_servings": 4,
+      "user_name": "Michael Spencer",
+      "is_public": 0,
+      "category": "Dinner",
+      "name": "Chicken Consommé",
+      "servings": 4,
+      "per_serving_calories": 180.5,
+      "per_serving_protein_g": 22.0,
+      "per_serving_fat_g": 8.0,
+      "per_serving_carbs_g": 5.0,
+      "per_serving_sugar_g": 2.0,
       "ingredients_json": [
         {
           "name": "chicken carcass",
@@ -139,15 +112,26 @@
           "text": "Strain through cheesecloth and clarify with egg whites."
         }
       ],
-      "emoji_id": 1,
-      "is_public": 0
+      "emoji": "🍲",
+      "tags": ["soup", "comfort food", "advanced"],
+      "time": {
+        "active_min": 30,
+        "total_time": 150
+      }
     },
     {
       "recipe_id": 2,
       "user_id": 1,
-      "category_id": 1,
+      "user_name": "Michael Spencer",
+      "is_public": 1,
+      "category": "Breakfast",
       "name": "Fluffy Pancakes",
-      "num_servings": 6,
+      "servings": 6,
+      "per_serving_calories": 320.0,
+      "per_serving_protein_g": 8.5,
+      "per_serving_fat_g": 9.0,
+      "per_serving_carbs_g": 52.0,
+      "per_serving_sugar_g": 8.0,
       "ingredients_json": [
         {
           "name": "all-purpose flour",
@@ -208,22 +192,33 @@
         },
         {
           "step": 4,
-          "text": "Heat griddle to 375�F and cook pancakes until bubbles form."
+          "text": "Heat griddle to 375°F and cook pancakes until bubbles form."
         },
         {
           "step": 5,
           "text": "Flip and cook until golden brown on both sides."
         }
       ],
-      "emoji_id": 4,
-      "is_public": 1
+      "emoji": "🥞",
+      "tags": ["breakfast", "easy", "family-friendly"],
+      "time": {
+        "active_min": 20,
+        "total_time": 20
+      }
     },
     {
       "recipe_id": 3,
       "user_id": 1,
-      "category_id": 2,
+      "user_name": "Michael Spencer",
+      "is_public": 1,
+      "category": "Lunch",
       "name": "Avocado Toast",
-      "num_servings": 2,
+      "servings": 2,
+      "per_serving_calories": 285.0,
+      "per_serving_protein_g": 7.5,
+      "per_serving_fat_g": 18.0,
+      "per_serving_carbs_g": 25.0,
+      "per_serving_sugar_g": 2.5,
       "ingredients_json": [
         {
           "name": "sourdough bread",
@@ -276,15 +271,26 @@
           "text": "Sprinkle with red pepper flakes if desired."
         }
       ],
-      "emoji_id": 6,
-      "is_public": 1
+      "emoji": "🥑",
+      "tags": ["healthy", "quick", "vegetarian"],
+      "time": {
+        "active_min": 10,
+        "total_time": 10
+      }
     },
     {
       "recipe_id": 4,
       "user_id": 1,
-      "category_id": 3,
+      "user_name": "Michael Spencer",
+      "is_public": 0,
+      "category": "Dinner",
       "name": "Spaghetti Carbonara",
-      "num_servings": 4,
+      "servings": 4,
+      "per_serving_calories": 580.0,
+      "per_serving_protein_g": 28.0,
+      "per_serving_fat_g": 22.0,
+      "per_serving_carbs_g": 65.0,
+      "per_serving_sugar_g": 3.0,
       "ingredients_json": [
         {
           "name": "spaghetti",
@@ -342,15 +348,26 @@
           "text": "Quickly stir in egg mixture, adding pasta water to create a creamy sauce."
         }
       ],
-      "emoji_id": 3,
-      "is_public": 0
+      "emoji": "🍝",
+      "tags": ["italian", "pasta", "classic"],
+      "time": {
+        "active_min": 25,
+        "total_time": 25
+      }
     },
     {
       "recipe_id": 5,
       "user_id": 1,
-      "category_id": 4,
+      "user_name": "Michael Spencer",
+      "is_public": 1,
+      "category": "Snacks",
       "name": "Greek Salad",
-      "num_servings": 4,
+      "servings": 4,
+      "per_serving_calories": 210.0,
+      "per_serving_protein_g": 8.0,
+      "per_serving_fat_g": 15.0,
+      "per_serving_carbs_g": 12.0,
+      "per_serving_sugar_g": 6.0,
       "ingredients_json": [
         {
           "name": "cucumber",
@@ -417,15 +434,26 @@
           "text": "Toss gently and serve immediately."
         }
       ],
-      "emoji_id": 2,
-      "is_public": 1
+      "emoji": "🥗",
+      "tags": ["healthy", "vegetarian", "mediterranean"],
+      "time": {
+        "active_min": 15,
+        "total_time": 15
+      }
     },
     {
       "recipe_id": 6,
       "user_id": 1,
-      "category_id": 5,
+      "user_name": "Michael Spencer",
+      "is_public": 1,
+      "category": "Desserts",
       "name": "Chocolate Chip Cookies",
-      "num_servings": 24,
+      "servings": 24,
+      "per_serving_calories": 150.0,
+      "per_serving_protein_g": 2.0,
+      "per_serving_fat_g": 7.5,
+      "per_serving_carbs_g": 20.0,
+      "per_serving_sugar_g": 12.0,
       "ingredients_json": [
         {
           "name": "butter",
@@ -486,7 +514,7 @@
       "instructions_json": [
         {
           "step": 1,
-          "text": "Preheat oven to 375�F."
+          "text": "Preheat oven to 375°F."
         },
         {
           "step": 2,
@@ -517,15 +545,26 @@
           "text": "Bake 9-11 minutes until golden brown."
         }
       ],
-      "emoji_id": 5,
-      "is_public": 1
+      "emoji": "🍪",
+      "tags": ["dessert", "baking", "family-friendly"],
+      "time": {
+        "active_min": 15,
+        "total_time": 30
+      }
     },
     {
       "recipe_id": 7,
       "user_id": 1,
-      "category_id": 3,
+      "user_name": "Michael Spencer",
+      "is_public": 1,
+      "category": "Dinner",
       "name": "Chicken Tacos",
-      "num_servings": 6,
+      "servings": 6,
+      "per_serving_calories": 385.0,
+      "per_serving_protein_g": 28.0,
+      "per_serving_fat_g": 14.0,
+      "per_serving_carbs_g": 35.0,
+      "per_serving_sugar_g": 3.5,
       "ingredients_json": [
         {
           "name": "chicken breast",
@@ -596,15 +635,26 @@
           "text": "Top with sour cream if desired and serve."
         }
       ],
-      "emoji_id": 8,
-      "is_public": 1
+      "emoji": "🌮",
+      "tags": ["mexican", "easy", "weeknight"],
+      "time": {
+        "active_min": 30,
+        "total_time": 30
+      }
     },
     {
       "recipe_id": 8,
       "user_id": 1,
-      "category_id": 3,
+      "user_name": "Michael Spencer",
+      "is_public": 1,
+      "category": "Dinner",
       "name": "Margherita Pizza",
-      "num_servings": 4,
+      "servings": 4,
+      "per_serving_calories": 420.0,
+      "per_serving_protein_g": 18.0,
+      "per_serving_fat_g": 16.0,
+      "per_serving_carbs_g": 52.0,
+      "per_serving_sugar_g": 4.0,
       "ingredients_json": [
         {
           "name": "pizza dough",
@@ -647,7 +697,7 @@
       "instructions_json": [
         {
           "step": 1,
-          "text": "Preheat oven to 475�F with pizza stone inside."
+          "text": "Preheat oven to 475°F with pizza stone inside."
         },
         {
           "step": 2,
@@ -670,98 +720,12 @@
           "text": "Bake for 12-15 minutes until crust is golden and cheese is bubbly."
         }
       ],
-      "emoji_id": 7,
-      "is_public": 1
-    }
-  ],
-  "macros_cache": [
-    {
-      "hash_id": "recipe_1_serving_1",
-      "source_recipe_id": 1,
-      "per_serving_calories": 180.5,
-      "per_serving_protein_g": 22.0,
-      "per_serving_fat_g": 8.0,
-      "per_serving_carbs_g": 5.0,
-      "per_serving_sugar_g": 2.0,
-      "num_servings_used": 1.0,
-      "expires_on": "2026-12-31"
-    },
-    {
-      "hash_id": "recipe_2_serving_1",
-      "source_recipe_id": 2,
-      "per_serving_calories": 320.0,
-      "per_serving_protein_g": 8.5,
-      "per_serving_fat_g": 9.0,
-      "per_serving_carbs_g": 52.0,
-      "per_serving_sugar_g": 8.0,
-      "num_servings_used": 1.0,
-      "expires_on": "2026-12-31"
-    },
-    {
-      "hash_id": "recipe_3_serving_1",
-      "source_recipe_id": 3,
-      "per_serving_calories": 285.0,
-      "per_serving_protein_g": 7.5,
-      "per_serving_fat_g": 18.0,
-      "per_serving_carbs_g": 25.0,
-      "per_serving_sugar_g": 2.5,
-      "num_servings_used": 1.0,
-      "expires_on": "2026-12-31"
-    },
-    {
-      "hash_id": "recipe_4_serving_1",
-      "source_recipe_id": 4,
-      "per_serving_calories": 580.0,
-      "per_serving_protein_g": 28.0,
-      "per_serving_fat_g": 22.0,
-      "per_serving_carbs_g": 65.0,
-      "per_serving_sugar_g": 3.0,
-      "num_servings_used": 1.0,
-      "expires_on": "2026-12-31"
-    },
-    {
-      "hash_id": "recipe_5_serving_1",
-      "source_recipe_id": 5,
-      "per_serving_calories": 210.0,
-      "per_serving_protein_g": 8.0,
-      "per_serving_fat_g": 15.0,
-      "per_serving_carbs_g": 12.0,
-      "per_serving_sugar_g": 6.0,
-      "num_servings_used": 1.0,
-      "expires_on": "2026-12-31"
-    },
-    {
-      "hash_id": "recipe_6_serving_1",
-      "source_recipe_id": 6,
-      "per_serving_calories": 150.0,
-      "per_serving_protein_g": 2.0,
-      "per_serving_fat_g": 7.5,
-      "per_serving_carbs_g": 20.0,
-      "per_serving_sugar_g": 12.0,
-      "num_servings_used": 1.0,
-      "expires_on": "2026-12-31"
-    },
-    {
-      "hash_id": "recipe_7_serving_1",
-      "source_recipe_id": 7,
-      "per_serving_calories": 385.0,
-      "per_serving_protein_g": 28.0,
-      "per_serving_fat_g": 14.0,
-      "per_serving_carbs_g": 35.0,
-      "per_serving_sugar_g": 3.5,
-      "num_servings_used": 1.0,
-      "expires_on": "2026-12-31"
-    },
-    {
-      "hash_id": "recipe_8_serving_1",
-      "source_recipe_id": 8,
-      "per_serving_calories": 420.0,
-      "per_serving_protein_g": 18.0,
-      "per_serving_fat_g": 16.0,
-      "per_serving_carbs_g": 52.0,
-      "per_serving_sugar_g": 4.0,
-      "num_servings_used": 1.0,
-      "expires_on": "2026-12-31"
+      "emoji": "🍕",
+      "tags": ["italian", "pizza", "classic"],
+      "time": {
+        "active_min": 20,
+        "total_time": 35
+      }
     }
   ]
 }

@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import type { recipe, instructions, ingredients } from "@/types/types";
+import type { Recipe, Instructions, Ingredients } from "@/types/types";
 
 type RecipeCardProps = {
-  recipe: recipe;
+  recipe: Recipe;
 };
 
 export default function RecipeCard({ recipe }: RecipeCardProps) {
   /*const [recipeName, setRecipeName] = useState("Recipe 1");*/
-  const [isRecipeBoxChecked, setIsRecipeBoxChecked] = useState("false");
+  const [isRecipeBoxChecked, setIsRecipeBoxChecked] = useState(false);
   const {
-    user,
+    user_name,
     category,
     name,
     servings,
@@ -22,7 +22,9 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
     instructions_json,
   } = recipe;
 
-  const handleRecipeCheckBoxChange = (event) => {
+  const handleRecipeCheckBoxChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     setIsRecipeBoxChecked(event.target.checked);
   };
 
@@ -32,7 +34,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
         <h2 className="text-xl text-text font-bold m-3">{name}</h2>
         <input
           type="checkbox"
-          className="m-3 absolute top-0 right-0 w-7 h-7 cursor-pointer accent-accent"
+          className="m-3 absolute top-:0 right-0 w-7 h-7 cursor-pointer accent-accent"
           onChange={handleRecipeCheckBoxChange}
         />
       </div>

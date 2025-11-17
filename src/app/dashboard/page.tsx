@@ -1,7 +1,12 @@
 "use client";
 import RecipeCard from "@/components/RecipeCard";
+import { Recipe } from "@/types/types";
+import sampleData from "@/db/sample_data_set.json";
 
 export default function Dashboard() {
+  const recipes =
+    sampleData.recipes as Recipe[]; /* Converts JSON to recipe data type */
+
   return (
     <div className="justify-center">
       {/* Header Information */}
@@ -151,9 +156,10 @@ export default function Dashboard() {
           <h2 className="text-3xl text-text text-left font-bold ml-5 mt-5 mb-5">
             Snacks
           </h2>
-          <div className="flex flex-row">
-            <RecipeCard />
-            <RecipeCard />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+            {recipes.map((recipe) => (
+              <RecipeCard key={recipe.recipe_id} recipe={recipe} />
+            ))}
           </div>
         </div>
       </div>
