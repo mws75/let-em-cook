@@ -2,10 +2,21 @@
 import RecipeCard from "@/components/RecipeCard";
 import { Recipe } from "@/types/types";
 import sampleData from "@/db/sample_data_set.json";
+import { useState } from "react";
 
 export default function Dashboard() {
   const recipes =
     sampleData.recipes as Recipe[]; /* Converts JSON to recipe data type */
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredRecipes = recipes.filter((recipe) => {
+    const searchLower = searchTerm.toLowerCase();
+    const nameMatch = recipe.name.toLowerCase().includes(searchLower);
+    const ingredientsMatch = recipe.ingredients_json.some((ingredient) => {
+      return ingredient.name.toLowerCase().includes(searchLower);
+    });
+    return nameMatch || ingredientsMatch;
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -138,26 +149,38 @@ export default function Dashboard() {
             <h2 className="text-3xl text-text text-center font-bold pr-10">
               Recipes{" "}
             </h2>
-            <form className="flex gap-2 ml-auto w-max">
+            <div className="flex gap-2 ml-auto w-max">
               <input
                 type="text"
                 placeholder="Search recipes..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-96 px-4 py-2 border-2 border-border rounded-xl bg-surface text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
               />
-              <button className="px-6 py-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all">
-                Search
+              <button
+                type="button"
+                onClick={() => setSearchTerm("")}
+                className="px-6 py-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+              >
+                Clear
               </button>
-            </form>
+            </div>
           </div>
           {/* Category */}
           <div className="flex flex-col justify-center w-full mt-5 border-2 border-border rounded-2xl bg-surface">
             <h2 className="text-3xl text-text text-left font-bold ml-5 mt-5 mb-5">
-              Snacks
+              Recipes
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-              {recipes.map((recipe) => (
-                <RecipeCard key={recipe.recipe_id} recipe={recipe} />
-              ))}
+              {filteredRecipes.length > 0 ? (
+                filteredRecipes.map((recipe) => (
+                  <RecipeCard key={recipe.recipe_id} recipe={recipe} />
+                ))
+              ) : (
+                <p className="text-text text-center col-span-3">
+                  No results found
+                </p>
+              )}
             </div>
           </div>
         </section>
