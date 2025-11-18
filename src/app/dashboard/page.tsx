@@ -9,6 +9,8 @@ export default function Dashboard() {
     sampleData.recipes as Recipe[]; /* Converts JSON to recipe data type */
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [selectedRecipes, setSelectedRecipes] = useState<Recipe[]>([]);
+
   const filteredRecipes = recipes.filter((recipe) => {
     const searchLower = searchTerm.toLowerCase();
     const nameMatch = recipe.name.toLowerCase().includes(searchLower);

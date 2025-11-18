@@ -21,7 +21,9 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
     ingredients_json,
     instructions_json,
   } = recipe;
-
+  const allIngredients = ingredients_json
+    .map((ing) => `${ing.quantity} ${ing.unit} ${ing.name}`)
+    .join("\n");
   const handleRecipeCheckBoxChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -40,15 +42,19 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
       </div>
       <div>
         <h3 className="text-base text-text font-bold ml-3 mr-1">Ingredients</h3>
-        <p className="text-base text-text mt-2 ml-3 mr-1">
-          {ingredients_json[0].name}: {ingredients_json[0].quantity} ...
+        <p className="text-sm text-text mt-2 ml-3 mr-1" title={allIngredients}>
+          {ingredients_json[0].name}: {ingredients_json[0].quantity}{" "}
+          {ingredients_json[0].unit}...
         </p>
-        <h3 className="text-base text-text font-bold ml-3 mr-1 mt-6">
-          Instructions
+        <h3 className="text-base text-text font-bold ml-3 mr-1 mt-3">
+          Nutrition
         </h3>
-        <p className="text-base text-text mt-2 ml-3 mr-1">
-          {instructions_json[0].step}:{" "}
-          {instructions_json[0].text.substring(0, 10)}
+        <p className="text-sm text-text mt-2 ml-3 mr-1">
+          calories:{per_serving_calories}
+          <br />
+          protein:{per_serving_protein_g}g <br />
+          fat:{per_serving_fat_g}g <br />
+          carbs:{per_serving_carbs_g}g<br />
         </p>
       </div>
       <div className="flex absolute bottom-0 right-0">
