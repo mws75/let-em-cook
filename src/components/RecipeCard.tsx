@@ -3,11 +3,16 @@ import type { Recipe, Instructions, Ingredients } from "@/types/types";
 
 type RecipeCardProps = {
   recipe: Recipe;
+  isSelected?: boolean;
+  onSelect?: (recipe: Recipe, isChecked: boolean) => void;
 };
 
-export default function RecipeCard({ recipe }: RecipeCardProps) {
+export default function RecipeCard({
+  recipe,
+  isSelected,
+  onSelect,
+}: RecipeCardProps) {
   /*const [recipeName, setRecipeName] = useState("Recipe 1");*/
-  const [isRecipeBoxChecked, setIsRecipeBoxChecked] = useState(false);
   const {
     user_name,
     category,
@@ -21,13 +26,17 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
     ingredients_json,
     instructions_json,
   } = recipe;
+
   const allIngredients = ingredients_json
     .map((ing) => `${ing.quantity} ${ing.unit} ${ing.name}`)
     .join("\n");
+
   const handleRecipeCheckBoxChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setIsRecipeBoxChecked(event.target.checked);
+    if (onSelect) {
+      onSelect(recipe, event.target.checked);
+    }
   };
 
   return (
@@ -36,6 +45,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
         <h2 className="text-xl text-text font-bold m-3">{name}</h2>
         <input
           type="checkbox"
+          checked={isSelected || false}
           className="m-3 absolute top-:0 right-0 w-7 h-7 cursor-pointer accent-accent"
           onChange={handleRecipeCheckBoxChange}
         />
