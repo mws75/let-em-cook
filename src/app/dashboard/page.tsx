@@ -1,5 +1,6 @@
 "use client";
 import RecipeCard from "@/components/RecipeCard";
+import SelectedRecipeCard from "@/components/SelectedRecipeCard";
 import { Recipe } from "@/types/types";
 import sampleData from "@/db/sample_data_set.json";
 import { useState } from "react";
@@ -20,6 +21,20 @@ export default function Dashboard() {
     return nameMatch || ingredientsMatch;
   });
 
+  const handleRecipeSelect = (recipe: Recipe, isChecked: boolean) => {
+    if (isChecked) {
+      // Add selected recipe
+      setSelectedRecipes([...selectedRecipes, recipe]);
+      console.log(selectedRecipes);
+    } else {
+      // Remove selected recipe
+      setSelectedRecipes(
+        selectedRecipes.filter((r) => r.recipe_id !== recipe.recipe_id),
+      );
+      console.log(`Recipe ${recipe.name} deselected`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="w-full max-w-5xl mx-auto px-4 pb-20 space-y-10">
@@ -31,10 +46,14 @@ export default function Dashboard() {
         </div>
 
         {/* Meal Prep Section */}
-        <section className="border-2 border-border rounded-3xl p-6 bg-surface shadow-lg">
-          <div className="flex gap-4 mb-4">
+        <section className="border-2 border-border rounded-3xl p-2 bg-surface shadow-lg">
+          <div className="flex gap-4 m-2">
             <div className="flex-1 border-2 border-border rounded-3xl p-8 bg-surface">
-              <h2 className="text-3xl text-text text-center">My Recipes </h2>
+              <div className="flex flex-wrap gap-4">
+                {selectedRecipes.map((recipe) => (
+                  <SelectedRecipeCard key={recipe.recipe_id} recipe={recipe} />
+                ))}
+              </div>
             </div>
 
             <button className="w-32 bg-secondar hover:bg-secondar/80 border-2 border-border rounded-3xl py-4 mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all">
@@ -176,7 +195,14 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
               {filteredRecipes.length > 0 ? (
                 filteredRecipes.map((recipe) => (
-                  <RecipeCard key={recipe.recipe_id} recipe={recipe} />
+                  <RecipeCard
+                    key={recipe.recipe_id}
+                    recipe={recipe}
+                    isSelected={selectedRecipes.some(
+                      (r) => r.recipe_id === recipe.recipe_id,
+                    )}
+                    onSelect={handleRecipeSelect}
+                  />
                 ))
               ) : (
                 <p className="text-text text-center col-span-3">

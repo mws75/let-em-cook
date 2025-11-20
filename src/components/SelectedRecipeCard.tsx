@@ -17,10 +17,12 @@ export default function SelectedRecipeCard({
   } = recipe;
 
   return (
-    <div className="relative w-50 h-50 border-2 border-border rounded-2xl bg-surface shadow-lg ml-2 mr-5 mb-5">
+    <div className="relative w-50 h-50 border-2 border-border rounded-2xl bg-surface shadow-lg">
       <div className="flex">
         <h3 className="text-lg text-text font-bold m-2">{name}</h3>
-        <h3 className="text-base text-text font-bold m-2">Nutrition</h3>
+      </div>
+      <h3 className="text-base text-text font-bold m-2">Nutrition</h3>
+      <div>
         <p className="text-sm text-text mt-2 ml-2 mr-1">
           calories: {per_serving_calories} <br />
           protein: {per_serving_protein_g}g <br />
