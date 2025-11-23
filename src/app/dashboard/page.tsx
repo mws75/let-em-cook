@@ -4,13 +4,17 @@ import SelectedRecipeCard from "@/components/SelectedRecipeCard";
 import { Recipe } from "@/types/types";
 import sampleData from "@/db/sample_data_set.json";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
+  const router = useRouter();
   const recipes =
     sampleData.recipes as Recipe[]; /* Converts JSON to recipe data type */
   const [searchTerm, setSearchTerm] = useState("");
-
   const [selectedRecipes, setSelectedRecipes] = useState<Recipe[]>([]);
+  const [groceryList, setGroceryList] = useState<string[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const filteredRecipes = recipes.filter((recipe) => {
     const searchLower = searchTerm.toLowerCase();
@@ -20,6 +24,10 @@ export default function Dashboard() {
     });
     return nameMatch || ingredientsMatch;
   });
+
+  const handleCreateRecipeClick = () => {
+    router.push("/create_recipe");
+  };
 
   const handleRecipeSelect = (recipe: Recipe, isChecked: boolean) => {
     if (isChecked) {
@@ -33,6 +41,69 @@ export default function Dashboard() {
       );
       console.log(`Recipe ${recipe.name} deselected`);
     }
+  };
+
+  const generateGroceryList = async () => {
+    if (selectedRecipes.length === 0) {
+      setError("Please select at least one recipe first");
+      return;
+    }
+
+    setIsGenerating(true);
+    setError(null);
+
+    try {
+      // Extract ingredient names from selected recipes
+      const allIngredients: string[] = [];
+
+      selectedRecipes.forEach((recipe) => {
+        recipe.ingredients_json.forEach((ingredient) => {
+          // Only add the ingredient name, not quantity or unit
+          allIngredients.push(ingredient.name);
+        });
+      });
+
+      // Simple deduplication - remove exact duplicates
+      const uniqueIngredients = Array.from(new Set(allIngredients));
+
+      // Call API to sort ingredients
+      const response = await fetch("/api/sort-grocery-list", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ingredients: uniqueIngredients }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to generate grocery list");
+      }
+
+      const data = await response.json();
+      setGroceryList(data.sortedIngredients);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+      console.error("Error generating grocery list:", err);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const downloadGroceryList = () => {
+    // Create text file content
+    const textContent = groceryList.join("\n");
+
+    // Create blob and download
+    const blob = new Blob([textContent], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "grocery-list.txt";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -56,22 +127,64 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <button className="w-32 bg-secondar hover:bg-secondar/80 border-2 border-border rounded-3xl py-4 mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all">
+            <button
+              onClick={generateGroceryList}
+              disabled={isGenerating || selectedRecipes.length === 0}
+              className="w-32 bg-secondar hover:bg-secondar/80 border-2 border-border rounded-3xl py-4 mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            >
               <span className="text-1xl font-bold text-text">
-                Generate List
+                {isGenerating ? "Generating..." : "Generate List"}
               </span>
             </button>
           </div>
-          <button className="w-full bg-accent hover:bg-accent/80 border-2 border-border rounded-3xl py-4 shadow-md hover:shadow-lg transition-all">
+          <button
+            className="w-full bg-accent hover:bg-accent/80 border-2 border-border rounded-3xl py-4 shadow-md hover:shadow-lg transition-all"
+            onClick={handleCreateRecipeClick}
+          >
             <span className="text-2xl font-bold text-text">Create Recipe</span>
           </button>
         </section>
+
+        {/* Error Display */}
+        {error && (
+          <div className="border-2 border-red-500 rounded-3xl p-4 bg-red-50 shadow-lg">
+            <p className="text-red-700 font-semibold">⚠️ {error}</p>
+          </div>
+        )}
+
+        {/* Grocery List Section */}
+        {groceryList.length > 0 && (
+          <section className="border-2 border-border rounded-3xl p-6 bg-surface shadow-lg">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-3xl text-text font-bold">
+                🛒 Your Grocery List
+              </h2>
+              <button
+                onClick={downloadGroceryList}
+                className="px-6 py-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+              >
+                Download List
+              </button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {groceryList.map((ingredient, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-2 p-3 border border-border rounded-xl bg-muted hover:shadow-md transition-shadow"
+                >
+                  <span className="text-accent font-bold">✓</span>
+                  <span className="text-text">{ingredient}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Dashboard */}
         <section className="border-2 border-border rounded-3xl p-6 bg-surface shadow-lg">
           <h2 className="text-3xl text-text font-bold mb-6 text-center">
             📊 Your Kitchen Stats
           </h2>
-
           <div className="flex gap-6">
             {/* Left Side - Nutrition & Stats */}
             <div className="flex-1 space-y-4">
