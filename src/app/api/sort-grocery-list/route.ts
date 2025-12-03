@@ -7,8 +7,8 @@ export async function POST(request: NextRequest) {
 
     if (!Array.isArray(ingredients) || ingredients.length === 0) {
       return NextResponse.json(
-        { error: "Invalid ingredients array" },
-        { status: 400 }
+        { error: "Please select at least one recipe to generate a grocery list" },
+        { status: 400 },
       );
     }
 
@@ -33,8 +33,8 @@ export async function POST(request: NextRequest) {
 
     if (!sortedContent) {
       return NextResponse.json(
-        { error: "Failed to get response from OpenAI" },
-        { status: 500 }
+        { error: "We couldn't generate your grocery list right now. Please try again" },
+        { status: 500 },
       );
     }
 
