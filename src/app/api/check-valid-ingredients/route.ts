@@ -25,7 +25,10 @@ export async function POST(request: NextRequest) {
 
     if (ingredients_text.length > 10000) {
       return NextResponse.json(
-        { error: "Your ingredients list is too long. Please keep it under 10,000 characters" },
+        {
+          error:
+            "Your ingredients list is too long. Please keep it under 10,000 characters",
+        },
         { status: 400 },
       );
     }
@@ -51,7 +54,9 @@ export async function POST(request: NextRequest) {
     const content = completion.choices[0]?.message?.content;
 
     if (!content) {
-      throw new Error("We couldn't validate your ingredients. Please try again");
+      throw new Error(
+        "We couldn't validate your ingredients. Please try again",
+      );
     }
 
     const data = JSON.parse(content);

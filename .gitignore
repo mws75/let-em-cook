@@ -61,4 +61,6 @@ venv/
 .DS_Store
 *.log
 
+# Random Files 
+docs/CODE_REVIEW_AND_GROWTH_ASSESSMENT.md
 

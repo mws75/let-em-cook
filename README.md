@@ -1,14 +1,4 @@
-# Let-Em-Cook!
-
-**Purpose** - A an application that allows you to
-_ Input Recipes
-_ save reciepes as tiles
-_ select Recipes from those tiles and drag into a box that will contain a group of recieps
-the user is interested in. You can only drag in a max of 10 reciepes (I might change that to 20.)
-_ recieve a grocery list based on the recipes selected \* recieve nutrition stats and macros for the week based on those picks.
-
-## Workflow
-
+# Let-Em-Cook! **Purpose** - A an application that allows you to _ Input Recipes _ save reciepes as tiles _ select Recipes from those tiles and drag into a box that will contain a group of recieps the user is interested in. You can only drag in a max of 10 reciepes (I might change that to 20.) _ recieve a grocery list based on the recipes selected \* recieve nutrition stats and macros for the week based on those picks. ## Workflow
 Below is the general loop of the application
 
 ```mermaid
@@ -33,6 +23,7 @@ flowchart LR
 **Payment System** - Stripe? - Need to do more research on the best option
 **API Layer** - I won't have one for this application, because I like using sql, so I will use React Server Components
 to fect data directly from the server, allowing me to skip the API layer.
+**Testing** - Jest - [See Getting Started Documentation](https://jestjs.io/docs/getting-started)
 
 ## The Data Shape
 
