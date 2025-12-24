@@ -7,7 +7,9 @@ export async function POST(request: NextRequest) {
 
     if (!Array.isArray(ingredients) || ingredients.length === 0) {
       return NextResponse.json(
-        { error: "Please select at least one recipe to generate a grocery list" },
+        {
+          error: "Please select at least one recipe to generate a grocery list",
+        },
         { status: 400 },
       );
     }
@@ -33,7 +35,10 @@ export async function POST(request: NextRequest) {
 
     if (!sortedContent) {
       return NextResponse.json(
-        { error: "We couldn't generate your grocery list right now. Please try again" },
+        {
+          error:
+            "We couldn't generate your grocery list right now. Please try again",
+        },
         { status: 500 },
       );
     }

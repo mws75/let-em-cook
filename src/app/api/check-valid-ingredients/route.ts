@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
 
     const data = JSON.parse(content);
     const isIngredients: boolean = data.is_ingredients === true;
-
+    console.log("api to check valid ingredients completed");
     return NextResponse.json({ isIngredients }, { status: 200 });
   } catch (error) {
     console.error(`unable to check-valid-ingredients ${error}`);
