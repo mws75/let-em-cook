@@ -49,6 +49,7 @@ export async function POST(request: NextRequest) {
         },
       ],
       response_format: { type: "json_object" },
+      max_tokens: 2500,
     });
 
     const content = completion.choices[0]?.message?.content;
