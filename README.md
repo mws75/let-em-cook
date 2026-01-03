@@ -1,4 +1,7 @@
-# Let-Em-Cook! **Purpose** - A an application that allows you to _ Input Recipes _ save reciepes as tiles _ select Recipes from those tiles and drag into a box that will contain a group of recieps the user is interested in. You can only drag in a max of 10 reciepes (I might change that to 20.) _ recieve a grocery list based on the recipes selected \* recieve nutrition stats and macros for the week based on those picks. ## Workflow
+# Let-Em-Cook!
+
+**Purpose** - A an application that allows you to _ Input Recipes _ save reciepes as tiles _ select Recipes from those tiles and drag into a box that will contain a group of recieps the user is interested in. You can only drag in a max of 10 reciepes (I might change that to 20.) _ recieve a grocery list based on the recipes selected \* recieve nutrition stats and macros for the week based on those picks. ## Workflow
+
 Below is the general loop of the application
 
 ```mermaid

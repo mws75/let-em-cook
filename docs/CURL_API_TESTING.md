@@ -5,9 +5,11 @@ This document provides examples for testing all API endpoints in the Let Em Cook
 ## Prerequisites
 
 1. **Start your development server:**
+
    ```bash
    npm run dev
    ```
+
    Server should be running at `http://localhost:3000`
 
 2. **Optional: Install jq for pretty JSON output:**
@@ -28,6 +30,7 @@ curl -X POST http://localhost:3000/api/ENDPOINT \
 ```
 
 **Options:**
+
 - `-X POST` - HTTP method
 - `-H` - Add headers
 - `-d` - Request body (data)
@@ -42,6 +45,7 @@ curl -X POST http://localhost:3000/api/ENDPOINT \
 **Endpoint:** `POST /api/check-valid-ingredients`
 
 **Success Case:**
+
 ```bash
 curl -X POST http://localhost:3000/api/check-valid-ingredients \
   -H "Content-Type: application/json" \
@@ -49,6 +53,7 @@ curl -X POST http://localhost:3000/api/check-valid-ingredients \
 ```
 
 **Expected Response:**
+
 ```json
 {
   "isIngredients": true
@@ -56,6 +61,7 @@ curl -X POST http://localhost:3000/api/check-valid-ingredients \
 ```
 
 **Non-Ingredient Text (should return false):**
+
 ```bash
 curl -X POST http://localhost:3000/api/check-valid-ingredients \
   -H "Content-Type: application/json" \
@@ -63,6 +69,7 @@ curl -X POST http://localhost:3000/api/check-valid-ingredients \
 ```
 
 **Expected Response:**
+
 ```json
 {
   "isIngredients": false
@@ -72,6 +79,7 @@ curl -X POST http://localhost:3000/api/check-valid-ingredients \
 **Error Cases:**
 
 Missing field:
+
 ```bash
 curl -X POST http://localhost:3000/api/check-valid-ingredients \
   -H "Content-Type: application/json" \
@@ -79,6 +87,7 @@ curl -X POST http://localhost:3000/api/check-valid-ingredients \
 ```
 
 Empty text:
+
 ```bash
 curl -X POST http://localhost:3000/api/check-valid-ingredients \
   -H "Content-Type: application/json" \
@@ -86,6 +95,7 @@ curl -X POST http://localhost:3000/api/check-valid-ingredients \
 ```
 
 Too long (over 10,000 characters):
+
 ```bash
 curl -X POST http://localhost:3000/api/check-valid-ingredients \
   -H "Content-Type: application/json" \
@@ -99,6 +109,7 @@ curl -X POST http://localhost:3000/api/check-valid-ingredients \
 **Endpoint:** `POST /api/check-valid-instructions`
 
 **Success Case:**
+
 ```bash
 curl -X POST http://localhost:3000/api/check-valid-instructions \
   -H "Content-Type: application/json" \
@@ -106,6 +117,7 @@ curl -X POST http://localhost:3000/api/check-valid-instructions \
 ```
 
 **Expected Response:**
+
 ```json
 {
   "isInstructions": true
@@ -113,6 +125,7 @@ curl -X POST http://localhost:3000/api/check-valid-instructions \
 ```
 
 **Non-Instruction Text (should return false):**
+
 ```bash
 curl -X POST http://localhost:3000/api/check-valid-instructions \
   -H "Content-Type: application/json" \
@@ -120,6 +133,7 @@ curl -X POST http://localhost:3000/api/check-valid-instructions \
 ```
 
 **Expected Response:**
+
 ```json
 {
   "isInstructions": false
@@ -129,6 +143,7 @@ curl -X POST http://localhost:3000/api/check-valid-instructions \
 **Error Cases:**
 
 Missing field:
+
 ```bash
 curl -X POST http://localhost:3000/api/check-valid-instructions \
   -H "Content-Type: application/json" \
@@ -136,6 +151,7 @@ curl -X POST http://localhost:3000/api/check-valid-instructions \
 ```
 
 Empty text:
+
 ```bash
 curl -X POST http://localhost:3000/api/check-valid-instructions \
   -H "Content-Type: application/json" \
@@ -143,6 +159,7 @@ curl -X POST http://localhost:3000/api/check-valid-instructions \
 ```
 
 Too long:
+
 ```bash
 curl -X POST http://localhost:3000/api/check-valid-instructions \
   -H "Content-Type: application/json" \
@@ -156,6 +173,7 @@ curl -X POST http://localhost:3000/api/check-valid-instructions \
 **Endpoint:** `POST /api/sort-grocery-list`
 
 **Success Case:**
+
 ```bash
 curl -X POST http://localhost:3000/api/sort-grocery-list \
   -H "Content-Type: application/json" \
@@ -163,6 +181,7 @@ curl -X POST http://localhost:3000/api/sort-grocery-list \
 ```
 
 **Expected Response:**
+
 ```json
 {
   "sortedIngredients": [
@@ -175,11 +194,13 @@ curl -X POST http://localhost:3000/api/sort-grocery-list \
   ]
 }
 ```
+
 (Order may vary based on grocery store layout)
 
 **Error Cases:**
 
 Empty array:
+
 ```bash
 curl -X POST http://localhost:3000/api/sort-grocery-list \
   -H "Content-Type: application/json" \
@@ -187,6 +208,7 @@ curl -X POST http://localhost:3000/api/sort-grocery-list \
 ```
 
 Not an array:
+
 ```bash
 curl -X POST http://localhost:3000/api/sort-grocery-list \
   -H "Content-Type: application/json" \
@@ -194,6 +216,7 @@ curl -X POST http://localhost:3000/api/sort-grocery-list \
 ```
 
 Missing field:
+
 ```bash
 curl -X POST http://localhost:3000/api/sort-grocery-list \
   -H "Content-Type: application/json" \
@@ -205,6 +228,7 @@ curl -X POST http://localhost:3000/api/sort-grocery-list \
 ## Debugging Tips
 
 ### 1. View Full Response (Including Headers)
+
 ```bash
 curl -v -X POST http://localhost:3000/api/check-valid-ingredients \
   -H "Content-Type: application/json" \
@@ -212,6 +236,7 @@ curl -v -X POST http://localhost:3000/api/check-valid-ingredients \
 ```
 
 ### 2. Save Response to File
+
 ```bash
 curl -X POST http://localhost:3000/api/check-valid-ingredients \
   -H "Content-Type: application/json" \
@@ -220,6 +245,7 @@ curl -X POST http://localhost:3000/api/check-valid-ingredients \
 ```
 
 ### 3. Check HTTP Status Code Only
+
 ```bash
 curl -X POST http://localhost:3000/api/check-valid-ingredients \
   -H "Content-Type: application/json" \
@@ -228,7 +254,9 @@ curl -X POST http://localhost:3000/api/check-valid-ingredients \
 ```
 
 ### 4. Test from File
+
 Create a file `test-data.json`:
+
 ```json
 {
   "ingredients_text": "2 cups flour, 1 tsp salt"
@@ -236,6 +264,7 @@ Create a file `test-data.json`:
 ```
 
 Then:
+
 ```bash
 curl -X POST http://localhost:3000/api/check-valid-ingredients \
   -H "Content-Type: application/json" \
@@ -247,6 +276,7 @@ curl -X POST http://localhost:3000/api/check-valid-ingredients \
 ## Common Error Responses
 
 **400 Bad Request:**
+
 ```json
 {
   "error": "Please enter your ingredients"
@@ -254,6 +284,7 @@ curl -X POST http://localhost:3000/api/check-valid-ingredients \
 ```
 
 **500 Internal Server Error:**
+
 ```json
 {
   "error": "We couldn't validate your ingredients. Please try again"
@@ -261,6 +292,7 @@ curl -X POST http://localhost:3000/api/check-valid-ingredients \
 ```
 
 **OpenAI API Error (varies):**
+
 ```json
 {
   "error": "The server had an error while processing your request"
@@ -305,6 +337,7 @@ curl -X POST http://localhost:3000/api/sort-grocery-list \
 ```
 
 Make it executable and run:
+
 ```bash
 chmod +x test-apis.sh
 ./test-apis.sh
@@ -325,15 +358,19 @@ chmod +x test-apis.sh
 ## Troubleshooting
 
 **"Connection refused"**
+
 - Make sure dev server is running: `npm run dev`
 
 **"Cannot read properties of undefined"**
+
 - Check that you're sending the correct field names in JSON
 
 **"OpenAI API error"**
+
 - Verify your `OPENAI` environment variable is set in `.env`
 - Check that you have API credits in your OpenAI account
 
 **"Invalid JSON"**
+
 - Make sure to escape quotes properly in bash
 - Use single quotes for the outer string, double quotes inside JSON

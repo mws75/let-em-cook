@@ -12,6 +12,7 @@ module.exports = {
         secondary: "#F6BD60", // 🍋 Citrus Yellow
         accent: "#D94E41", // 🍅 Ripe Tomato
         bg: "#FAF9F6", // 🫶 Off-White
+        background: "#FAF9F6", // 🫶 Off-White (alias for bg)
         surface: "#FFFFFF", // 🧈 Cream White (Card Surface)
         text: "#2F2F2F", // 🪵 Deep Slate (Main Text)
         "text-secondary": "#6B6B6B", // 🌰 Soft Gray (Secondary Text)

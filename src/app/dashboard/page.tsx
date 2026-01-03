@@ -13,6 +13,7 @@ export default function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRecipes, setSelectedRecipes] = useState<Recipe[]>([]);
   const [groceryList, setGroceryList] = useState<string[]>([]);
+  const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({});
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -82,6 +83,13 @@ export default function Dashboard() {
 
       const data = await response.json();
       setGroceryList(data.sortedIngredients);
+
+      // Initialize all items as checked (default to true)
+      const initialCheckedState: { [key: string]: boolean } = {};
+      data.sortedIngredients.forEach((ingredient: string) => {
+        initialCheckedState[ingredient] = true;
+      });
+      setCheckedItems(initialCheckedState);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
       console.error("Error generating grocery list:", err);
@@ -90,9 +98,42 @@ export default function Dashboard() {
     }
   };
 
+  const toggleGroceryItem = (ingredient: string) => {
+    setCheckedItems((prev) => ({
+      ...prev,
+      [ingredient]: !prev[ingredient],
+    }));
+  };
+
+  const selectAllItems = () => {
+    const allChecked: { [key: string]: boolean } = {};
+    groceryList.forEach((ingredient) => {
+      allChecked[ingredient] = true;
+    });
+    setCheckedItems(allChecked);
+  };
+
+  const deselectAllItems = () => {
+    const allUnchecked: { [key: string]: boolean } = {};
+    groceryList.forEach((ingredient) => {
+      allUnchecked[ingredient] = false;
+    });
+    setCheckedItems(allUnchecked);
+  };
+
   const downloadGroceryList = () => {
+    // Only include checked items
+    const checkedIngredients = groceryList.filter(
+      (ingredient) => checkedItems[ingredient]
+    );
+
+    if (checkedIngredients.length === 0) {
+      setError("Please select at least one item to download");
+      return;
+    }
+
     // Create text file content
-    const textContent = groceryList.join("\n");
+    const textContent = checkedIngredients.join("\n");
 
     // Create blob and download
     const blob = new Blob([textContent], { type: "text/plain" });
@@ -155,25 +196,61 @@ export default function Dashboard() {
         {/* Grocery List Section */}
         {groceryList.length > 0 && (
           <section className="border-2 border-border rounded-3xl p-6 bg-surface shadow-lg">
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center mb-4">
               <h2 className="text-3xl text-text font-bold">
                 🛒 Your Grocery List
               </h2>
-              <button
-                onClick={downloadGroceryList}
-                className="px-6 py-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
-              >
-                Download List
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={selectAllItems}
+                  className="px-4 py-2 bg-primary/20 hover:bg-primary/30 border-2 border-border rounded-xl font-semibold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                >
+                  Select All
+                </button>
+                <button
+                  onClick={deselectAllItems}
+                  className="px-4 py-2 bg-muted hover:bg-muted/80 border-2 border-border rounded-xl font-semibold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                >
+                  Deselect All
+                </button>
+                <button
+                  onClick={downloadGroceryList}
+                  className="px-6 py-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                >
+                  Download List
+                </button>
+              </div>
+            </div>
+            <div className="mb-4 p-3 bg-secondary/10 border-2 border-border rounded-xl">
+              <p className="text-sm text-text-secondary">
+                ✓ <strong>{Object.values(checkedItems).filter(Boolean).length}</strong> of{" "}
+                <strong>{groceryList.length}</strong> items selected
+              </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {groceryList.map((ingredient, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-2 p-3 border border-border rounded-xl bg-muted hover:shadow-md transition-shadow"
+                  className={`flex items-center gap-3 p-3 border-2 border-border rounded-xl hover:shadow-md transition-all cursor-pointer ${
+                    checkedItems[ingredient]
+                      ? "bg-primary/10"
+                      : "bg-muted opacity-60"
+                  }`}
+                  onClick={() => toggleGroceryItem(ingredient)}
                 >
-                  <span className="text-accent font-bold">✓</span>
-                  <span className="text-text">{ingredient}</span>
+                  <input
+                    type="checkbox"
+                    checked={checkedItems[ingredient] || false}
+                    readOnly
+                    className="w-5 h-5 cursor-pointer accent-primary pointer-events-none"
+                  />
+                  <span
+                    className={`text-text ${
+                      checkedItems[ingredient] ? "font-medium" : "line-through"
+                    }`}
+                  >
+                    {ingredient}
+                  </span>
                 </div>
               ))}
             </div>

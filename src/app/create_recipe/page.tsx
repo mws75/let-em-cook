@@ -1,10 +1,11 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import ErrorPopUp from "@/components/ErrorPopUp";
 import toast from "react-hot-toast";
+import { Recipe, Ingredients } from "@/types/types";
 
-/* ---- Current Data Structure that is Returned ------
+/* ---- Current Data Structure that is Returned from API ------
 {
   "data": {
     "recipe_id": 0,
@@ -67,6 +68,9 @@ export default function CreateRecipe() {
   const [ingredients, setIngredients] = useState("");
   const [instructions, setInstructions] = useState("");
   const categories = ["snack", "chicken", "soup", "fish", "breakfast"];
+  const numberOfServings = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const [selectedNumberOfServings, setSelectedNumberOfServings] = useState(1);
+  const [isPublicSelected, setIsPublicSelected] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
   const genericToastErrorMessage = "Failed to Save Recipe";
@@ -80,6 +84,15 @@ export default function CreateRecipe() {
     const errorData = await response.json().catch(() => null);
     setErrorMessage(`Error: ${errorData?.error ?? response.statusText}`);
     toast.error(toastMessage, { id: toastId });
+  };
+
+  const handleIsPublicSelected = () => {
+    console.log("selected: ", isPublicSelected);
+    if (isPublicSelected === 0) {
+      setIsPublicSelected(1);
+    } else {
+      setIsPublicSelected(0);
+    }
   };
 
   const handleCancelClick = () => {
@@ -198,14 +211,20 @@ export default function CreateRecipe() {
         `This is the recipe Object: ${JSON.stringify(data_create_recipe)}`,
       );
 
-      // Insert into DB
+      // Save to sessionStorage
+      sessionStorage.setItem(
+        "recipe_draft",
+        JSON.stringify(data_create_recipe),
+      );
 
       toast.success("Saved successfully", { id: toastId });
       setRecipeName("");
       setSelectedCategory("");
       setIngredients("");
       setInstructions("");
-      router.push("/dashboard");
+      router.push("/create_recipe_step_two");
+
+      // router.push("/dashboard");
     } catch (err) {
       setErrorMessage(
         err instanceof Error
@@ -249,6 +268,32 @@ export default function CreateRecipe() {
               </option>
             ))}
           </select>
+          {/* Number of Servings and isPublic */}
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2 flex-1">
+              <label className="text-text">Number of Servings:</label>
+              <select
+                onChange={(e) => setSelectedNumberOfServings(e.target.value)}
+                value={selectedNumberOfServings}
+                className="px-2 py-2 border-2 border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors"
+              >
+                {numberOfServings.map((num) => (
+                  <option key={num} value={num}>
+                    {num}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex items-center gap-2">
+              <label className="text-text">Is Public</label>
+              <input
+                type="checkbox"
+                checked={isPublicSelected === 1}
+                className="w-5 h-5 cursor-pointer accent-accent"
+                onChange={handleIsPublicSelected}
+              />
+            </div>
+          </div>
         </section>
         {/* Ingredient Block */}
         <section className="border-2 border-border rounded-3xl p-2 bg-surface shadow-lg">
