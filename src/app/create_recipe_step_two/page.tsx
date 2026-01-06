@@ -30,11 +30,14 @@ export default function CreateRecipeStepTwo() {
   const handleIngredientsUpdate = (updatedIngredients: Ingredients[]) => {
     setIngredientsList(updatedIngredients);
     // TODO: Update the recipe object with new ingredients
+    console.log(ingredientsList);
   };
 
   const handleSaveRecipe = () => {
     // Save Updated object
+
     // Calculate Macros
+
     // TODO: Insert recipe into database
     toast.success("Recipe saved!");
     router.push("/dashboard");
