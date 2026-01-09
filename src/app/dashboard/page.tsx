@@ -2,20 +2,52 @@
 import RecipeCard from "@/components/RecipeCard";
 import SelectedRecipeCard from "@/components/SelectedRecipeCard";
 import { Recipe } from "@/types/types";
-import sampleData from "@/db/sample_data_set.json";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const router = useRouter();
-  const recipes =
-    sampleData.recipes as Recipe[]; /* Converts JSON to recipe data type */
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [isLoadingRecipes, setIsLoadingRecipes] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRecipes, setSelectedRecipes] = useState<Recipe[]>([]);
   const [groceryList, setGroceryList] = useState<string[]>([]);
   const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({});
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // TODO: Replace hardcoded user_id with actual authentication
+  const TEMP_USER_ID = 0; // Using 0 to match create_recipe flow
+
+  // Fetch recipes on component mount
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        setIsLoadingRecipes(true);
+        setError(null);
+
+        const response = await fetch(`/api/get-recipes?user_id=${TEMP_USER_ID}`);
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to fetch recipes");
+        }
+
+        const data = await response.json();
+        setRecipes(data.recipes);
+        console.log(`Loaded ${data.recipes.length} recipes from database`);
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to load recipes";
+        setError(errorMessage);
+        console.error("Error fetching recipes:", err);
+      } finally {
+        setIsLoadingRecipes(false);
+      }
+    };
+
+    fetchRecipes();
+  }, []);
 
   const filteredRecipes = recipes.filter((recipe) => {
     const searchLower = searchTerm.toLowerCase();
@@ -383,7 +415,14 @@ export default function Dashboard() {
               Recipes
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-              {filteredRecipes.length > 0 ? (
+              {isLoadingRecipes ? (
+                <div className="col-span-3 flex flex-col items-center justify-center py-12">
+                  <div className="text-6xl mb-4">🍳</div>
+                  <p className="text-2xl text-text font-semibold">
+                    Loading your recipes...
+                  </p>
+                </div>
+              ) : filteredRecipes.length > 0 ? (
                 filteredRecipes.map((recipe) => (
                   <RecipeCard
                     key={recipe.recipe_id}
@@ -394,9 +433,19 @@ export default function Dashboard() {
                     onSelect={handleRecipeSelect}
                   />
                 ))
+              ) : recipes.length === 0 ? (
+                <div className="col-span-3 flex flex-col items-center justify-center py-12">
+                  <div className="text-6xl mb-4">📝</div>
+                  <p className="text-2xl text-text font-semibold mb-2">
+                    No recipes yet!
+                  </p>
+                  <p className="text-text-secondary">
+                    Click "Create Recipe" to add your first recipe
+                  </p>
+                </div>
               ) : (
                 <p className="text-text text-center col-span-3">
-                  No results found
+                  No results found for "{searchTerm}"
                 </p>
               )}
             </div>

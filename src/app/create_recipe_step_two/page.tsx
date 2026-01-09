@@ -61,16 +61,12 @@ export default function CreateRecipeStepTwo() {
         throw new Error(errorMessage);
       }
 
-      const { data } = await response.json();
+      const { data, recipe_id } = await response.json();
       console.log(JSON.stringify(data));
       console.log("Macros added successfully:", data);
+      console.log("Recipe saved with ID:", recipe_id);
 
-      // Step 3. Insert Recipe into Database
-      // Call DateBase Helper - pass json object
-      // Database Helper will be responsible for paring the recipe and inserting
-      // into the appropriate table.
-
-      toast.success("Recipe saved!");
+      toast.success(`Recipe saved successfully! (ID: ${recipe_id})`);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Failed to save recipe";

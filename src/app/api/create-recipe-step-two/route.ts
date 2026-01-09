@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openai, handleOpenAIError } from "@/lib/openai";
 import { CALCULATE_MACROS } from "@/lib/prompts";
+import { insertRecipe } from "@/lib/database/insertRecipe";
 
 const MAX_JSON_CHARACTERS = 20_000;
 
@@ -104,7 +105,13 @@ export async function POST(request: NextRequest) {
       calories: data.per_serving_calories,
       protein: data.per_serving_protein_g,
     });
-    return NextResponse.json({ data }, { status: 200 });
+
+    // Insert recipe into database
+    console.log("Inserting recipe into database...");
+    const { recipe_id } = await insertRecipe(data);
+    console.log("✅ Recipe inserted successfully with ID:", recipe_id);
+
+    return NextResponse.json({ data, recipe_id }, { status: 200 });
   } catch (error) {
     console.error("❌ API Error:", error);
     const { message, status } = handleOpenAIError(error);
