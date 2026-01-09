@@ -1,10 +1,12 @@
 # Let-Em-Cook!
 
+**Note** - to print this document use : Space + m + p
+
 **Purpose** - A an application that allows you to _ Input Recipes _ save reciepes as tiles _ select Recipes from those tiles and drag into a box that will contain a group of recieps the user is interested in. You can only drag in a max of 10 reciepes (I might change that to 20.) _ recieve a grocery list based on the recipes selected \* recieve nutrition stats and macros for the week based on those picks. ## Workflow
 
 Below is the general loop of the application
 
-```mermaid
+```mermaid || yaml
 flowchart LR
     step1[User inputs recipe]
     step2[Recipe is saved to RDS saved as JSON string]
@@ -20,13 +22,34 @@ flowchart LR
 
 ## The Tech Stack
 
-**Framework** - NextJS 16
-**Data Base** - PlanetScale
-**Authentication** - Clerk
-**Payment System** - Stripe? - Need to do more research on the best option
-**API Layer** - I won't have one for this application, because I like using sql, so I will use React Server Components
-to fect data directly from the server, allowing me to skip the API layer.
-**Testing** - Jest - [See Getting Started Documentation](https://jestjs.io/docs/getting-started)
+- **Framework** - NextJS 16
+- **Data Base** - PlanetScale
+- **Authentication** - Clerk
+- **Payment System** - Stripe? - Need to do more research on the best option
+- **API Layer** - I won't have one for this application, because I like using sql, so I will use React Server Components
+  to fect data directly from the server, allowing me to skip the API layer.
+- **Testing** - Jest - [See Getting Started Documentation](https://jestjs.io/docs/getting-started)
+
+## OpenAI API
+
+### Example of Client calling API
+
+Here is how you call the API from a client object:
+
+```js
+// Create request - and response with a Fetch
+const response = fetch("/api/create-recipe-step-two", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ recipe: updatedRecipe }),
+});
+// Check if Response is okay
+if (!response.ok) {
+  throw new Error("Failed to calculated macros");
+}
+// Extract JSON Date from response
+const { data } = await response.json();
+```
 
 ## The Data Shape
 

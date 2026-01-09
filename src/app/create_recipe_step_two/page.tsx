@@ -33,13 +33,50 @@ export default function CreateRecipeStepTwo() {
     console.log(ingredientsList);
   };
 
-  const handleSaveRecipe = () => {
+  const handleSaveRecipe = async () => {
     // Save Updated object
+    if (!recipe) return;
+    try {
+      // Step 1. Update Recipe with edited ingredients
+      const updatedRecipe = {
+        ...recipe,
+        ingredients_json: ingredientsList,
+      };
 
-    // Calculate Macros
+      // Step 2. Call calc macros API
+      const response = await fetch("/api/create-recipe-step-two", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ recipe: updatedRecipe }),
+      });
 
-    // TODO: Insert recipe into database
-    toast.success("Recipe saved!");
+      // Extract error details from response
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        const errorMessage =
+          errorData?.error ||
+          `API error: ${response.status} ${response.statusText}`;
+        console.error("API Error:", errorMessage);
+        console.error("Full error data:", errorData);
+        throw new Error(errorMessage);
+      }
+
+      const { data } = await response.json();
+      console.log(JSON.stringify(data));
+      console.log("Macros added successfully:", data);
+
+      // Step 3. Insert Recipe into Database
+      // Call DateBase Helper - pass json object
+      // Database Helper will be responsible for paring the recipe and inserting
+      // into the appropriate table.
+
+      toast.success("Recipe saved!");
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to save recipe";
+      toast.error(errorMessage);
+      console.error("Save recipe error:", error);
+    }
     router.push("/dashboard");
   };
 

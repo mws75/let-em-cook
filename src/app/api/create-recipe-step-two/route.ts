@@ -6,10 +6,14 @@ const MAX_JSON_CHARACTERS = 20_000;
 
 export async function POST(request: NextRequest) {
   try {
+    console.log("=== create-recipe-step-two API called ===");
     // convert request to json
     const { recipe } = await request.json();
+    console.log("Received recipe:", recipe?.name || "No name");
+
     // check input data is good
     if (!recipe || typeof recipe !== "object") {
+      console.error("Validation failed: Recipe is not an object");
       return NextResponse.json(
         {
           error: "Object is not a valid Recipe object, please try again",
@@ -25,6 +29,13 @@ export async function POST(request: NextRequest) {
       !Array.isArray(recipe.instructions_json) ||
       recipe.instructions_json.length === 0
     ) {
+      console.error("Validation failed: Missing required fields", {
+        hasName: !!recipe.name,
+        hasIngredients: Array.isArray(recipe.ingredients_json),
+        ingredientsLength: recipe.ingredients_json?.length,
+        hasInstructions: Array.isArray(recipe.instructions_json),
+        instructionsLength: recipe.instructions_json?.length,
+      });
       return NextResponse.json(
         {
           error:
@@ -36,12 +47,14 @@ export async function POST(request: NextRequest) {
 
     const recipe_text = JSON.stringify(recipe);
     if (recipe_text.trim().length > MAX_JSON_CHARACTERS) {
+      console.error("Validation failed: Recipe too large", recipe_text.length);
       return NextResponse.json(
         { error: "Object is greater than max number of characters" },
         { status: 400 },
       );
     }
 
+    console.log("Calling OpenAI to calculate macros...");
     // make open AI request
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -59,10 +72,13 @@ export async function POST(request: NextRequest) {
     // check response
     const content = completion.choices[0]?.message?.content;
     if (!content) {
+      console.error("OpenAI returned no content");
       throw new Error(
         "We could not add macros to your recipe, please try again",
       );
     }
+
+    console.log("OpenAI response received, parsing JSON...");
     // return response
     const data = JSON.parse(content);
 
@@ -74,12 +90,23 @@ export async function POST(request: NextRequest) {
       typeof data.per_serving_carbs_g !== "number" ||
       typeof data.per_serving_sugar_g !== "number"
     ) {
+      console.error("OpenAI macro validation failed", {
+        calories: typeof data.per_serving_calories,
+        protein: typeof data.per_serving_protein_g,
+        fat: typeof data.per_serving_fat_g,
+        carbs: typeof data.per_serving_carbs_g,
+        sugar: typeof data.per_serving_sugar_g,
+      });
       throw new Error("OpenAI did not return valid macro data");
     }
 
-    console.log("api added macros to recipe json object successfully");
+    console.log("✅ API added macros successfully", {
+      calories: data.per_serving_calories,
+      protein: data.per_serving_protein_g,
+    });
     return NextResponse.json({ data }, { status: 200 });
   } catch (error) {
+    console.error("❌ API Error:", error);
     const { message, status } = handleOpenAIError(error);
     return NextResponse.json({ error: message }, { status });
   }

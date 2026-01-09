@@ -81,7 +81,16 @@ export default function CreateRecipe() {
     toastId: string | number,
     toastMessage: string,
   ) => {
+    // Log full response details for debugging
+    console.error("❌ API Error Details:");
+    console.error("Status:", response.status, response.statusText);
+    console.error("URL:", response.url);
+
     const errorData = await response.json().catch(() => null);
+
+    // Log the error body
+    console.error("Error Body:", errorData);
+
     setErrorMessage(`Error: ${errorData?.error ?? response.statusText}`);
     toast.error(toastMessage, { id: toastId });
   };
