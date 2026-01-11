@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openai, handleOpenAIError } from "@/lib/openai";
 import { CREATE_RECIPE_PROMPT } from "@/lib/prompts";
+import { getOrCreateUser } from "@/lib/database/getOrCreateUser";
 const MAX_RECIPE_LENGTH = 20_000;
 
 export async function POST(request: NextRequest) {
   try {
-    // convert request to json
+    // Get or create database user from Clerk authentication
+    const userId = await getOrCreateUser();
 
+    // convert request to json
     const { recipeName, category, ingredients, instructions } =
       await request.json();
     // check input data is good
@@ -78,6 +81,9 @@ export async function POST(request: NextRequest) {
     if (!data || typeof data !== "object" || Array.isArray(data)) {
       throw new Error("Invalid json object");
     }
+
+    // Add user_id to the recipe data
+    data.user_id = userId;
 
     console.log("api to create recipe json object as completed");
     return NextResponse.json({ data }, { status: 200 });

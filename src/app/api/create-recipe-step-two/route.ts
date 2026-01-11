@@ -2,12 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { openai, handleOpenAIError } from "@/lib/openai";
 import { CALCULATE_MACROS } from "@/lib/prompts";
 import { insertRecipe } from "@/lib/database/insertRecipe";
+import { getOrCreateUser } from "@/lib/database/getOrCreateUser";
 
 const MAX_JSON_CHARACTERS = 20_000;
 
 export async function POST(request: NextRequest) {
   try {
     console.log("=== create-recipe-step-two API called ===");
+    // Get or create database user from Clerk authentication
+    const userId = await getOrCreateUser();
     // convert request to json
     const { recipe } = await request.json();
     console.log("Received recipe:", recipe?.name || "No name");
@@ -105,6 +108,9 @@ export async function POST(request: NextRequest) {
       calories: data.per_serving_calories,
       protein: data.per_serving_protein_g,
     });
+
+    // Ensure user_id is set correctly
+    data.user_id = userId;
 
     // Insert recipe into database
     console.log("Inserting recipe into database...");

@@ -28,10 +28,12 @@ ADD COLUMN emoji VARCHAR(10) NULL COMMENT 'Emoji Unicode character';
 ALTER TABLE ltc_recipes
 ADD COLUMN tags_json JSON NULL COMMENT 'Array of tag strings';
 
+
 -- Add time fields
 ALTER TABLE ltc_recipes
 ADD COLUMN active_time_min INT NULL COMMENT 'Active cooking time in minutes',
 ADD COLUMN total_time_min INT NULL COMMENT 'Total time including prep in minutes';
+
 
 -- Rename num_servings to servings (to match Recipe type)
 ALTER TABLE ltc_recipes

@@ -4,9 +4,11 @@ import SelectedRecipeCard from "@/components/SelectedRecipeCard";
 import { Recipe } from "@/types/types";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 
 export default function Dashboard() {
   const router = useRouter();
+  const { user, isLoaded } = useUser();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoadingRecipes, setIsLoadingRecipes] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,17 +18,22 @@ export default function Dashboard() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // TODO: Replace hardcoded user_id with actual authentication
-  const TEMP_USER_ID = 0; // Using 0 to match create_recipe flow
-
   // Fetch recipes on component mount
   useEffect(() => {
+    // Wait for Clerk to load and ensure user is authenticated
+    if (!isLoaded) return;
+
+    if (!user) {
+      router.push("/signin");
+      return;
+    }
+
     const fetchRecipes = async () => {
       try {
         setIsLoadingRecipes(true);
         setError(null);
 
-        const response = await fetch(`/api/get-recipes?user_id=${TEMP_USER_ID}`);
+        const response = await fetch("/api/get-recipes");
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -47,7 +54,7 @@ export default function Dashboard() {
     };
 
     fetchRecipes();
-  }, []);
+  }, [isLoaded, user, router]);
 
   const filteredRecipes = recipes.filter((recipe) => {
     const searchLower = searchTerm.toLowerCase();

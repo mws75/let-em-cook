@@ -1,27 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRecipes } from "@/lib/database/getRecipes";
+import { getOrCreateUser } from "@/lib/database/getOrCreateUser";
 
 export async function GET(request: NextRequest) {
   try {
-    // Get user_id from query params
-    const searchParams = request.nextUrl.searchParams;
-    const userIdParam = searchParams.get("user_id");
-
-    if (!userIdParam) {
-      return NextResponse.json(
-        { error: "Missing required parameter: user_id" },
-        { status: 400 },
-      );
-    }
-
-    const userId = parseInt(userIdParam, 10);
-
-    if (isNaN(userId) || userId <= 0) {
-      return NextResponse.json(
-        { error: "Invalid user_id parameter" },
-        { status: 400 },
-      );
-    }
+    // Get or create database user from Clerk authentication
+    const userId = await getOrCreateUser();
 
     console.log(`Fetching recipes for user_id: ${userId}`);
 
