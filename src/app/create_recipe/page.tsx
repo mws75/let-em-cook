@@ -92,7 +92,7 @@ export default function CreateRecipe() {
     console.error("Error Body:", errorData);
 
     setErrorMessage(`Error: ${errorData?.error ?? response.statusText}`);
-    toast.error(toastMessage, { id: toastId });
+    toast.error(toastMessage, { id: String(toastId) });
   };
 
   const handleIsPublicSelected = () => {
@@ -131,7 +131,7 @@ export default function CreateRecipe() {
       }
       if (validationErrors.length > 0) {
         setErrorMessage(validationErrors.join(" "));
-        toast.error(genericToastErrorMessage, { id: toastId });
+        toast.error(genericToastErrorMessage, { id: String(toastId) });
         return;
       }
 
@@ -180,12 +180,12 @@ export default function CreateRecipe() {
       // step 4. Validate the Results from the JSON Responses
       if (!data_ingredients.isIngredients) {
         setErrorMessage("Error: Data is not valid food ingredients");
-        toast.error("Invalid ingredients", { id: toastId });
+        toast.error("Invalid ingredients", { id: String(toastId) });
         return;
       }
       if (!data_instructions.isInstructions) {
         setErrorMessage("Error: User input is not valid recipe instructions");
-        toast.error("Invalid instructions", { id: toastId });
+        toast.error("Invalid instructions", { id: String(toastId) });
         return;
       }
       console.log("Validation successful, creating recipe...");
@@ -226,7 +226,7 @@ export default function CreateRecipe() {
         JSON.stringify(data_create_recipe),
       );
 
-      toast.success("Saved successfully", { id: toastId });
+      toast.success("Saved successfully", { id: String(toastId) });
       setRecipeName("");
       setSelectedCategory("");
       setIngredients("");
@@ -240,7 +240,7 @@ export default function CreateRecipe() {
           ? err.message
           : "An error occurred with Recipe validation",
       );
-      toast.error("Failed to save recipe", { id: toastId });
+      toast.error("Failed to save recipe", { id: String(toastId) });
       console.error("Error validating Recipe data");
     } finally {
       setIsSubmitting(false);
@@ -268,9 +268,11 @@ export default function CreateRecipe() {
           <select
             onChange={(e) => setSelectedCategory(e.target.value)}
             value={selectedCategory}
-            placeholder="Category..."
             className="w-full px-2 py-2 border-2 border-border rounded-xl bg-surface text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
           >
+            <option value="" disabled>
+              Category...
+            </option>
             {categories.map((category) => (
               <option key={category} value={category}>
                 {category}
@@ -282,7 +284,7 @@ export default function CreateRecipe() {
             <div className="flex items-center gap-2 flex-1">
               <label className="text-text">Number of Servings:</label>
               <select
-                onChange={(e) => setSelectedNumberOfServings(e.target.value)}
+                onChange={(e) => setSelectedNumberOfServings(Number(e.target.value))}
                 value={selectedNumberOfServings}
                 className="px-2 py-2 border-2 border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors"
               >

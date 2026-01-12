@@ -1,4 +1,9 @@
-export default function ErrorPopUp({ message, onClose }) {
+interface ErrorPopUpProps {
+  message: string | null;
+  onClose: () => void;
+}
+
+export default function ErrorPopUp({ message, onClose }: ErrorPopUpProps) {
   if (!message) {
     return null;
   }
