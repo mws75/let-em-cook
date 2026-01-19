@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { openai, handleOpenAIError } from "@/lib/openai";
 import { CALCULATE_MACROS } from "@/lib/prompts";
 import { insertRecipe } from "@/lib/database/insertRecipe";
+import { updateRecipe } from "@/lib/database/updateRecipe";
 import { getOrCreateUser } from "@/lib/database/getOrCreateUser";
+import { getUserWithPlan } from "@/lib/database/getUserWithPlan";
+import { countUserRecipes } from "@/lib/database/countUserRecipes";
+import { FREE_TIER_RECIPE_LIMIT } from "@/types/types";
 
 const MAX_JSON_CHARACTERS = 20_000;
 
@@ -12,8 +16,22 @@ export async function POST(request: NextRequest) {
     // Get or create database user from Clerk authentication
     const userId = await getOrCreateUser();
     // convert request to json
-    const { recipe } = await request.json();
+    const { recipe, isEditMode, editingRecipeId } = await request.json();
+
+    // Check recipe limit for free users (only for new recipes, not edits)
+    if (!isEditMode) {
+      const user = await getUserWithPlan();
+      const recipeCount = await countUserRecipes(userId);
+      if (user && user.plan_tier !== "pro" && recipeCount >= FREE_TIER_RECIPE_LIMIT) {
+        console.log("Recipe limit reached for free user:", userId);
+        return NextResponse.json(
+          { error: "Recipe limit reached. Upgrade to Pro for unlimited recipes." },
+          { status: 403 }
+        );
+      }
+    }
     console.log("Received recipe:", recipe?.name || "No name");
+    console.log("Edit mode:", isEditMode, "Recipe ID:", editingRecipeId);
 
     // check input data is good
     if (!recipe || typeof recipe !== "object") {
@@ -112,10 +130,19 @@ export async function POST(request: NextRequest) {
     // Ensure user_id is set correctly
     data.user_id = userId;
 
-    // Insert recipe into database
-    console.log("Inserting recipe into database...");
-    const { recipe_id } = await insertRecipe(data);
-    console.log("✅ Recipe inserted successfully with ID:", recipe_id);
+    // Insert or update recipe in database
+    let recipe_id: number;
+    if (isEditMode && editingRecipeId) {
+      console.log("Updating recipe in database...");
+      const result = await updateRecipe(data, editingRecipeId);
+      recipe_id = result.recipe_id;
+      console.log("✅ Recipe updated successfully with ID:", recipe_id);
+    } else {
+      console.log("Inserting recipe into database...");
+      const result = await insertRecipe(data);
+      recipe_id = result.recipe_id;
+      console.log("✅ Recipe inserted successfully with ID:", recipe_id);
+    }
 
     return NextResponse.json({ data, recipe_id }, { status: 200 });
   } catch (error) {

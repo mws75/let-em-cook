@@ -6,6 +6,19 @@ export type User = {
   plan_tier: string;
   is_deleted: number;
   role: string;
+  stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
+};
+
+// Subscription constants
+export const FREE_TIER_RECIPE_LIMIT = 10;
+export const PRO_TIER_PRICE = 4.99;
+
+export type SubscriptionInfo = {
+  planTier: string;
+  recipeCount: number;
+  recipeLimit: number | null;
+  canCreateRecipe: boolean;
 };
 
 export type Category = {

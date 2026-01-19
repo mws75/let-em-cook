@@ -1,22 +1,30 @@
 "use client";
 import RecipeCard from "@/components/RecipeCard";
 import SelectedRecipeCard from "@/components/SelectedRecipeCard";
-import { Recipe } from "@/types/types";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import UpgradeButton from "@/components/UpgradeButton";
+import UpgradePrompt from "@/components/UpgradePrompt";
+import { Recipe, SubscriptionInfo, FREE_TIER_RECIPE_LIMIT } from "@/types/types";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import toast, { Toaster } from "react-hot-toast";
 
-export default function Dashboard() {
+function DashboardContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, isLoaded } = useUser();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoadingRecipes, setIsLoadingRecipes] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRecipes, setSelectedRecipes] = useState<Recipe[]>([]);
   const [groceryList, setGroceryList] = useState<string[]>([]);
-  const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({});
+  const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>(
+    {},
+  );
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
 
   // Fetch recipes on component mount
   useEffect(() => {
@@ -56,6 +64,43 @@ export default function Dashboard() {
     fetchRecipes();
   }, [isLoaded, user, router]);
 
+  // Fetch subscription info
+  useEffect(() => {
+    if (!isLoaded || !user) return;
+
+    const fetchSubscription = async () => {
+      try {
+        const response = await fetch("/api/user/subscription");
+        if (response.ok) {
+          const data = await response.json();
+          setSubscription(data);
+        }
+      } catch (err) {
+        console.error("Error fetching subscription:", err);
+      }
+    };
+
+    fetchSubscription();
+  }, [isLoaded, user]);
+
+  // Handle upgrade success
+  useEffect(() => {
+    const upgradeStatus = searchParams.get("upgrade");
+    if (upgradeStatus === "success") {
+      toast.success("Welcome to Pro! You now have unlimited recipes.", {
+        duration: 5000,
+        icon: "🎉",
+      });
+      // Clear the URL param
+      router.replace("/dashboard");
+      // Refresh subscription info
+      fetch("/api/user/subscription")
+        .then((res) => res.json())
+        .then((data) => setSubscription(data))
+        .catch(console.error);
+    }
+  }, [searchParams, router]);
+
   const filteredRecipes = recipes.filter((recipe) => {
     const searchLower = searchTerm.toLowerCase();
     const nameMatch = recipe.name.toLowerCase().includes(searchLower);
@@ -66,7 +111,26 @@ export default function Dashboard() {
   });
 
   const handleCreateRecipeClick = () => {
+    // Check if user can create more recipes
+    if (subscription && !subscription.canCreateRecipe) {
+      setShowUpgradePrompt(true);
+      return;
+    }
     router.push("/create_recipe");
+  };
+
+  const handleManageSubscription = async () => {
+    try {
+      const response = await fetch("/api/stripe/create-portal-session", {
+        method: "POST",
+      });
+      if (response.ok) {
+        const { url } = await response.json();
+        window.location.href = url;
+      }
+    } catch (err) {
+      console.error("Error opening portal:", err);
+    }
   };
 
   const handleRecipeSelect = (recipe: Recipe, isChecked: boolean) => {
@@ -81,6 +145,10 @@ export default function Dashboard() {
       );
       console.log(`Recipe ${recipe.name} deselected`);
     }
+  };
+
+  const handleRecipeDelete = (recipe_id: number) => {
+    setRecipes(recipes.filter((r) => r.recipe_id !== recipe_id));
   };
 
   const generateGroceryList = async () => {
@@ -163,7 +231,7 @@ export default function Dashboard() {
   const downloadGroceryList = () => {
     // Only include checked items
     const checkedIngredients = groceryList.filter(
-      (ingredient) => checkedItems[ingredient]
+      (ingredient) => checkedItems[ingredient],
     );
 
     if (checkedIngredients.length === 0) {
@@ -188,6 +256,12 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Toaster position="top-center" />
+      <UpgradePrompt
+        isOpen={showUpgradePrompt}
+        onClose={() => setShowUpgradePrompt(false)}
+        recipeCount={subscription?.recipeCount || 0}
+      />
       <div className="w-full max-w-5xl mx-auto px-4 pb-20 space-y-10">
         {/* Header Information */}
         <div className="flex justify-center mt-10 mb-10">
@@ -217,6 +291,21 @@ export default function Dashboard() {
               </span>
             </button>
           </div>
+          {/* Upgrade Button for free users */}
+          {subscription && subscription.planTier !== "pro" && (
+            <UpgradeButton className="mb-2" />
+          )}
+          {/* Manage Subscription for Pro users */}
+          {subscription && subscription.planTier === "pro" && (
+            <button
+              onClick={handleManageSubscription}
+              className="w-full bg-muted hover:bg-muted/80 border-2 border-border rounded-3xl py-3 mb-2 shadow-md hover:shadow-lg transition-all"
+            >
+              <span className="text-lg font-semibold text-text">
+                Manage Subscription
+              </span>
+            </button>
+          )}
           <button
             className="w-full bg-accent hover:bg-accent/80 border-2 border-border rounded-3xl py-4 shadow-md hover:shadow-lg transition-all"
             onClick={handleCreateRecipeClick}
@@ -262,8 +351,11 @@ export default function Dashboard() {
             </div>
             <div className="mb-4 p-3 bg-secondary/10 border-2 border-border rounded-xl">
               <p className="text-sm text-text-secondary">
-                ✓ <strong>{Object.values(checkedItems).filter(Boolean).length}</strong> of{" "}
-                <strong>{groceryList.length}</strong> items selected
+                ✓{" "}
+                <strong>
+                  {Object.values(checkedItems).filter(Boolean).length}
+                </strong>{" "}
+                of <strong>{groceryList.length}</strong> items selected
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -313,7 +405,17 @@ export default function Dashboard() {
                       Total Recipes
                     </p>
                   </div>
-                  <p className="text-3xl font-bold text-text ml-9">12</p>
+                  <p className="text-3xl font-bold text-text ml-9">
+                    {subscription?.recipeCount ?? recipes.length}
+                    {subscription?.planTier !== "pro" && (
+                      <span className="text-lg text-text-secondary">
+                        /{FREE_TIER_RECIPE_LIMIT}
+                      </span>
+                    )}
+                    {subscription?.planTier === "pro" && (
+                      <span className="text-sm text-primary ml-2">Pro</span>
+                    )}
+                  </p>
                 </div>
 
                 <div className="bg-secondary/20 border-2 border-border rounded-2xl p-4 hover:scale-[1.02] transition-transform shadow-md">
@@ -438,6 +540,7 @@ export default function Dashboard() {
                       (r) => r.recipe_id === recipe.recipe_id,
                     )}
                     onSelect={handleRecipeSelect}
+                    onDelete={handleRecipeDelete}
                   />
                 ))
               ) : recipes.length === 0 ? (
@@ -460,5 +563,22 @@ export default function Dashboard() {
         </section>
       </div>
     </div>
+  );
+}
+
+export default function Dashboard() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-6xl mb-4">🍳</div>
+            <p className="text-2xl text-text font-semibold">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <DashboardContent />
+    </Suspense>
   );
 }
