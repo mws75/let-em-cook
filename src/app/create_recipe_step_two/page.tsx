@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import CookingTips from "@/components/CookingTips";
 import EditIngredient from "@/components/EditIngredient";
 import { Recipe, Ingredients } from "@/types/types";
 
@@ -10,6 +11,9 @@ export default function CreateRecipeStepTwo() {
   const [ingredientsList, setIngredientsList] = useState<Ingredients[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingRecipeId, setEditingRecipeId] = useState<number | null>(null);
 
   useEffect(() => {
     // Get the stored recipe
@@ -19,6 +23,11 @@ export default function CreateRecipeStepTwo() {
       const parsedRecipe = JSON.parse(storedRecipe);
       setRecipe(parsedRecipe.data);
       setIngredientsList(parsedRecipe.data.ingredients_json);
+      // Check if we're in edit mode
+      if (parsedRecipe.isEditMode && parsedRecipe.editingRecipeId) {
+        setIsEditMode(true);
+        setEditingRecipeId(parsedRecipe.editingRecipeId);
+      }
     } else {
       console.log("No Recipe data found");
       router.push("/create_recipe");
@@ -35,6 +44,7 @@ export default function CreateRecipeStepTwo() {
 
   const handleSaveRecipe = async () => {
     // Save Updated object
+    setIsSubmitting(true);
     if (!recipe) return;
     try {
       // Step 1. Update Recipe with edited ingredients
@@ -43,11 +53,15 @@ export default function CreateRecipeStepTwo() {
         ingredients_json: ingredientsList,
       };
 
-      // Step 2. Call calc macros API
+      // Step 2. Call calc macros API and Insert/Update in DB
       const response = await fetch("/api/create-recipe-step-two", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ recipe: updatedRecipe }),
+        body: JSON.stringify({
+          recipe: updatedRecipe,
+          isEditMode,
+          editingRecipeId,
+        }),
       });
 
       // Extract error details from response
@@ -66,12 +80,16 @@ export default function CreateRecipeStepTwo() {
       console.log("Macros added successfully:", data);
       console.log("Recipe saved with ID:", recipe_id);
 
-      toast.success(`Recipe saved successfully! (ID: ${recipe_id})`);
+      console.log(isEditMode ? `Recipe updated successfully!` : `Recipe saved successfully! (ID: ${recipe_id})`);
+      sessionStorage.setItem("recipe_success", isEditMode ? "updated" : "saved");
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Failed to save recipe";
       toast.error(errorMessage);
       console.error("Save recipe error:", error);
+      return;
+    } finally {
+      setIsSubmitting(false);
     }
     router.push("/dashboard");
   };
@@ -99,11 +117,12 @@ export default function CreateRecipeStepTwo() {
 
   return (
     <div className="min-h-screen bg-background">
+      <CookingTips isVisible={isSubmitting} />
       <div className="w-full max-w-5xl mx-auto px-4 pb-20 space-y-5">
         {/* Header */}
         <div className="flex justify-center mt-10 mb-10">
           <h1 className="text-4xl text-text font-bold">
-            🥕 Clean Up Ingredients
+            🥕 {isEditMode ? "Review Changes" : "Clean Up Ingredients"}
           </h1>
         </div>
 
@@ -143,9 +162,10 @@ export default function CreateRecipeStepTwo() {
           </button>
           <button
             onClick={handleSaveRecipe}
+            disabled={isSubmitting}
             className="px-8 py-3 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
           >
-            Save Recipe
+            {isSubmitting ? "Saving..." : isEditMode ? "Update Recipe" : "Save Recipe"}
           </button>
         </div>
       </div>

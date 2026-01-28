@@ -1,7 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ErrorPopUp from "@/components/ErrorPopUp";
+import CookingTips from "@/components/CookingTips";
 import toast from "react-hot-toast";
 import { Recipe, Ingredients } from "@/types/types";
 
@@ -75,10 +76,46 @@ export default function CreateRecipe() {
   const router = useRouter();
   const genericToastErrorMessage = "Failed to Save Recipe";
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingRecipeId, setEditingRecipeId] = useState<number | null>(null);
+
+  // Check for recipe edit data on mount
+  useEffect(() => {
+    const storedRecipe = sessionStorage.getItem("recipe_edit");
+    if (storedRecipe) {
+      const recipe: Recipe = JSON.parse(storedRecipe);
+      setIsEditMode(true);
+      setEditingRecipeId(recipe.recipe_id);
+      setRecipeName(recipe.name);
+      setSelectedCategory(recipe.category);
+      setSelectedNumberOfServings(recipe.servings);
+      setIsPublicSelected(recipe.is_public);
+
+      // Convert ingredients_json back to text format
+      const ingredientsText = recipe.ingredients_json
+        .map((ing) => {
+          let line = `${ing.quantity} ${ing.unit} ${ing.name}`;
+          if (ing.prep) line += `, ${ing.prep}`;
+          if (ing.optional) line += " (optional)";
+          return line;
+        })
+        .join("\n");
+      setIngredients(ingredientsText);
+
+      // Convert instructions_json back to text format
+      const instructionsText = recipe.instructions_json
+        .sort((a, b) => a.step - b.step)
+        .map((inst) => `${inst.step}. ${inst.text}`)
+        .join("\n");
+      setInstructions(instructionsText);
+
+      // Clear the edit data so refreshing doesn't re-populate
+      sessionStorage.removeItem("recipe_edit");
+    }
+  }, []);
 
   const handleApiError = async (
     response: Response,
-    toastId: string | number,
     toastMessage: string,
   ) => {
     // Log full response details for debugging
@@ -92,7 +129,7 @@ export default function CreateRecipe() {
     console.error("Error Body:", errorData);
 
     setErrorMessage(`Error: ${errorData?.error ?? response.statusText}`);
-    toast.error(toastMessage, { id: String(toastId) });
+    toast.error(toastMessage);
   };
 
   const handleIsPublicSelected = () => {
@@ -110,7 +147,6 @@ export default function CreateRecipe() {
 
   const handleSubmitClick = async () => {
     setIsSubmitting(true);
-    const toastId = toast.loading("Saving Recipe...");
     const validationErrors: string[] = [];
     try {
       console.log("submitting recipe");
@@ -131,7 +167,7 @@ export default function CreateRecipe() {
       }
       if (validationErrors.length > 0) {
         setErrorMessage(validationErrors.join(" "));
-        toast.error(genericToastErrorMessage, { id: String(toastId) });
+        toast.error(genericToastErrorMessage);
         return;
       }
 
@@ -159,7 +195,6 @@ export default function CreateRecipe() {
       if (!response_ingredients.ok) {
         await handleApiError(
           response_ingredients,
-          toastId,
           "Failed to validate ingredients",
         );
         return;
@@ -167,7 +202,6 @@ export default function CreateRecipe() {
       if (!response_instructions.ok) {
         await handleApiError(
           response_instructions,
-          toastId,
           "Failed to validate instructions",
         );
         return;
@@ -180,12 +214,12 @@ export default function CreateRecipe() {
       // step 4. Validate the Results from the JSON Responses
       if (!data_ingredients.isIngredients) {
         setErrorMessage("Error: Data is not valid food ingredients");
-        toast.error("Invalid ingredients", { id: String(toastId) });
+        toast.error("Invalid ingredients");
         return;
       }
       if (!data_instructions.isInstructions) {
         setErrorMessage("Error: User input is not valid recipe instructions");
-        toast.error("Invalid instructions", { id: String(toastId) });
+        toast.error("Invalid instructions");
         return;
       }
       console.log("Validation successful, creating recipe...");
@@ -210,7 +244,6 @@ export default function CreateRecipe() {
       if (!response_create_recipe.ok) {
         await handleApiError(
           response_create_recipe,
-          toastId,
           "Failed to Create Recipe",
         );
         return;
@@ -220,13 +253,14 @@ export default function CreateRecipe() {
         `This is the recipe Object: ${JSON.stringify(data_create_recipe)}`,
       );
 
-      // Save to sessionStorage
-      sessionStorage.setItem(
-        "recipe_draft",
-        JSON.stringify(data_create_recipe),
-      );
+      // Save to sessionStorage (include editing recipe ID if in edit mode)
+      const draftData = {
+        ...data_create_recipe,
+        isEditMode,
+        editingRecipeId,
+      };
+      sessionStorage.setItem("recipe_draft", JSON.stringify(draftData));
 
-      toast.success("Saved successfully", { id: String(toastId) });
       setRecipeName("");
       setSelectedCategory("");
       setIngredients("");
@@ -240,7 +274,7 @@ export default function CreateRecipe() {
           ? err.message
           : "An error occurred with Recipe validation",
       );
-      toast.error("Failed to save recipe", { id: String(toastId) });
+      toast.error("Failed to save recipe");
       console.error("Error validating Recipe data");
     } finally {
       setIsSubmitting(false);
@@ -249,11 +283,14 @@ export default function CreateRecipe() {
 
   return (
     <div className="min-h-screen bg-background">
+      <CookingTips isVisible={isSubmitting} />
       <ErrorPopUp message={errorMessage} onClose={() => setErrorMessage("")} />
       <div className="w-full max-w-5xl mx-auto px-4 pb-20 space-y-5">
         {/* Header Information */}
         <div className="flex justify-center mt-10 mb-10">
-          <h1 className="text-4xl text-text font-bold">Create Recipe</h1>
+          <h1 className="text-4xl text-text font-bold">
+            {isEditMode ? "Edit Recipe" : "Create Recipe"}
+          </h1>
         </div>
 
         {/* Name Block */}
@@ -284,7 +321,9 @@ export default function CreateRecipe() {
             <div className="flex items-center gap-2 flex-1">
               <label className="text-text">Number of Servings:</label>
               <select
-                onChange={(e) => setSelectedNumberOfServings(Number(e.target.value))}
+                onChange={(e) =>
+                  setSelectedNumberOfServings(Number(e.target.value))
+                }
                 value={selectedNumberOfServings}
                 className="px-2 py-2 border-2 border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors"
               >
@@ -334,7 +373,7 @@ export default function CreateRecipe() {
             disabled={isSubmitting}
             className="w-1/3 px-6 py-2 mr-2 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
           >
-            {isSubmitting ? "Submitting" : "submit"}
+            {isSubmitting ? "Submitting..." : isEditMode ? "Update" : "Submit"}
           </button>
           <button
             onClick={handleCancelClick}

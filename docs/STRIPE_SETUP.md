@@ -9,34 +9,34 @@ This guide walks you through setting up Stripe subscriptions for the Let Em Cook
 
 ## Prerequisites
 
-- A Stripe account (create one at [stripe.com](https://stripe.com))
-- Access to the Stripe Dashboard
+- A Stripe account (create one at [stripe.com](https://stripe.com)) [x]
+- Access to the Stripe Dashboard [x]
 
 ## Step 1: Create Your Stripe Account
 
-1. Go to [stripe.com](https://stripe.com) and create an account
-2. Complete the account verification process
-3. For development, you can use Test Mode (no real payments)
+1. Go to [stripe.com](https://stripe.com) and create an account [x]
+2. Complete the account verification process [x]
+3. For development, you can use Test Mode (no real payments) [x]
 
 ## Step 2: Create the Product
 
-1. In the Stripe Dashboard, go to **Products** > **Add Product**
+1. In the Stripe Dashboard, go to **Products** > **Add Product** [x]
 2. Fill in the details:
-   - **Name**: `Let Em Cook Pro`
-   - **Description**: `Unlimited recipe storage for home chefs`
-   - You can add an image if desired
-3. Click **Add Product**
+   - **Name**: `Let Em Cook Pro` [x]
+   - **Description**: `Unlimited recipe storage for home chefs` [x]
+   - You can add an image if desired [x]
+3. Click **Add Product** [x]
 
 ## Step 3: Create the Price
 
-1. In the product you just created, click **Add Price**
-2. Configure the price:
-   - **Pricing Model**: Standard pricing
-   - **Price**: `$4.99`
-   - **Billing Period**: Monthly
-   - **Currency**: USD (or your preferred currency)
-3. Click **Add Price**
-4. **Important**: Copy the Price ID (starts with `price_`) - you'll need this for `STRIPE_PRICE_ID`
+1. In the product you just created, click **Add Price** [x]
+2. Configure the price: [x]
+   - **Pricing Model**: Standard pricing [x]
+   - **Price**: `$4.99` [x]
+   - **Billing Period**: Monthly [x]
+   - **Currency**: USD (or your preferred currency) [x]
+3. Click **Add Price** [x]
+4. **Important**: Copy the Price ID (starts with `price_`) - you'll need this for `STRIPE_PRICE_ID`[x]
 
 ## Step 4: Set Up the Webhook Endpoint
 
@@ -124,10 +124,10 @@ CREATE INDEX idx_stripe_customer_id ON ltc_users(stripe_customer_id);
 
 Use these test card numbers in Test Mode:
 
-| Card Number | Description |
-|-------------|-------------|
-| `4242 4242 4242 4242` | Successful payment |
-| `4000 0000 0000 0002` | Card declined |
+| Card Number           | Description             |
+| --------------------- | ----------------------- |
+| `4242 4242 4242 4242` | Successful payment      |
+| `4000 0000 0000 0002` | Card declined           |
 | `4000 0025 0000 3155` | Requires authentication |
 
 Use any future expiration date, any 3-digit CVC, and any postal code.

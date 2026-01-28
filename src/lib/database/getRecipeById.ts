@@ -3,13 +3,17 @@ import { executeQuery } from "./connection";
 import { RowDataPacket } from "mysql2";
 
 /**
- * Fetches all recipes for a specific user from the database
- * @param userId - The user ID to fetch recipes for
- * @returns Array of Recipe objects
+ * Fetches a single recipe by ID for a specific user from the database
+ * @param userId - The user ID to verify ownership
+ * @param recipeId - The recipe ID to fetch
+ * @returns Recipe object or null if not found
  */
-export async function getRecipes(userId: number): Promise<Recipe[]> {
-  if (!userId) {
-    throw new Error("Missing required parameter: userId");
+export async function getRecipeById(
+  userId: number,
+  recipeId: number,
+): Promise<Recipe | null> {
+  if (!userId || !recipeId) {
+    throw new Error("Missing required parameters: userId and recipeId");
   }
 
   try {
@@ -38,14 +42,18 @@ export async function getRecipes(userId: number): Promise<Recipe[]> {
       FROM ltc_recipes r
       LEFT JOIN ltc_users u ON r.user_id = u.user_id
       LEFT JOIN ltc_categories c ON r.category_id = c.category_id
-      WHERE r.user_id = ?
-      ORDER BY r.modified_on DESC
+      WHERE r.recipe_id = ? AND r.user_id = ?
     `;
 
-    const rows = await executeQuery<RowDataPacket[]>(query, [userId]);
+    const rows = await executeQuery<RowDataPacket[]>(query, [recipeId, userId]);
 
-    // Transform database rows to Recipe type
-    const recipes: Recipe[] = rows.map((row) => ({
+    if (rows.length === 0) {
+      return null;
+    }
+
+    const row = rows[0];
+
+    const recipe: Recipe = {
       recipe_id: row.recipe_id,
       user_id: row.user_id,
       user_name: row.user_name || "Unknown",
@@ -73,11 +81,11 @@ export async function getRecipes(userId: number): Promise<Recipe[]> {
         active_min: row.active_time_min || 0,
         total_time: row.total_time_min || 0,
       },
-    }));
+    };
 
-    return recipes;
+    return recipe;
   } catch (error) {
-    console.error("Error fetching recipes from database:", error);
-    throw new Error("Failed to fetch recipes from database");
+    console.error("Error fetching recipe from database:", error);
+    throw new Error("Failed to fetch recipe from database");
   }
 }

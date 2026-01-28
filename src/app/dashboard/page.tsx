@@ -83,6 +83,20 @@ function DashboardContent() {
     fetchSubscription();
   }, [isLoaded, user]);
 
+  // Handle recipe creation/update success
+  useEffect(() => {
+    const recipeSuccess = sessionStorage.getItem("recipe_success");
+    if (recipeSuccess) {
+      sessionStorage.removeItem("recipe_success");
+      toast.success(
+        recipeSuccess === "updated"
+          ? "Recipe updated successfully!"
+          : "Recipe added successfully!",
+        { duration: 4000 },
+      );
+    }
+  }, []);
+
   // Handle upgrade success
   useEffect(() => {
     const upgradeStatus = searchParams.get("upgrade");
