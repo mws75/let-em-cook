@@ -350,7 +350,7 @@ export default function CreateRecipe() {
           <h2 className="text-text text-xl font-bold ml-10">Ingredients</h2>
           <textarea
             id="ingredients_message"
-            className="m-5  block min-h-64 w-9/12 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+            className="m-5 block min-h-64 w-9/12 rounded-lg border-2 border-border bg-surface p-2.5 text-sm text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
             placeholder="Ingredients..."
             value={ingredients}
             onChange={(e) => setIngredients(e.target.value)}
@@ -361,7 +361,7 @@ export default function CreateRecipe() {
           <h2 className="text-text text-xl font-bold ml-10">Instructions</h2>
           <textarea
             id="instructions_message"
-            className="m-5 block min-h-64 w-9/12 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+            className="m-5 block min-h-64 w-9/12 rounded-lg border-2 border-border bg-surface p-2.5 text-sm text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
             placeholder="Instructions..."
             value={instructions}
             onChange={(e) => setInstructions(e.target.value)}
