@@ -12,19 +12,19 @@
   --font-mono: var(--font-geist-mono);
 
   /* Custom colors - Soft Veggie Garden Palette */
-  --color-primary: #A8D5BA;       /* Soft Sage Green - calming, healthy */
-  --color-secondary: #FFE5B4;     /* Peach Cream - warm, inviting */
-  --color-accent: #FFB5B5;        /* Soft Coral - appetite-friendly */
-  --color-bg: #FDFBF7;            /* Warm off-white */
-  --color-surface: #FFFFFF;       /* Pure white for cards */
-  --color-text: #4A5568;          /* Softer gray-blue text */
+  --color-primary: #a8d5ba; /* Soft Sage Green - calming, healthy */
+  --color-secondary: #ffe5b4; /* Peach Cream - warm, inviting */
+  --color-accent: #ffb5b5; /* Soft Coral - appetite-friendly */
+  --color-bg: #fdfbf7; /* Warm off-white */
+  --color-surface: #ffffff; /* Pure white for cards */
+  --color-text: #4a5568; /* Softer gray-blue text */
   --color-text-secondary: #718096; /* Lighter gray for secondary text */
-  --color-border: #E2E8F0;        /* Light gray border */
-  --color-success: #81C784;       /* Soft green */
-  --color-warning: #FFD54F;       /* Soft yellow */
-  --color-error: #E57373;         /* Soft red */
-  --color-muted: #F7FAFC;         /* Very light background */
-  --color-shadow: #CBD5E0;        /* Soft shadow color */
+  --color-border: #e2e8f0; /* Light gray border */
+  --color-success: #81c784; /* Soft green */
+  --color-warning: #ffd54f; /* Soft yellow */
+  --color-error: #e57373; /* Soft red */
+  --color-muted: #f7fafc; /* Very light background */
+  --color-shadow: #cbd5e0; /* Soft shadow color */
 }
 
 body {
