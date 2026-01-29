@@ -48,17 +48,13 @@ export async function POST(request: NextRequest) {
         if (session.mode === "subscription" && session.subscription) {
           const customerId = session.customer as string;
           const subscriptionId = session.subscription as string;
-          const customerEmail = session.customer_email || session.metadata?.user_email;
 
-          if (customerEmail) {
-            await updateUserSubscription(
-              customerEmail,
-              customerId,
-              subscriptionId,
-              "pro"
-            );
-            console.log("User upgraded to pro:", customerEmail);
-          }
+          await updateUserSubscription(
+            customerId,
+            subscriptionId,
+            "pro"
+          );
+          console.log("User upgraded to pro, customer:", customerId);
         }
         break;
       }

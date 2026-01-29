@@ -114,10 +114,7 @@ export default function CreateRecipe() {
     }
   }, []);
 
-  const handleApiError = async (
-    response: Response,
-    toastMessage: string,
-  ) => {
+  const handleApiError = async (response: Response, toastMessage: string) => {
     // Log full response details for debugging
     console.error("❌ API Error Details:");
     console.error("Status:", response.status, response.statusText);
@@ -242,10 +239,7 @@ export default function CreateRecipe() {
       });
 
       if (!response_create_recipe.ok) {
-        await handleApiError(
-          response_create_recipe,
-          "Failed to Create Recipe",
-        );
+        await handleApiError(response_create_recipe, "Failed to Create Recipe");
         return;
       }
       const data_create_recipe = await response_create_recipe.json();

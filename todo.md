@@ -4,7 +4,7 @@
 
 1. Create Search Functionationality [x]
 2. Generate List Functionality [x]
-3. Create Recipe Functionality []
+3. Create Recipe Functionality [x]
 4. Delete Recipe Functionality
 5. Edit Recipe Functionality
 6. Macros Functionality
@@ -54,10 +54,25 @@
 
    d. Create src/app/api/insertData file to insert data into database [x]
 
-## RecipePage []
+## Stripe Integration[]
 
-1. Design Recipe Page
-2. Create Recipe Page
+1. Create Stripe Integration on Front End []
+2. Update ltc_users table with stripe_customer_id and stripe_subscription_id [x]
+3. Create Stripe API backend
+4. Create WebHooks []
+5. Create User Profile to
+   -> Cancel []
+   -> Pause []
+   -> View Payment History []
+6. Testing:
+   -> Subscribe with good card []
+   -> Subscribe with bad card []
+   -> Cancel Subscription []
+
+## RecipePage [x]
+
+1. Design Recipe Page [x]
+2. Create Recipe Page [x]
 
 ## Browse Public Recipes Page []
 

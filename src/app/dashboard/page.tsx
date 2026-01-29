@@ -3,11 +3,15 @@ import RecipeCard from "@/components/RecipeCard";
 import SelectedRecipeCard from "@/components/SelectedRecipeCard";
 import UpgradeButton from "@/components/UpgradeButton";
 import UpgradePrompt from "@/components/UpgradePrompt";
-import { Recipe, SubscriptionInfo, FREE_TIER_RECIPE_LIMIT } from "@/types/types";
+import {
+  Recipe,
+  SubscriptionInfo,
+  FREE_TIER_RECIPE_LIMIT,
+} from "@/types/types";
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 function DashboardContent() {
   const router = useRouter();
@@ -23,7 +27,9 @@ function DashboardContent() {
   );
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
+  const [subscription, setSubscription] = useState<SubscriptionInfo | null>(
+    null,
+  );
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
 
   // Fetch recipes on component mount
@@ -270,7 +276,6 @@ function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Toaster position="top-center" />
       <UpgradePrompt
         isOpen={showUpgradePrompt}
         onClose={() => setShowUpgradePrompt(false)}
