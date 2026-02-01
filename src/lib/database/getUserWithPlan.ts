@@ -41,7 +41,7 @@ export async function getUserWithPlan(): Promise<User | null> {
               is_deleted, role, stripe_customer_id, stripe_subscription_id
        FROM ltc_users
        WHERE email = ? LIMIT 1`,
-      [email]
+      [email],
     );
 
     if (users.length === 0) {

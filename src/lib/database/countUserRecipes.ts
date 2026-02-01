@@ -16,7 +16,7 @@ export async function countUserRecipes(userId: number): Promise<number> {
 
     const result = await executeQuery<CountRow[]>(
       "SELECT COUNT(*) as count FROM ltc_recipes WHERE user_id = ?",
-      [userId]
+      [userId],
     );
 
     const count = result[0]?.count ?? 0;
