@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUserWithPlan } from "@/lib/database/getOrCreateUser";
+import { getUserWithPlan } from "@/lib/database/getUserWithPlan";
 import { getRateCount } from "@/lib/database/getRateCount";
 import { insertSupportSubmission } from "@/lib/database/insertSupportSubmission";
 import nodemailer from "nodemailer";
@@ -11,11 +11,11 @@ function isValidEmail(email: string): boolean {
 
 export async function POST(request: NextRequest) {
   try {
-    const userId = await getUserWithPlan();
+    const user = await getUserWithPlan();
     // 2. Parse and validate the inputs
     const { name, email, message } = await request.json();
 
-    if (!userId) {
+    if (!user) {
       return NextResponse.json({ error: "not a valid user" }, { status: 401 });
     }
 
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const email_count = await getRateCount(userId);
+    const email_count = await getRateCount(user.user_id);
 
     if (email_count >= 3) {
       return NextResponse.json(
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
       replyTo: email,
       text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
     });
-    await insertSupportSubmission(userId, email, name, message);
+    await insertSupportSubmission(user.user_id, email, name, message);
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {

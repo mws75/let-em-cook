@@ -65,18 +65,18 @@
    -> Pause [x]
    -> View Payment History [x]
 6. Testing:
-   -> Subscribe with good card []
-   -> Subscribe with bad card []
-   -> Cancel Subscription []
+   -> Subscribe with good card [x]
+   -> Subscribe with bad card [x]
+   -> Cancel Subscription [x]
 
-7. set up Production Stripe Environment
+7. set up Production Stripe Environment []
 
 ## Email
 
 1. Create Email Address [x] - michael.spencer@let-em-cook.io | support@let-em-cook.it
    a. Test one - send to michael.spencer@let-em-cook.io [x]
    b. Test two - send to support@let-em-cook.io [x]
-2. Create Contact Us page [] - with ability to email support
+2. Create Contact Us page [x] - with ability to email support
    a. Footer [x]
    b. Set Up Resend[x]
    c. Create Database Table [x]
@@ -84,23 +84,23 @@
    e. Create the contact page [x]
    f. Add Footer to Dashboard [x]
    #### g. **Testing** []
-   i. Login can navigate to Contact Dashboard []
-   ii. Verify name and email pre-populate []
-   iii. Type a message, click send []
-   iv. Verify CookingTyips appears during submission []
-   v. Verify success toast appears []
-   vi. Verify redirect to dashboard []
-   vii. Check email arriaved to support@let-em-cook.io in Zoho module []
-   viii. Check that the ltc_contact_support table has a new row. []
-   #### h. **Email validation** []
-   i. Submit with empty Message []
-   ii. Subimt with message under 10 charcters []
-   iii. Submit with message over 2000 characters []
-   #### i. **Rate Limiting** []
-   i. Submit 3 message successfully []
-   ii. Forth message with 24 hours - should return 429 []
-   #### j. **Auth** []
-   i. Visit contact page while logged out []
+   i. Login can navigate to Contact Dashboard [x]
+   ii. Verify name and email pre-populate [x]
+   iii. Type a message, click send [x]
+   iv. Verify CookingTyips appears during submission [x]
+   v. Verify success toast appears [x]
+   vi. Verify redirect to dashboard [x]
+   vii. Check email arriaved to support@let-em-cook.io in Zoho module [x]
+   viii. Check that the ltc_contact_support table has a new row. [x]
+   #### h. **Email validation** [x]
+   i. Submit with empty Message [x]
+   ii. Subimt with message under 10 charcters [x]
+   iii. Submit with message over 2000 characters [x]
+   #### i. **Rate Limiting** [x]
+   i. Submit 3 message successfully [x]
+   ii. Forth message with 24 hours - should return 429 [x]
+   #### j. **Auth** [x]
+   i. Visit contact page while logged out [x]
 
 ## RecipePage [x]
 
