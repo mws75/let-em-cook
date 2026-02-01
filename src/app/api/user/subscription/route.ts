@@ -12,7 +12,7 @@ export async function GET() {
     if (!user) {
       return NextResponse.json(
         { error: "User not authenticated" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -39,7 +39,7 @@ export async function GET() {
     console.error("Error getting subscription info:", error);
     return NextResponse.json(
       { error: "Failed to get subscription info" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

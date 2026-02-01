@@ -84,8 +84,13 @@ export default function RecipeCard({
         <div className="pt-3 pb-16">
           <h2 className="text-xl text-text font-bold m-3 pr-10">{name}</h2>
           <div>
-            <h3 className="text-base text-text font-bold ml-3 mr-1">Ingredients</h3>
-            <p className="text-sm text-text mt-2 ml-3 mr-1" title={allIngredients}>
+            <h3 className="text-base text-text font-bold ml-3 mr-1">
+              Ingredients
+            </h3>
+            <p
+              className="text-sm text-text mt-2 ml-3 mr-1"
+              title={allIngredients}
+            >
               {ingredients_json[0].name}: {ingredients_json[0].quantity}{" "}
               {ingredients_json[0].unit}...
             </p>
@@ -106,11 +111,6 @@ export default function RecipeCard({
       {/* Buttons - positioned absolutely at bottom */}
       <div className="flex absolute bottom-0 right-0">
         <div className="mt-2 mr-3 mb-3">
-          <Link href={`/recipe/${recipe_id}`}>
-            <button className="px-6 py-2 mr-2 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all">
-              view
-            </button>
-          </Link>
           <button
             onClick={handleDeleteClick}
             className="px-6 py-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"

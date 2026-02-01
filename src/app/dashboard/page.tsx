@@ -581,6 +581,16 @@ function DashboardContent() {
           </div>
         </section>
       </div>
+      <footer className="w-full border-t-2 border-border bg-surface mt-10">
+        <div className="max-w-5xl mx-auto px-4 py-6 flex justify-center">
+          <button
+            onClick={() => router.push("/contact")}
+            className="text-text-secondary hover:text-text font-semibold transition-colors"
+          >
+            Contact
+          </button>
+        </div>
+      </footer>
     </div>
   );
 }

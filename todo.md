@@ -56,18 +56,51 @@
 
 ## Stripe Integration[]
 
-1. Create Stripe Integration on Front End []
+1. Create Stripe Integration on Front End [x]
 2. Update ltc_users table with stripe_customer_id and stripe_subscription_id [x]
-3. Create Stripe API backend
-4. Create WebHooks []
+3. Create Stripe API backend [x]
+4. Create WebHooks [x]
 5. Create User Profile to
-   -> Cancel []
-   -> Pause []
-   -> View Payment History []
+   -> Cancel [x]
+   -> Pause [x]
+   -> View Payment History [x]
 6. Testing:
    -> Subscribe with good card []
    -> Subscribe with bad card []
    -> Cancel Subscription []
+
+7. set up Production Stripe Environment
+
+## Email
+
+1. Create Email Address [x] - michael.spencer@let-em-cook.io | support@let-em-cook.it
+   a. Test one - send to michael.spencer@let-em-cook.io [x]
+   b. Test two - send to support@let-em-cook.io [x]
+2. Create Contact Us page [] - with ability to email support
+   a. Footer [x]
+   b. Set Up Resend[x]
+   c. Create Database Table [x]
+   d. Create the API Route [x]
+   e. Create the contact page [x]
+   f. Add Footer to Dashboard [x]
+   #### g. **Testing** []
+   i. Login can navigate to Contact Dashboard []
+   ii. Verify name and email pre-populate []
+   iii. Type a message, click send []
+   iv. Verify CookingTyips appears during submission []
+   v. Verify success toast appears []
+   vi. Verify redirect to dashboard []
+   vii. Check email arriaved to support@let-em-cook.io in Zoho module []
+   viii. Check that the ltc_contact_support table has a new row. []
+   #### h. **Email validation** []
+   i. Submit with empty Message []
+   ii. Subimt with message under 10 charcters []
+   iii. Submit with message over 2000 characters []
+   #### i. **Rate Limiting** []
+   i. Submit 3 message successfully []
+   ii. Forth message with 24 hours - should return 429 []
+   #### j. **Auth** []
+   i. Visit contact page while logged out []
 
 ## RecipePage [x]
 
