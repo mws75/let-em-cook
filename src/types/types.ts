@@ -66,3 +66,13 @@ export type CookTime = {
   active_min: number;
   total_time: number;
 };
+
+export type UnitType = 'volume' | 'weight' | 'count' | 'other';
+
+export type GroceryItem = {
+  name: string;           // normalized lowercase key
+  displayName: string;    // original casing for display
+  quantity: number;
+  unit: string;
+  unitType: UnitType;
+};

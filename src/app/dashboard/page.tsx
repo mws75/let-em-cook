@@ -7,7 +7,10 @@ import {
   Recipe,
   SubscriptionInfo,
   FREE_TIER_RECIPE_LIMIT,
+  GroceryItem,
+  Ingredients,
 } from "@/types/types";
+import { formatQuantity } from "@/lib/unitConverter";
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
@@ -21,7 +24,7 @@ function DashboardContent() {
   const [isLoadingRecipes, setIsLoadingRecipes] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRecipes, setSelectedRecipes] = useState<Recipe[]>([]);
-  const [groceryList, setGroceryList] = useState<string[]>([]);
+  const [groceryList, setGroceryList] = useState<GroceryItem[]>([]);
   const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>(
     {},
   );
@@ -181,26 +184,22 @@ function DashboardContent() {
     setError(null);
 
     try {
-      // Extract ingredient names from selected recipes
-      const allIngredients: string[] = [];
+      // Extract full ingredient objects from selected recipes
+      const allIngredients: Ingredients[] = [];
 
       selectedRecipes.forEach((recipe) => {
         recipe.ingredients_json.forEach((ingredient) => {
-          // Only add the ingredient name, not quantity or unit
-          allIngredients.push(ingredient.name);
+          allIngredients.push(ingredient);
         });
       });
 
-      // Simple deduplication - remove exact duplicates
-      const uniqueIngredients = Array.from(new Set(allIngredients));
-
-      // Call API to sort ingredients
+      // Call API to aggregate and sort ingredients
       const response = await fetch("/api/sort-grocery-list", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ingredients: uniqueIngredients }),
+        body: JSON.stringify({ ingredients: allIngredients }),
       });
 
       if (!response.ok) {
@@ -209,12 +208,13 @@ function DashboardContent() {
       }
 
       const data = await response.json();
-      setGroceryList(data.sortedIngredients);
+      setGroceryList(data.groceryItems);
 
       // Initialize all items as checked (default to true)
       const initialCheckedState: { [key: string]: boolean } = {};
-      data.sortedIngredients.forEach((ingredient: string) => {
-        initialCheckedState[ingredient] = true;
+      data.groceryItems.forEach((item: GroceryItem, index: number) => {
+        const key = `${item.name}-${item.unit}-${index}`;
+        initialCheckedState[key] = true;
       });
       setCheckedItems(initialCheckedState);
     } catch (err) {
@@ -225,42 +225,56 @@ function DashboardContent() {
     }
   };
 
-  const toggleGroceryItem = (ingredient: string) => {
+  const toggleGroceryItem = (itemKey: string) => {
     setCheckedItems((prev) => ({
       ...prev,
-      [ingredient]: !prev[ingredient],
+      [itemKey]: !prev[itemKey],
     }));
   };
 
   const selectAllItems = () => {
     const allChecked: { [key: string]: boolean } = {};
-    groceryList.forEach((ingredient) => {
-      allChecked[ingredient] = true;
+    groceryList.forEach((item, index) => {
+      const key = `${item.name}-${item.unit}-${index}`;
+      allChecked[key] = true;
     });
     setCheckedItems(allChecked);
   };
 
   const deselectAllItems = () => {
     const allUnchecked: { [key: string]: boolean } = {};
-    groceryList.forEach((ingredient) => {
-      allUnchecked[ingredient] = false;
+    groceryList.forEach((item, index) => {
+      const key = `${item.name}-${item.unit}-${index}`;
+      allUnchecked[key] = false;
     });
     setCheckedItems(allUnchecked);
   };
 
+  const formatGroceryItemDisplay = (item: GroceryItem): string => {
+    if (item.quantity && item.unit) {
+      return `${formatQuantity(item.quantity)} ${item.unit} ${item.displayName}`;
+    } else if (item.quantity) {
+      return `${formatQuantity(item.quantity)} ${item.displayName}`;
+    }
+    return item.displayName;
+  };
+
   const downloadGroceryList = () => {
     // Only include checked items
-    const checkedIngredients = groceryList.filter(
-      (ingredient) => checkedItems[ingredient],
-    );
+    const checkedIngredients = groceryList.filter((item, index) => {
+      const key = `${item.name}-${item.unit}-${index}`;
+      return checkedItems[key];
+    });
 
     if (checkedIngredients.length === 0) {
       setError("Please select at least one item to download");
       return;
     }
 
-    // Create text file content
-    const textContent = checkedIngredients.join("\n");
+    // Create text file content with quantities
+    const textContent = checkedIngredients
+      .map((item) => formatGroceryItemDisplay(item))
+      .join("\n");
 
     // Create blob and download
     const blob = new Blob([textContent], { type: "text/plain" });
@@ -378,31 +392,34 @@ function DashboardContent() {
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {groceryList.map((ingredient, index) => (
-                <div
-                  key={index}
-                  className={`flex items-center gap-3 p-3 border-2 border-border rounded-xl hover:shadow-md transition-all cursor-pointer ${
-                    checkedItems[ingredient]
-                      ? "bg-primary/10"
-                      : "bg-muted opacity-60"
-                  }`}
-                  onClick={() => toggleGroceryItem(ingredient)}
-                >
-                  <input
-                    type="checkbox"
-                    checked={checkedItems[ingredient] || false}
-                    readOnly
-                    className="w-5 h-5 cursor-pointer accent-primary pointer-events-none"
-                  />
-                  <span
-                    className={`text-text ${
-                      checkedItems[ingredient] ? "font-medium" : "line-through"
+              {groceryList.map((item, index) => {
+                const itemKey = `${item.name}-${item.unit}-${index}`;
+                return (
+                  <div
+                    key={itemKey}
+                    className={`flex items-center gap-3 p-3 border-2 border-border rounded-xl hover:shadow-md transition-all cursor-pointer ${
+                      checkedItems[itemKey]
+                        ? "bg-primary/10"
+                        : "bg-muted opacity-60"
                     }`}
+                    onClick={() => toggleGroceryItem(itemKey)}
                   >
-                    {ingredient}
-                  </span>
-                </div>
-              ))}
+                    <input
+                      type="checkbox"
+                      checked={checkedItems[itemKey] || false}
+                      readOnly
+                      className="w-5 h-5 cursor-pointer accent-primary pointer-events-none"
+                    />
+                    <span
+                      className={`text-text ${
+                        checkedItems[itemKey] ? "font-medium" : "line-through"
+                      }`}
+                    >
+                      {formatGroceryItemDisplay(item)}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </section>
         )}
