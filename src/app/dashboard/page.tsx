@@ -142,6 +142,10 @@ function DashboardContent() {
     router.push("/create_recipe");
   };
 
+  const handleExploreClick = () => {
+    router.push("/explore_recipes");
+  };
+
   const handleManageSubscription = async () => {
     try {
       const response = await fetch("/api/stripe/create-portal-session", {
@@ -339,6 +343,14 @@ function DashboardContent() {
               </span>
             </button>
           )}
+          <button
+            className="w-full bg-accent hover:bg-accent/80 border-2 border-border rounded-3xl py-4 shadow-md hover:shadow-lg transition-all"
+            onClick={handleExploreClick}
+          >
+            <span className="text-2xl font-bold text-text">
+              Explore Recipes
+            </span>
+          </button>
           <button
             className="w-full bg-accent hover:bg-accent/80 border-2 border-border rounded-3xl py-4 shadow-md hover:shadow-lg transition-all"
             onClick={handleCreateRecipeClick}

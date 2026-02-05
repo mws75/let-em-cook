@@ -33,11 +33,11 @@ npm install -D @types/nodemailer
 
 You'll send emails from your existing Zoho mailbox. The SMTP settings for Zoho are:
 
-| Setting | Value |
-|---------|-------|
-| Host | `smtp.zoho.com` |
-| Port | `465` (SSL) or `587` (TLS) |
-| Auth | Your Zoho email and password (or app-specific password) |
+| Setting | Value                                                   |
+| ------- | ------------------------------------------------------- |
+| Host    | `smtp.zoho.com`                                         |
+| Port    | `465` (SSL) or `587` (TLS)                              |
+| Auth    | Your Zoho email and password (or app-specific password) |
 
 ### 2b. Generate an app-specific password (recommended)
 
@@ -312,10 +312,10 @@ Keep it minimal — a single "Contact" link for now. Other links can be added la
 
 ## File Summary
 
-| File                           | Action                                                                        |
-| ------------------------------ | ----------------------------------------------------------------------------- |
+| File                           | Action                                                                         |
+| ------------------------------ | ------------------------------------------------------------------------------ |
 | `.env.local`                   | Add `ZOHO_SMTP_HOST`, `ZOHO_SMTP_PORT`, `ZOHO_SMTP_USER`, `ZOHO_SMTP_PASSWORD` |
-| `src/app/api/contact/route.ts` | Create — API route with auth, validation, rate limiting, email send via Zoho  |
-| `src/app/contact/page.tsx`     | Create — Contact form page with pre-filled fields                             |
-| `src/app/dashboard/page.tsx`   | Modify — Add footer with Contact link                                         |
-| Database                       | Run CREATE TABLE for `ltc_contact_submissions`                                |
+| `src/app/api/contact/route.ts` | Create — API route with auth, validation, rate limiting, email send via Zoho   |
+| `src/app/contact/page.tsx`     | Create — Contact form page with pre-filled fields                              |
+| `src/app/dashboard/page.tsx`   | Modify — Add footer with Contact link                                          |
+| Database                       | Run CREATE TABLE for `ltc_contact_submissions`                                 |
