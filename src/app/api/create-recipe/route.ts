@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openai, handleOpenAIError } from "@/lib/openai";
 import { CREATE_RECIPE_PROMPT } from "@/lib/prompts";
-import { getOrCreateUser } from "@/lib/database/getOrCreateUser";
+import { getOrCreateUser } from "@/lib/database/users";
 const MAX_RECIPE_LENGTH = 20_000;
 
 export async function POST(request: NextRequest) {

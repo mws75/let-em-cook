@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openai, handleOpenAIError } from "@/lib/openai";
 import { CALCULATE_MACROS } from "@/lib/prompts";
-import { insertRecipe } from "@/lib/database/insertRecipe";
-import { updateRecipe } from "@/lib/database/updateRecipe";
-import { getOrCreateUser } from "@/lib/database/getOrCreateUser";
-import { getUserWithPlan } from "@/lib/database/getUserWithPlan";
-import { countUserRecipes } from "@/lib/database/countUserRecipes";
+import { getOrCreateUser, getUserWithPlan, countUserRecipes } from "@/lib/database/users";
+import { insertRecipe, updateRecipe } from "@/lib/database/recipes";
 import { FREE_TIER_RECIPE_LIMIT } from "@/types/types";
 
 const MAX_JSON_CHARACTERS = 20_000;

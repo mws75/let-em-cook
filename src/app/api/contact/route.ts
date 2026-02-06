@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUserWithPlan } from "@/lib/database/getUserWithPlan";
-import { getRateCount } from "@/lib/database/getRateCount";
-import { insertSupportSubmission } from "@/lib/database/insertSupportSubmission";
+import { getUserWithPlan } from "@/lib/database/users";
+import { getRateCount, insertSupportSubmission } from "@/lib/database/contact";
 import nodemailer from "nodemailer";
 const MAX_MESSAGE_LENGTH = 2_000;
 

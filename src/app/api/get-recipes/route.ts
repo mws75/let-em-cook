@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getRecipes } from "@/lib/database/getRecipes";
-import { getOrCreateUser } from "@/lib/database/getOrCreateUser";
+import { getOrCreateUser } from "@/lib/database/users";
+import { getRecipes } from "@/lib/database/recipes";
 
 export async function GET(request: NextRequest) {
   try {

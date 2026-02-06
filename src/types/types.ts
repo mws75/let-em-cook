@@ -33,6 +33,7 @@ export type Recipe = {
   user_id: number;
   user_name: string;
   is_public: 0 | 1;
+  is_created_by_user: 0 | 1;
   category: string;
   name: string;
   servings: number;
@@ -67,12 +68,32 @@ export type CookTime = {
   total_time: number;
 };
 
-export type UnitType = 'volume' | 'weight' | 'count' | 'other';
+export type UnitType = "volume" | "weight" | "count" | "other";
 
 export type GroceryItem = {
-  name: string;           // normalized lowercase key
-  displayName: string;    // original casing for display
+  name: string; // normalized lowercase key
+  displayName: string; // original casing for display
   quantity: number;
   unit: string;
   unitType: UnitType;
+};
+
+export type ExploreRecipe = Recipe & {
+  creator_name: string;
+  creator_profile_pic: string | null;
+  click_count: number;
+  add_count: number;
+};
+
+export type ExploreFilters = {
+  search?: string;
+  category?: string;
+  calorieRange?:
+    | "under300"
+    | "300to500"
+    | "500to750"
+    | "750to1000"
+    | "over1000";
+  limit: number;
+  offset?: number;
 };

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { getUserWithPlan } from "@/lib/database/getUserWithPlan";
-import { countUserRecipes } from "@/lib/database/countUserRecipes";
+import { getUserWithPlan, countUserRecipes } from "@/lib/database/users";
 import { FREE_TIER_RECIPE_LIMIT } from "@/types/types";
 
 export async function GET() {

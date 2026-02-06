@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
-import { getUserWithPlan } from "@/lib/database/getUserWithPlan";
+import { getUserWithPlan } from "@/lib/database/users";
 
 export async function POST() {
   try {

@@ -4,7 +4,7 @@ import { getStripe } from "@/lib/stripe";
 import {
   updateUserSubscription,
   updateUserPlanTier,
-} from "@/lib/database/updateUserSubscription";
+} from "@/lib/database/users";
 
 export async function POST(request: NextRequest) {
   try {

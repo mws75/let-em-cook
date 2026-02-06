@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { deleteRecipe } from "@/lib/database/deleteRecipe";
-import { getOrCreateUser } from "@/lib/database/getOrCreateUser";
-import { getRecipeById } from "@/lib/database/getRecipeById";
+import { getOrCreateUser } from "@/lib/database/users";
+import { deleteRecipe, getRecipeById } from "@/lib/database/recipes";
 
 export async function GET(
   request: NextRequest,
