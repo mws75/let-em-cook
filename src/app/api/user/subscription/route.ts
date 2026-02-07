@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
-import { getUserWithPlan, countUserRecipes } from "@/lib/database/users";
+import { getAuthenticatedUser } from "@/lib/auth";
+import { countUserRecipes } from "@/lib/database/users";
 import { FREE_TIER_RECIPE_LIMIT } from "@/types/types";
 
 export async function GET() {
   try {
     console.log("=== user/subscription API called ===");
 
-    // Get current user
-    const user = await getUserWithPlan();
+    const user = await getAuthenticatedUser();
     if (!user) {
       return NextResponse.json(
         { error: "User not authenticated" },

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openai, handleOpenAIError } from "@/lib/openai";
 import { CALCULATE_MACROS } from "@/lib/prompts";
-import { getOrCreateUser, getUserWithPlan, countUserRecipes } from "@/lib/database/users";
+import { getAuthenticatedUserId, getAuthenticatedUser } from "@/lib/auth";
+import { countUserRecipes } from "@/lib/database/users";
 import { insertRecipe, updateRecipe } from "@/lib/database/recipes";
 import { FREE_TIER_RECIPE_LIMIT } from "@/types/types";
 
@@ -10,14 +11,12 @@ const MAX_JSON_CHARACTERS = 20_000;
 export async function POST(request: NextRequest) {
   try {
     console.log("=== create-recipe-step-two API called ===");
-    // Get or create database user from Clerk authentication
-    const userId = await getOrCreateUser();
-    // convert request to json
+    const userId = await getAuthenticatedUserId();
     const { recipe, isEditMode, editingRecipeId } = await request.json();
 
     // Check recipe limit for free users (only for new recipes, not edits)
     if (!isEditMode) {
-      const user = await getUserWithPlan();
+      const user = await getAuthenticatedUser();
       const recipeCount = await countUserRecipes(userId);
       if (user && user.plan_tier !== "pro" && recipeCount >= FREE_TIER_RECIPE_LIMIT) {
         console.log("Recipe limit reached for free user:", userId);

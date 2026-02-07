@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openai, handleOpenAIError } from "@/lib/openai";
 import { CREATE_RECIPE_PROMPT } from "@/lib/prompts";
-import { getOrCreateUser } from "@/lib/database/users";
+import { getAuthenticatedUserId } from "@/lib/auth";
 const MAX_RECIPE_LENGTH = 20_000;
 
 export async function POST(request: NextRequest) {
   try {
-    // Get or create database user from Clerk authentication
-    const userId = await getOrCreateUser();
+    const userId = await getAuthenticatedUserId();
 
     // convert request to json
     const { recipeName, category, ingredients, instructions } =

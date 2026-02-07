@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getOrCreateUser } from "@/lib/database/users";
+import { getAuthenticatedUserId } from "@/lib/auth";
 import { deleteRecipe, getRecipeById } from "@/lib/database/recipes";
 
 export async function GET(
@@ -13,7 +13,7 @@ export async function GET(
       return NextResponse.json({ error: "Invalid recipe ID" }, { status: 400 });
     }
 
-    const userId = await getOrCreateUser();
+    const userId = await getAuthenticatedUserId();
     const recipe = await getRecipeById(userId, recipeId);
 
     if (!recipe) {
@@ -42,7 +42,7 @@ export async function DELETE(
     }
 
     // Check data input
-    const userId = await getOrCreateUser();
+    const userId = await getAuthenticatedUserId();
     // make API Request
     const result = await deleteRecipe(userId, recipeId);
 

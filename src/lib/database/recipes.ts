@@ -2,9 +2,8 @@ import { Recipe, ExploreRecipe, ExploreFilters } from "@/types/types";
 import { executeQuery, withTransaction } from "./connection";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 
-// ============================================================================
-// Row Types
-// ============================================================================
+// ===========================================================================// Row Types
+// ===========================================================================
 
 interface RecipeRow extends RowDataPacket {
   recipe_id: number;
@@ -61,7 +60,7 @@ interface ExploreRecipeRow extends RowDataPacket {
 
 // ============================================================================
 // Helper: Map DB Row to Recipe Type
-// ============================================================================
+// ===========================================================================
 
 function mapRowToRecipe(row: RecipeRow): Recipe {
   return {

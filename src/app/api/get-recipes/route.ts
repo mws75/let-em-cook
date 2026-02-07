@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getOrCreateUser } from "@/lib/database/users";
+import { getAuthenticatedUserId } from "@/lib/auth";
 import { getRecipes } from "@/lib/database/recipes";
 
 export async function GET(request: NextRequest) {
   try {
-    // Get or create database user from Clerk authentication
-    const userId = await getOrCreateUser();
+    const userId = await getAuthenticatedUserId();
 
     console.log(`Fetching recipes for user_id: ${userId}`);
 

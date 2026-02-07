@@ -1,5 +1,6 @@
 // Re-export all database functions for convenient imports
-// Usage: import { getOrCreateUser, getRecipes } from "@/lib/database"
+// Usage: import { countUserRecipes, getRecipes } from "@/lib/database"
+// Note: For auth, use "@/lib/auth" instead (getAuthenticatedUserId, getAuthenticatedUser)
 
 export * from "./connection";
 export * from "./users";

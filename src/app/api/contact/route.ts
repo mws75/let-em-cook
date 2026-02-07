@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUserWithPlan } from "@/lib/database/users";
+import { getAuthenticatedUser } from "@/lib/auth";
 import { getRateCount, insertSupportSubmission } from "@/lib/database/contact";
 import nodemailer from "nodemailer";
 const MAX_MESSAGE_LENGTH = 2_000;
@@ -10,7 +10,7 @@ function isValidEmail(email: string): boolean {
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await getUserWithPlan();
+    const user = await getAuthenticatedUser();
     // 2. Parse and validate the inputs
     const { name, email, message } = await request.json();
 

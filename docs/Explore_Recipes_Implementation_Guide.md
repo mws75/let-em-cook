@@ -382,48 +382,6 @@ export async function copyRecipeToUser(
 
 **File:** `src/app/api/explore-recipes/route.ts` (create new file)
 
-```typescript
-import { NextRequest, NextResponse } from "next/server";
-import { getOrCreateUser } from "@/lib/database/getOrCreateUser";
-import { getExploreRecipes } from "@/lib/database/getExploreRecipes";
-import { ExploreFilters } from "@/types/types";
-
-export async function GET(request: NextRequest) {
-  try {
-    const userId = await getOrCreateUser();
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: "Authentication required" },
-        { status: 401 },
-      );
-    }
-
-    const searchParams = request.nextUrl.searchParams;
-
-    const filters: ExploreFilters = {
-      search: searchParams.get("search") || undefined,
-      category: searchParams.get("category") || undefined,
-      calorieRange: searchParams.get(
-        "calorieRange",
-      ) as ExploreFilters["calorieRange"],
-      limit: parseInt(searchParams.get("limit") || "18", 10),
-      offset: parseInt(searchParams.get("offset") || "0", 10),
-    };
-
-    const { recipes, hasMore } = await getExploreRecipes(userId, filters);
-
-    return NextResponse.json({ recipes, hasMore });
-  } catch (error) {
-    console.error("Error fetching explore recipes:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch recipes" },
-      { status: 500 },
-    );
-  }
-}
-```
-
 ---
 
 ## Step 5: Create the Add Recipe API

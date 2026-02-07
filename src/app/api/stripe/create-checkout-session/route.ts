@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
-import { getUserWithPlan } from "@/lib/database/users";
+import { getAuthenticatedUser } from "@/lib/auth";
 import { executeQuery } from "@/lib/database/connection";
 import { ResultSetHeader } from "mysql2";
 
@@ -8,8 +8,7 @@ export async function POST() {
   try {
     console.log("=== create-checkout-session API called ===");
 
-    // Get current user
-    const user = await getUserWithPlan();
+    const user = await getAuthenticatedUser();
     if (!user) {
       return NextResponse.json(
         { error: "User not authenticated" },

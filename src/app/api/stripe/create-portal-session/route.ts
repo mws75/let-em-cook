@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
-import { getUserWithPlan } from "@/lib/database/users";
+import { getAuthenticatedUser } from "@/lib/auth";
 
 export async function POST() {
   try {
     console.log("=== create-portal-session API called ===");
 
-    // Get current user
-    const user = await getUserWithPlan();
+    const user = await getAuthenticatedUser();
     if (!user) {
       return NextResponse.json(
         { error: "User not authenticated" },
