@@ -3,7 +3,6 @@ import { User as ClerkUser } from "@clerk/nextjs/server";
 import { executeQuery, withTransaction } from "./database/connection";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { User } from "@/types/types";
-
 interface UserRow extends RowDataPacket {
   user_id: number;
   user_name: string;
@@ -80,37 +79,38 @@ async function createUserAndSyncMetadata(
   const email = clerkUser.emailAddresses[0]?.emailAddress;
   const userName =
     clerkUser.username || clerkUser.firstName || email?.split("@")[0] || "User";
+  const profilePicUrl = clerkUser.imageUrl || null;
 
   if (!email) {
     throw new Error("User email not found");
   }
 
-  // Check if user exists by email (handles existing users without metadata)
-  const existingUsers = await executeQuery<RowDataPacket[]>(
+  // Use INSERT IGNORE to handle race conditions - if user already exists, it's a no-op
+  await executeQuery<ResultSetHeader>(
+    `INSERT IGNORE INTO ltc_users (user_name, email, plan_tier, profile_pic_url)
+     VALUES (?, ?, ?, ?)`,
+    [userName, email, "free", profilePicUrl],
+  );
+
+  // Update profile pic if user already exists (in case they changed it in Clerk)
+  if (profilePicUrl) {
+    await executeQuery<ResultSetHeader>(
+      `UPDATE ltc_users SET profile_pic_url = ? WHERE email = ? AND (profile_pic_url IS NULL OR profile_pic_url != ?)`,
+      [profilePicUrl, email, profilePicUrl],
+    );
+  }
+
+  // Now fetch the user_id (whether just created or already existed)
+  const users = await executeQuery<RowDataPacket[]>(
     "SELECT user_id FROM ltc_users WHERE email = ? LIMIT 1",
     [email],
   );
 
-  let userId: number;
-
-  if (existingUsers.length > 0) {
-    userId = existingUsers[0].user_id;
-  } else {
-    // Create new user
-    userId = await withTransaction(async (connection) => {
-      const [result] = await connection.execute<ResultSetHeader>(
-        `INSERT INTO ltc_users (user_name, email, plan_tier)
-         VALUES (?, ?, ?)`,
-        [userName, email, "free"],
-      );
-
-      if (!result.insertId) {
-        throw new Error("Failed to create user: no insertId returned");
-      }
-
-      return result.insertId;
-    });
+  if (users.length === 0) {
+    throw new Error("Failed to create or find user");
   }
+
+  const userId = users[0].user_id;
 
   // Store in Clerk metadata for future requests (no DB query needed next time)
   const client = await clerkClient();

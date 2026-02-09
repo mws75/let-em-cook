@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedUserId } from "@/lib/auth";
-import { deleteRecipe, getRecipeById } from "@/lib/database/recipes";
+import { deleteRecipe, getRecipeWithOwnership } from "@/lib/database/recipes";
 
 export async function GET(
   request: NextRequest,
@@ -14,13 +14,16 @@ export async function GET(
     }
 
     const userId = await getAuthenticatedUserId();
-    const recipe = await getRecipeById(userId, recipeId);
+    const result = await getRecipeWithOwnership(userId, recipeId);
 
-    if (!recipe) {
+    if (!result) {
       return NextResponse.json({ error: "Recipe not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ recipe }, { status: 200 });
+    return NextResponse.json(
+      { recipe: result.recipe, isOwner: result.isOwner },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("API Error, failed to fetch recipe:", error);
     return NextResponse.json(

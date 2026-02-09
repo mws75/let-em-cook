@@ -68,7 +68,20 @@ export default function CreateRecipe() {
   const [selectedCategory, setSelectedCategory] = useState("snack");
   const [ingredients, setIngredients] = useState("");
   const [instructions, setInstructions] = useState("");
-  const categories = ["snack", "chicken", "soup", "fish", "breakfast"];
+  const categories = [
+    "snack",
+    "pork",
+    "beef",
+    "gluten free",
+    "chicken",
+    "vegatarian",
+    "vegan",
+    "soup",
+    "fish",
+    "breakfast",
+    "lunch",
+    "dinner",
+  ];
   const numberOfServings = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   const [selectedNumberOfServings, setSelectedNumberOfServings] = useState(1);
   const [isPublicSelected, setIsPublicSelected] = useState(0);

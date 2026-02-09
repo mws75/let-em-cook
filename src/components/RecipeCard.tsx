@@ -69,7 +69,7 @@ export default function RecipeCard({
   };
 
   return (
-    <div className="relative w-70 h-75 border-2 border-border rounded-2xl bg-surface shadow-lg ml-2 mr-5 mb-5 hover:shadow-xl hover:scale-[1.01] transition-all">
+    <div className="relative w-70 h-55 border-2 border-border rounded-2xl bg-surface shadow-lg ml-2 mr-5 mb-5 hover:shadow-xl hover:scale-[1.01] transition-all">
       {/* Checkbox - positioned absolutely so it doesn't interfere with link */}
       <input
         type="checkbox"
@@ -84,16 +84,6 @@ export default function RecipeCard({
         <div className="pt-3 pb-16">
           <h2 className="text-xl text-text font-bold m-3 pr-10">{name}</h2>
           <div>
-            <h3 className="text-base text-text font-bold ml-3 mr-1">
-              Ingredients
-            </h3>
-            <p
-              className="text-sm text-text mt-2 ml-3 mr-1"
-              title={allIngredients}
-            >
-              {ingredients_json[0].name}: {ingredients_json[0].quantity}{" "}
-              {ingredients_json[0].unit}...
-            </p>
             <h3 className="text-base text-text font-bold ml-3 mr-1 mt-3">
               Nutrition
             </h3>

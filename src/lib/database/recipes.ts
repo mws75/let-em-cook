@@ -206,6 +206,65 @@ export async function getRecipeById(
 }
 
 /**
+ * Fetches a recipe by ID - returns if user owns it OR if it's public
+ * Used for viewing recipes from explore page
+ * @returns Recipe with isOwner flag, or null if not found/not accessible
+ */
+export async function getRecipeWithOwnership(
+  userId: number,
+  recipeId: number,
+): Promise<{ recipe: Recipe; isOwner: boolean } | null> {
+  if (!userId || !recipeId) {
+    throw new Error("Missing required parameters: userId and recipeId");
+  }
+
+  try {
+    const query = `
+      SELECT
+        r.recipe_id,
+        r.user_id,
+        u.user_name,
+        r.is_public,
+        r.is_created_by_user,
+        c.category_name as category,
+        r.name,
+        r.servings,
+        r.ingredients_json,
+        r.instructions_json,
+        r.per_serving_calories,
+        r.per_serving_protein_g,
+        r.per_serving_fat_g,
+        r.per_serving_carbs_g,
+        r.per_serving_sugar_g,
+        r.emoji,
+        r.tags_json as tags,
+        r.active_time_min,
+        r.total_time_min,
+        r.created_on,
+        r.modified_on
+      FROM ltc_recipes r
+      LEFT JOIN ltc_users u ON r.user_id = u.user_id
+      LEFT JOIN ltc_categories c ON r.category_id = c.category_id
+      WHERE r.recipe_id = ? AND (r.user_id = ? OR r.is_public = 1)
+    `;
+
+    const rows = await executeQuery<RecipeRow[]>(query, [recipeId, userId]);
+
+    if (rows.length === 0) {
+      return null;
+    }
+
+    const recipe = mapRowToRecipe(rows[0]);
+    const isOwner = rows[0].user_id === userId;
+
+    return { recipe, isOwner };
+  } catch (error) {
+    console.error("Error fetching recipe from database:", error);
+    throw new Error("Failed to fetch recipe from database");
+  }
+}
+
+/**
  * Fetches public recipes for the Explore page
  * Excludes current user's recipes and recipes they've already added
  */
@@ -223,11 +282,11 @@ export async function getExploreRecipes(
   ];
   const params: (string | number)[] = [currentUserId];
 
-  // Exclude recipes user has already added
+  // Exclude recipes user has already added (check original_recipe_id)
   conditions.push(`
     r.recipe_id NOT IN (
-      SELECT recipe_id FROM ltc_recipes
-      WHERE user_id = ? AND is_created_by_user = 0
+      SELECT original_recipe_id FROM ltc_recipes
+      WHERE user_id = ? AND is_created_by_user = 0 AND original_recipe_id IS NOT NULL
     )
   `);
   params.push(currentUserId);
@@ -314,15 +373,24 @@ export async function getExploreRecipes(
     category: row.category_name,
     name: row.name,
     servings: row.servings,
-    ingredients_json: JSON.parse(row.ingredients_json || "[]"),
-    instructions_json: JSON.parse(row.instructions_json || "[]"),
+    ingredients_json:
+      typeof row.ingredients_json === "string"
+        ? JSON.parse(row.ingredients_json)
+        : row.ingredients_json || [],
+    instructions_json:
+      typeof row.instructions_json === "string"
+        ? JSON.parse(row.instructions_json)
+        : row.instructions_json || [],
     per_serving_calories: row.per_serving_calories,
     per_serving_protein_g: row.per_serving_protein_g,
     per_serving_fat_g: row.per_serving_fat_g,
     per_serving_carbs_g: row.per_serving_carbs_g,
     per_serving_sugar_g: row.per_serving_sugar_g,
     emoji: row.emoji || "🍽️",
-    tags: JSON.parse(row.tags_json || "[]"),
+    tags:
+      typeof row.tags_json === "string"
+        ? JSON.parse(row.tags_json)
+        : row.tags_json || [],
     time: {
       active_min: row.active_time_min || 0,
       total_time: row.total_time_min || 0,
@@ -577,6 +645,22 @@ export async function deleteRecipe(
 }
 
 /**
+ * Checks if a user has already added a specific recipe
+ */
+export async function hasUserAddedRecipe(
+  userId: number,
+  originalRecipeId: number,
+): Promise<boolean> {
+  const result = await executeQuery<RowDataPacket[]>(
+    `SELECT 1 FROM ltc_recipes
+     WHERE user_id = ? AND original_recipe_id = ?
+     LIMIT 1`,
+    [userId, originalRecipeId],
+  );
+  return result.length > 0;
+}
+
+/**
  * Copies a public recipe to a user's collection
  * Sets is_created_by_user = 0 to mark it as added (not created)
  */
@@ -585,24 +669,24 @@ export async function copyRecipeToUser(
   newUserId: number,
 ): Promise<{ newRecipeId: number }> {
   return await withTransaction(async (connection) => {
-    // 1. Copy the recipe with is_created_by_user = 0
+    // 1. Copy the recipe with is_created_by_user = 0 and store original_recipe_id
     const [insertResult] = await connection.execute<ResultSetHeader>(
       `
       INSERT INTO ltc_recipes (
         user_id, category_id, name, servings, ingredients_json, instructions_json,
-        is_public, is_created_by_user, per_serving_calories, per_serving_protein_g,
+        is_public, is_created_by_user, original_recipe_id, per_serving_calories, per_serving_protein_g,
         per_serving_fat_g, per_serving_carbs_g, per_serving_sugar_g,
         emoji, tags_json, active_time_min, total_time_min
       )
       SELECT
         ?, category_id, name, servings, ingredients_json, instructions_json,
-        0, 0, per_serving_calories, per_serving_protein_g,
+        0, 0, ?, per_serving_calories, per_serving_protein_g,
         per_serving_fat_g, per_serving_carbs_g, per_serving_sugar_g,
         emoji, tags_json, active_time_min, total_time_min
       FROM ltc_recipes
       WHERE recipe_id = ?
       `,
-      [newUserId, recipeId],
+      [newUserId, recipeId, recipeId],
     );
 
     const newRecipeId = insertResult.insertId;

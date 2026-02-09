@@ -1,15 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import type { Recipe, Ingredients } from "@/types/types";
+import toast from "react-hot-toast";
 
 export default function RecipeDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [recipe, setRecipe] = useState<Recipe | null>(null);
+  const [isOwner, setIsOwner] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isAdding, setIsAdding] = useState(false);
+
+  const fromExplore = searchParams.get("from") === "explore";
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -20,6 +26,7 @@ export default function RecipeDetailPage() {
         }
         const data = await response.json();
         setRecipe(data.recipe);
+        setIsOwner(data.isOwner);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load recipe");
       } finally {
@@ -31,6 +38,37 @@ export default function RecipeDetailPage() {
       fetchRecipe();
     }
   }, [params.id]);
+
+  const handleAddRecipe = async () => {
+    if (!recipe) return;
+
+    setIsAdding(true);
+    try {
+      const response = await fetch(`/api/recipes/${recipe.recipe_id}/add`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to add recipe");
+      }
+
+      toast.success("Recipe added to your collection!");
+      router.push("/dashboard");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to add recipe");
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  const handleBack = () => {
+    if (fromExplore) {
+      router.push("/explore_recipes");
+    } else {
+      router.push("/dashboard");
+    }
+  };
 
   if (loading) {
     return (
@@ -49,10 +87,10 @@ export default function RecipeDetailPage() {
           {error || "Recipe not found"}
         </div>
         <button
-          onClick={() => router.push("/dashboard")}
+          onClick={handleBack}
           className="px-6 py-2 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
         >
-          Back to Dashboard
+          {fromExplore ? "Back to Explore" : "Back to Dashboard"}
         </button>
       </div>
     );
@@ -103,6 +141,12 @@ export default function RecipeDetailPage() {
                 </span>
               )}
             </div>
+            {/* Show creator info if viewing someone else's recipe */}
+            {!isOwner && (
+              <p className="text-xs text-text-secondary mt-2">
+                Created by {recipe.user_name}
+              </p>
+            )}
           </div>
 
           {/* Macros Section - Inline */}
@@ -223,20 +267,31 @@ export default function RecipeDetailPage() {
         {/* Buttons - Hidden on print */}
         <div className="flex justify-center gap-4 mt-4 print:hidden">
           <button
-            onClick={() => router.push("/dashboard")}
+            onClick={handleBack}
             className="px-6 py-2 bg-surface hover:bg-muted border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
           >
             Back
           </button>
-          <button
-            onClick={() => {
-              sessionStorage.setItem("recipe_edit", JSON.stringify(recipe));
-              router.push("/create_recipe");
-            }}
-            className="px-6 py-2 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
-          >
-            Edit
-          </button>
+
+          {isOwner ? (
+            <button
+              onClick={() => {
+                sessionStorage.setItem("recipe_edit", JSON.stringify(recipe));
+                router.push("/create_recipe");
+              }}
+              className="px-6 py-2 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+            >
+              Edit
+            </button>
+          ) : (
+            <button
+              onClick={handleAddRecipe}
+              disabled={isAdding}
+              className="px-6 py-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all disabled:opacity-50"
+            >
+              {isAdding ? "Adding..." : "Add to My Recipes"}
+            </button>
+          )}
         </div>
 
         {/* Print footer */}

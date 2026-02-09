@@ -1,5 +1,6 @@
 "use client";
 import RecipeCard from "@/components/RecipeCard";
+import { SignOutButton } from "@clerk/nextjs";
 import SelectedRecipeCard from "@/components/SelectedRecipeCard";
 import UpgradeButton from "@/components/UpgradeButton";
 import UpgradePrompt from "@/components/UpgradePrompt";
@@ -159,6 +160,8 @@ function DashboardContent() {
       console.error("Error opening portal:", err);
     }
   };
+
+  const handleSignOut = () => {};
 
   const handleRecipeSelect = (recipe: Recipe, isChecked: boolean) => {
     if (isChecked) {
@@ -333,18 +336,30 @@ function DashboardContent() {
             <UpgradeButton className="mb-2" />
           )}
           {/* Manage Subscription for Pro users */}
-          {subscription && subscription.planTier === "pro" && (
-            <button
-              onClick={handleManageSubscription}
-              className="w-full bg-muted hover:bg-muted/80 border-2 border-border rounded-3xl py-3 mb-2 shadow-md hover:shadow-lg transition-all"
-            >
-              <span className="text-lg font-semibold text-text">
-                Manage Subscription
-              </span>
-            </button>
-          )}
+          <div className="flex gap-4">
+            {subscription && subscription.planTier === "pro" && (
+              <button
+                onClick={handleManageSubscription}
+                className="w-full bg-accent hover:bg-accent/80 border-2 border-border rounded-3xl py-3 mb-2 shadow-md hover:shadow-lg transition-all"
+              >
+                <span className="text-lg font-semibold text-text">
+                  Manage Subscription
+                </span>
+              </button>
+            )}
+            <SignOutButton redirectUrl="/">
+              <button
+                onClick={handleSignOut}
+                className="w-full bg-muted hobver:bg-muted/80 border-2 border-border rounded-3xl py-3 mb-2 shadow-md hover:shadow-lg transition-all"
+              >
+                <span className="text-lg font-semibold text-text">
+                  Sign Out
+                </span>
+              </button>
+            </SignOutButton>
+          </div>
           <button
-            className="w-full bg-accent hover:bg-accent/80 border-2 border-border rounded-3xl py-4 shadow-md hover:shadow-lg transition-all"
+            className="w-full my-2 bg-secondary hover:bg-secondary/80 border-2 border-border rounded-3xl py-4 shadow-md hover:shadow-lg transition-all"
             onClick={handleExploreClick}
           >
             <span className="text-2xl font-bold text-text">
@@ -352,7 +367,7 @@ function DashboardContent() {
             </span>
           </button>
           <button
-            className="w-full bg-accent hover:bg-accent/80 border-2 border-border rounded-3xl py-4 shadow-md hover:shadow-lg transition-all"
+            className="w-full bg-primary hover:bg-primary/80 border-2 border-border rounded-3xl py-4 shadow-md hover:shadow-lg transition-all"
             onClick={handleCreateRecipeClick}
           >
             <span className="text-2xl font-bold text-text">Create Recipe</span>
@@ -437,111 +452,7 @@ function DashboardContent() {
         )}
 
         {/* Dashboard */}
-        <section className="border-2 border-border rounded-3xl p-6 bg-surface shadow-lg">
-          <h2 className="text-3xl text-text font-bold mb-6 text-center">
-            📊 Your Kitchen Stats
-          </h2>
-          <div className="flex gap-6">
-            {/* Left Side - Nutrition & Stats */}
-            <div className="flex-1 space-y-4">
-              {/* Quick Stats Cards */}
-              <div className="grid grid-cols-2 gap-3 mb-6">
-                <div className="bg-primary/20 border-2 border-border rounded-2xl p-4 hover:scale-[1.02] transition-transform shadow-md">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-2xl">📖</span>
-                    <p className="text-sm text-text-secondary font-semibold">
-                      Total Recipes
-                    </p>
-                  </div>
-                  <p className="text-3xl font-bold text-text ml-9">
-                    {subscription?.recipeCount ?? recipes.length}
-                    {subscription?.planTier !== "pro" && (
-                      <span className="text-lg text-text-secondary">
-                        /{FREE_TIER_RECIPE_LIMIT}
-                      </span>
-                    )}
-                    {subscription?.planTier === "pro" && (
-                      <span className="text-sm text-primary ml-2">Pro</span>
-                    )}
-                  </p>
-                </div>
 
-                <div className="bg-secondary/20 border-2 border-border rounded-2xl p-4 hover:scale-[1.02] transition-transform shadow-md">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-2xl">⭐</span>
-                    <p className="text-sm text-text-secondary font-semibold">
-                      Favorites
-                    </p>
-                  </div>
-                  <p className="text-3xl font-bold text-text ml-9">5</p>
-                </div>
-              </div>
-
-              {/* Nutrition Information */}
-              <div className="bg-muted border-2 border-border rounded-2xl p-5">
-                <h3 className="text-lg font-bold text-text mb-4 flex items-center gap-2">
-                  <span className="text-2xl">🥗</span>
-                  Average Nutrition
-                </h3>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between bg-surface border border-border rounded-xl p-3 hover:shadow-md transition-shadow">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">🔥</span>
-                      <span className="text-text font-semibold">Calories</span>
-                    </div>
-                    <span className="text-text font-bold">300 cal</span>
-                  </div>
-
-                  <div className="flex items-center justify-between bg-surface border border-border rounded-xl p-3 hover:shadow-md transition-shadow">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">💪</span>
-                      <span className="text-text font-semibold">Protein</span>
-                    </div>
-                    <span className="text-text font-bold">10g</span>
-                  </div>
-
-                  <div className="flex items-center justify-between bg-surface border border-border rounded-xl p-3 hover:shadow-md transition-shadow">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">🥑</span>
-                      <span className="text-text font-semibold">Fat</span>
-                    </div>
-                    <span className="text-text font-bold">50g</span>
-                  </div>
-
-                  <div className="flex items-center justify-between bg-surface border border-border rounded-xl p-3 hover:shadow-md transition-shadow">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">🍬</span>
-                      <span className="text-text font-semibold">Sugar</span>
-                    </div>
-                    <span className="text-text font-bold">10g</span>
-                  </div>
-
-                  <div className="flex items-center justify-between bg-surface border border-border rounded-xl p-3 hover:shadow-md transition-shadow">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">🌾</span>
-                      <span className="text-text font-semibold">Carbs</span>
-                    </div>
-                    <span className="text-text font-bold">45g</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Side - Pie Chart */}
-            <div className="flex flex-col items-center justify-center">
-              <div className="relative">
-                <div className="bg-gradient-to-br from-primary/30 via-secondary/30 to-accent/30 border-4 border-border rounded-full w-72 h-72 shadow-xl flex items-center justify-center hover:scale-105 transition-transform">
-                  <div className="text-center">
-                    <p className="text-6xl mb-2">📈</p>
-                    <p className="text-text-secondary font-semibold">
-                      Chart Coming Soon
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
         {/* Recipes */}
         <section className="border-2 border-border rounded-3xl bg-surface shadow-lg p-6">
           {/* Search Bar */}
@@ -567,46 +478,41 @@ function DashboardContent() {
             </div>
           </div>
           {/* Category */}
-          <div className="flex flex-col justify-center w-full mt-5 border-2 border-border rounded-2xl bg-surface">
-            <h2 className="text-3xl text-text text-left font-bold ml-5 mt-5 mb-5">
-              Recipes
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-              {isLoadingRecipes ? (
-                <div className="col-span-3 flex flex-col items-center justify-center py-12">
-                  <div className="text-6xl mb-4">🍳</div>
-                  <p className="text-2xl text-text font-semibold">
-                    Loading your recipes...
-                  </p>
-                </div>
-              ) : filteredRecipes.length > 0 ? (
-                filteredRecipes.map((recipe) => (
-                  <RecipeCard
-                    key={recipe.recipe_id}
-                    recipe={recipe}
-                    isSelected={selectedRecipes.some(
-                      (r) => r.recipe_id === recipe.recipe_id,
-                    )}
-                    onSelect={handleRecipeSelect}
-                    onDelete={handleRecipeDelete}
-                  />
-                ))
-              ) : recipes.length === 0 ? (
-                <div className="col-span-3 flex flex-col items-center justify-center py-12">
-                  <div className="text-6xl mb-4">📝</div>
-                  <p className="text-2xl text-text font-semibold mb-2">
-                    No recipes yet!
-                  </p>
-                  <p className="text-text-secondary">
-                    Click "Create Recipe" to add your first recipe
-                  </p>
-                </div>
-              ) : (
-                <p className="text-text text-center col-span-3">
-                  No results found for "{searchTerm}"
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+            {isLoadingRecipes ? (
+              <div className="col-span-3 flex flex-col items-center justify-center py-12">
+                <div className="text-6xl mb-4">🍳</div>
+                <p className="text-2xl text-text font-semibold">
+                  Loading your recipes...
                 </p>
-              )}
-            </div>
+              </div>
+            ) : filteredRecipes.length > 0 ? (
+              filteredRecipes.map((recipe) => (
+                <RecipeCard
+                  key={recipe.recipe_id}
+                  recipe={recipe}
+                  isSelected={selectedRecipes.some(
+                    (r) => r.recipe_id === recipe.recipe_id,
+                  )}
+                  onSelect={handleRecipeSelect}
+                  onDelete={handleRecipeDelete}
+                />
+              ))
+            ) : recipes.length === 0 ? (
+              <div className="col-span-3 flex flex-col items-center justify-center py-12">
+                <div className="text-6xl mb-4">📝</div>
+                <p className="text-2xl text-text font-semibold mb-2">
+                  No recipes yet!
+                </p>
+                <p className="text-text-secondary">
+                  Click "Create Recipe" to add your first recipe
+                </p>
+              </div>
+            ) : (
+              <p className="text-text text-center col-span-3">
+                No results found for "{searchTerm}"
+              </p>
+            )}
           </div>
         </section>
       </div>
