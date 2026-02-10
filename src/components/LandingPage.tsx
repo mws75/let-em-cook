@@ -51,9 +51,10 @@ export default function LandingPage() {
 
       {/* Bottom Buttons */}
       <div className="flex gap-3 w-full max-w-2xl">
-        <button className="flex-1 bg-primary hover:bg-primary/80 border-2 border-border rounded-3xl py-4 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all">
-          <span className="text-xl font-bold text-text">View Recipes</span>
-        </button>
+        {/* <button className="flex-1 bg-primary hover:bg-primary/80 border-2 border-border rounded-3xl py-4 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"> */}
+        {/*   <span className="text-xl font-bold text-text">View Recipes</span> */}
+        {/* </button> */}
+        {/**/}
         <SignInButton mode="modal">
           <button className="flex-1 bg-primary hover:bg-primary/80 border-2 border-border rounded-3xl py-4 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all">
             <span className="text-xl font-bold text-text">Login</span>

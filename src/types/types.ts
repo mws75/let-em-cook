@@ -12,7 +12,7 @@ export type User = {
 
 // Subscription constants
 export const FREE_TIER_RECIPE_LIMIT = 10;
-export const PRO_TIER_PRICE = 4.99;
+export const PRO_TIER_PRICE = 7.99;
 
 export type SubscriptionInfo = {
   planTier: string;
