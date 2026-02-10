@@ -10,14 +10,14 @@ export async function POST() {
     if (!user) {
       return NextResponse.json(
         { error: "User not authenticated" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
     if (!user.stripe_customer_id) {
       return NextResponse.json(
         { error: "No Stripe customer found" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -29,6 +29,11 @@ export async function POST() {
       return_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
     });
 
+    // const session = await stripe.billingPortal.sessions.create({
+    //   customer: user.stripe_customer_id,
+    //   return_url: `billing.stripe.com/p/login/00waEZ1uV473eCU7p467S00`,
+    // });
+    //
     console.log("Portal session created:", session.id);
 
     return NextResponse.json({ url: session.url }, { status: 200 });
@@ -36,7 +41,7 @@ export async function POST() {
     console.error("Error creating portal session:", error);
     return NextResponse.json(
       { error: "Failed to create portal session" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
