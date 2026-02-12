@@ -1,0 +1,204 @@
+{
+  "main": {
+    "id": "76336700bbe32e4a",
+    "type": "split",
+    "children": [
+      {
+        "id": "f10534aa8dec9f0b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ee59fb4b33927f2e",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "RCA/Stripe_Checkout_Email_Lookup_Failure.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Stripe_Checkout_Email_Lookup_Failure"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "7f7bbf1bc4160a28",
+    "type": "split",
+    "children": [
+      {
+        "id": "4667ef8e4314a41b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "79cb141a9552328f",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "efdc3fe6327f9a06",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "361e7143314fa981",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 241.5
+  },
+  "right": {
+    "id": "df6347edfd6a7bce",
+    "type": "split",
+    "children": [
+      {
+        "id": "97d2ce5109310577",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "489c7fbe7108f32b",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "RCA/Stripe_Checkout_Email_Lookup_Failure.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Stripe_Checkout_Email_Lookup_Failure"
+            }
+          },
+          {
+            "id": "0ba5aa96c0da5e63",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "RCA/Stripe_Checkout_Email_Lookup_Failure.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Stripe_Checkout_Email_Lookup_Failure"
+            }
+          },
+          {
+            "id": "cedd1577e7e816e4",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "fc0f1f0709550fbf",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "2435eee63dc80d05",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "RCA/Stripe_Checkout_Email_Lookup_Failure.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Stripe_Checkout_Email_Lookup_Failure"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "ee59fb4b33927f2e",
+  "lastOpenFiles": [
+    "CODE_REVIEW_AND_GROWTH_ASSESSMENT.md",
+    "Explore_Recipes_Implementation_Guide.md",
+    "stripe-production-setup.md",
+    "STRIPE_SETUP.md",
+    "SCHEMA_SIMPLIFICATION_SUMMARY.md",
+    "LOG.md",
+    "UI Ideas.canvas",
+    "IMAGES/Pasted image 20260209174942.png",
+    "IMAGES/Pasted image 20260209175014.png",
+    "IMAGES/Pasted image 20260204091450.png",
+    "IMAGES/Pasted image 20260204091458.png",
+    "AA - Summary - AA.md",
+    "IMAGES",
+    "Explore-Recipes-Page/Expore Recipes Page Notes.md",
+    "Explore-Recipes-Page"
+  ]
+}

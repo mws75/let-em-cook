@@ -181,6 +181,10 @@ function DashboardContent() {
     setRecipes(recipes.filter((r) => r.recipe_id !== recipe_id));
   };
 
+  const handleClearSelected = () => {
+    setSelectedRecipes([]);
+  };
+
   const generateGroceryList = async () => {
     if (selectedRecipes.length === 0) {
       setError("Please select at least one recipe first");
@@ -320,16 +324,25 @@ function DashboardContent() {
                 ))}
               </div>
             </div>
-
-            <button
-              onClick={generateGroceryList}
-              disabled={isGenerating || selectedRecipes.length === 0}
-              className="w-32 bg-secondar hover:bg-secondar/80 border-2 border-border rounded-3xl py-4 mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-            >
-              <span className="text-1xl font-bold text-text">
-                {isGenerating ? "Generating..." : "Generate List"}
-              </span>
-            </button>
+            <div className="flex flex-col gap-1">
+              <button
+                onClick={generateGroceryList}
+                disabled={isGenerating || selectedRecipes.length === 0}
+                className="w-32 bg-primary hover:bg-primary/80 border-2 border-border rounded-3xl py-4 mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              >
+                <span className="text-1xl font-bold text-text">
+                  {isGenerating ? "Generating..." : "Generate List"}
+                </span>
+              </button>
+              <button
+                onClick={handleClearSelected}
+                className="w-32 bg-accent hover:bg-accent/80 border-2 border-border rounded-3xl py-4 mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              >
+                <span className="text-1xl font-bold text-text">
+                  Clear Selected
+                </span>
+              </button>
+            </div>
           </div>
           {/* Upgrade Button for free users */}
           {subscription && subscription.planTier !== "pro" && (
