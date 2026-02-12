@@ -1,4 +1,5 @@
-import type { Recipe, Instructions, Ingredients } from "@/types/types";
+import type { Recipe } from "@/types/types";
+import { getCategoryColor } from "@/lib/categoryColors";
 
 type SelectedRecipeCardProps = {
   recipe: Recipe;
@@ -7,29 +8,18 @@ type SelectedRecipeCardProps = {
 export default function SelectedRecipeCard({
   recipe,
 }: SelectedRecipeCardProps) {
-  const {
-    name,
-    per_serving_calories,
-    per_serving_protein_g,
-    per_serving_fat_g,
-    per_serving_carbs_g,
-    per_serving_sugar_g,
-  } = recipe;
+  const { name, category } = recipe;
+  const categoryColor = getCategoryColor(category || "");
 
   return (
-    <div className="relative w-50 h-50 border-2 border-border rounded-2xl bg-surface shadow-lg">
-      <div className="flex">
-        <h3 className="text-lg text-text font-bold m-2">{name}</h3>
-      </div>
-      <h3 className="text-base text-text font-bold m-2">Nutrition</h3>
-      <div>
-        <p className="text-sm text-text mt-2 ml-2 mr-1">
-          calories: {per_serving_calories} <br />
-          protein: {per_serving_protein_g}g <br />
-          fat: {per_serving_fat_g}g <br />
-          carbs: {per_serving_carbs_g}g <br />
-        </p>
-      </div>
+    <div
+      className="border-2 border-border rounded-2xl px-5 py-2 shadow-md"
+      style={{
+        background: "#ffffff",
+        boxShadow: `inset 0 0 20px 8px ${categoryColor}`,
+      }}
+    >
+      <span className="text-base text-text font-bold">{name}</span>
     </div>
   );
 }

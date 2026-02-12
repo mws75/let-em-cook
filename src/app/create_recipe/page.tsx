@@ -65,22 +65,31 @@ import { Recipe, Ingredients } from "@/types/types";
 export default function CreateRecipe() {
   const [recipeName, setRecipeName] = useState("");
   //const [categories, setCategories] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("snack");
+  const [selectedCategory, setSelectedCategory] = useState("breakfast");
   const [ingredients, setIngredients] = useState("");
   const [instructions, setInstructions] = useState("");
   const categories = [
-    "snack",
-    "pork",
-    "beef",
-    "gluten free",
-    "chicken",
-    "vegatarian",
-    "vegan",
-    "soup",
-    "fish",
     "breakfast",
     "lunch",
     "dinner",
+    "snack",
+    "dessert",
+    "chicken",
+    "beef",
+    "pork",
+    "fish",
+    "seafood",
+    "soup",
+    "pasta",
+    "salad",
+    "vegetarian",
+    "vegan",
+    "gluten free",
+    "dairy free",
+    "keto",
+    "low carb",
+    "slow cooker",
+    "meal prep",
   ];
   const numberOfServings = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   const [selectedNumberOfServings, setSelectedNumberOfServings] = useState(1);

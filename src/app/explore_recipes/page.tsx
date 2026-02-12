@@ -18,11 +18,27 @@ const CALORIE_OPTIONS = [
 
 const CATEGORY_OPTIONS = [
   { value: "", label: "All Categories" },
-  { value: "Breakfast", label: "Breakfast" },
-  { value: "Lunch", label: "Lunch" },
-  { value: "Dinner", label: "Dinner" },
-  { value: "Snack", label: "Snack" },
-  { value: "Dessert", label: "Dessert" },
+  { value: "breakfast", label: "Breakfast" },
+  { value: "lunch", label: "Lunch" },
+  { value: "dinner", label: "Dinner" },
+  { value: "snack", label: "Snack" },
+  { value: "dessert", label: "Dessert" },
+  { value: "chicken", label: "Chicken" },
+  { value: "beef", label: "Beef" },
+  { value: "pork", label: "Pork" },
+  { value: "fish", label: "Fish" },
+  { value: "seafood", label: "Seafood" },
+  { value: "soup", label: "Soup" },
+  { value: "pasta", label: "Pasta" },
+  { value: "salad", label: "Salad" },
+  { value: "vegetarian", label: "Vegetarian" },
+  { value: "vegan", label: "Vegan" },
+  { value: "gluten free", label: "Gluten Free" },
+  { value: "dairy free", label: "Dairy Free" },
+  { value: "keto", label: "Keto" },
+  { value: "low carb", label: "Low Carb" },
+  { value: "slow cooker", label: "Slow Cooker" },
+  { value: "meal prep", label: "Meal Prep" },
 ];
 
 const BATCH_SIZE = 18;
