@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { ExploreRecipe } from "@/types/types";
+import { getCategoryColor } from "@/lib/categoryColors";
 
 type ExploreRecipeCardProps = {
   recipe: ExploreRecipe;
@@ -17,6 +18,7 @@ export default function ExploreRecipeCard({
 
   const {
     recipe_id,
+    category,
     name,
     emoji,
     ingredients_json,
@@ -26,6 +28,8 @@ export default function ExploreRecipeCard({
     creator_name,
     creator_profile_pic,
   } = recipe;
+
+  const categoryColor = getCategoryColor(category || "");
 
   // First 3 ingredients for preview
   const ingredientPreview = ingredients_json.slice(0, 3);
@@ -43,7 +47,11 @@ export default function ExploreRecipeCard({
   return (
     <div
       onClick={() => onClick(recipe_id)}
-      className="relative w-70 h-55 border-2 border-border rounded-2xl bg-surface shadow-lg ml-2 mr-5 mb-5 hover:shadow-xl hover:scale-[1.01] transition-all cursor-pointer"
+      className="relative w-70 h-55 border-2 border-border rounded-2xl shadow-lg ml-2 mr-5 mb-5 hover:shadow-xl hover:scale-[1.01] transition-all cursor-pointer overflow-visible"
+      style={{
+        background: "#ffffff",
+        boxShadow: `inset 0 0 20px 8px ${categoryColor}`,
+      }}
     >
       {/* User Profile - top right */}
       <div className="absolute top-3 right-3">
@@ -82,15 +90,23 @@ export default function ExploreRecipeCard({
       {/* Add Button - bottom right */}
       <div className="absolute bottom-0 right-0">
         <div className="mt-2 mr-3 mb-3">
-          <button
-            onClick={handleAddClick}
-            disabled={isAdding}
-            className="px-6 py-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all disabled:opacity-50"
-          >
-            {isAdding ? "Adding..." : "Add"}
-          </button>
+          <div className="group relative">
+            <button
+              onClick={handleAddClick}
+              disabled={isAdding}
+              className="px-6 py-2 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all disabled:opacity-50"
+            >
+              {isAdding ? "Adding..." : "Add"}
+            </button>
+            {/* Tooltip */}
+            <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full right-0 mb-2 w-64 p-3 bg-background border-2 border-border rounded-xl shadow-lg text-sm text-text z-20">
+              Click Add to add this recipe to your library, you can then edit
+              the recipe to fit your preferences :)
+            </div>
+          </div>
         </div>
       </div>
+
     </div>
   );
 }
