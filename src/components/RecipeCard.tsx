@@ -103,9 +103,28 @@ export default function RecipeCard({
         <div className="mt-2 mr-3 mb-3">
           <button
             onClick={handleDeleteClick}
-            className="px-6 py-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+            className="p-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl shadow-md hover:shadow-lg hover:scale-[1.1] transition-all"
+            aria-label="Delete recipe"
           >
-            delete
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 64 64"
+              className="w-7 h-7"
+              fill="none"
+            >
+              {/* Lid */}
+              <rect x="14" y="12" width="36" height="6" rx="3" fill="#4a5568" />
+              {/* Lid handle */}
+              <rect x="25" y="7" width="14" height="7" rx="3.5" fill="#4a5568" />
+              {/* Body */}
+              <path
+                d="M16 18h32l-3 36a4 4 0 0 1-4 3.5H23A4 4 0 0 1 19 54Z"
+                fill="#4a5568"
+              />
+              {/* Lines on body */}
+              <line x1="27" y1="26" x2="27" y2="48" stroke="#fdfbf7" strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="37" y1="26" x2="37" y2="48" stroke="#fdfbf7" strokeWidth="2.5" strokeLinecap="round" />
+            </svg>
           </button>
         </div>
       </div>
