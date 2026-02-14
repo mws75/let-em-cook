@@ -1,4 +1,5 @@
 "use client";
+import RecipeDetailModal from "@/components/RecipeDetailModal";
 import RecipeCard from "@/components/RecipeCard";
 import { SignOutButton } from "@clerk/nextjs";
 import SelectedRecipeCard from "@/components/SelectedRecipeCard";
@@ -22,6 +23,7 @@ function DashboardContent() {
   const searchParams = useSearchParams();
   const { user, isLoaded } = useUser();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [viewingRecipeId, setViewingRecipeId] = useState<number | null>(null);
   const [isLoadingRecipes, setIsLoadingRecipes] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRecipes, setSelectedRecipes] = useState<Recipe[]>([]);
@@ -143,6 +145,14 @@ function DashboardContent() {
     router.push("/create_recipe");
   };
 
+  const handleRecipeClick = (recipeId: number) => {
+    setViewingRecipeId(recipeId);
+  };
+
+  const handleModalClose = () => {
+    setViewingRecipeId(null);
+  };
+
   const handleExploreClick = () => {
     router.push("/explore_recipes");
   };
@@ -163,7 +173,7 @@ function DashboardContent() {
 
   const handleSignOut = () => {};
 
-  const handleRecipeSelect = (recipe: Recipe, isChecked: boolean) => {
+  const handleRecipeCheckBoxSelect = (recipe: Recipe, isChecked: boolean) => {
     if (isChecked) {
       // Add selected recipe
       setSelectedRecipes([...selectedRecipes, recipe]);
@@ -301,6 +311,16 @@ function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-background">
+      {viewingRecipeId && (
+        <RecipeDetailModal
+          recipeId={viewingRecipeId}
+          onCloseClick={handleModalClose}
+          onDelete={(recipeId) => {
+            handleRecipeDelete(recipeId);
+            handleModalClose();
+          }}
+        />
+      )}
       <UpgradePrompt
         isOpen={showUpgradePrompt}
         onClose={() => setShowUpgradePrompt(false)}
@@ -507,8 +527,9 @@ function DashboardContent() {
                   isSelected={selectedRecipes.some(
                     (r) => r.recipe_id === recipe.recipe_id,
                   )}
-                  onSelect={handleRecipeSelect}
+                  onSelect={handleRecipeCheckBoxSelect}
                   onDelete={handleRecipeDelete}
+                  onClick={handleRecipeClick}
                 />
               ))
             ) : recipes.length === 0 ? (
