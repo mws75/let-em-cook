@@ -1,15 +1,15 @@
 "use client";
 import React from "react";
-import Link from "next/link";
 import type { Recipe } from "@/types/types";
 import { getCategoryColor } from "@/lib/categoryColors";
 import toast from "react-hot-toast";
-
+// See https://www.byte-size-tech.com/post/221 for Example of CheckBoxs
 type RecipeCardProps = {
   recipe: Recipe;
   isSelected?: boolean;
   onSelect?: (recipe: Recipe, isChecked: boolean) => void;
   onDelete?: (recipeId: number) => void;
+  onClick?: (recipeId: number) => void;
 };
 
 export default function RecipeCard({
@@ -17,6 +17,7 @@ export default function RecipeCard({
   isSelected,
   onSelect,
   onDelete,
+  onClick,
 }: RecipeCardProps) {
   const {
     recipe_id,
@@ -75,8 +76,7 @@ export default function RecipeCard({
         onChange={handleRecipeCheckBoxChange}
         onClick={(e) => e.stopPropagation()}
       />
-
-      <Link href={`/recipe/${recipe_id}`} className="block">
+      <div className="block cursor-pointer" onClick={() => onClick?.(recipe_id)}>
         <h2 className="text-base text-text font-bold pr-8 truncate">{name}</h2>
         <div className="flex gap-3 mt-2 text-xs text-text-secondary">
           <span>{per_serving_calories} cal</span>
@@ -84,7 +84,7 @@ export default function RecipeCard({
           <span>{per_serving_fat_g}g F</span>
           <span>{per_serving_carbs_g}g C</span>
         </div>
-      </Link>
+      </div>
 
       <div className="flex justify-end mt-2">
         <button
