@@ -20,8 +20,23 @@
               "icon": "lucide-file",
               "title": "Stripe_Checkout_Email_Lookup_Failure"
             }
+          },
+          {
+            "id": "0ee4bf73dc0921a3",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "AA - Summary - AA.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "AA - Summary - AA"
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -78,7 +93,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 241.5
+    "width": 241.5,
+    "collapsed": true
   },
   "right": {
     "id": "df6347edfd6a7bce",
@@ -94,7 +110,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "RCA/Stripe_Checkout_Email_Lookup_Failure.md",
+                "file": "AA - Summary - AA.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +120,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Stripe_Checkout_Email_Lookup_Failure"
+              "title": "Backlinks for AA - Summary - AA"
             }
           },
           {
@@ -113,12 +129,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "RCA/Stripe_Checkout_Email_Lookup_Failure.md",
+                "file": "AA - Summary - AA.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from Stripe_Checkout_Email_Lookup_Failure"
+              "title": "Outgoing links from AA - Summary - AA"
             }
           },
           {
@@ -156,13 +172,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "RCA/Stripe_Checkout_Email_Lookup_Failure.md",
+                "file": "AA - Summary - AA.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Stripe_Checkout_Email_Lookup_Failure"
+              "title": "Outline of AA - Summary - AA"
             }
           }
         ]
@@ -183,8 +199,14 @@
       "bases:Create new base": false
     }
   },
-  "active": "ee59fb4b33927f2e",
+  "active": "0ee4bf73dc0921a3",
   "lastOpenFiles": [
+    "Recipe_Modal_Implementation_Guide.md",
+    "Notes/CheckBox Component.md",
+    "RCA/Stripe_Checkout_Email_Lookup_Failure.md",
+    "Notes",
+    "AA - Summary - AA.md",
+    "00- TODO.md",
     "CODE_REVIEW_AND_GROWTH_ASSESSMENT.md",
     "Explore_Recipes_Implementation_Guide.md",
     "stripe-production-setup.md",
@@ -196,7 +218,6 @@
     "IMAGES/Pasted image 20260209175014.png",
     "IMAGES/Pasted image 20260204091450.png",
     "IMAGES/Pasted image 20260204091458.png",
-    "AA - Summary - AA.md",
     "IMAGES",
     "Explore-Recipes-Page/Expore Recipes Page Notes.md",
     "Explore-Recipes-Page"
