@@ -6,6 +6,7 @@ import { ExploreRecipe } from "@/types/types";
 import ExploreRecipeCard from "@/components/ExploreRecipeCard";
 import UpgradePrompt from "@/components/UpgradePrompt";
 import toast from "react-hot-toast";
+import { DEFAULT_CATEGORY_LIST } from "@/lib/categoryColors";
 
 const CALORIE_OPTIONS = [
   { value: "", label: "All Calories" },
@@ -18,27 +19,10 @@ const CALORIE_OPTIONS = [
 
 const CATEGORY_OPTIONS = [
   { value: "", label: "All Categories" },
-  { value: "breakfast", label: "Breakfast" },
-  { value: "lunch", label: "Lunch" },
-  { value: "dinner", label: "Dinner" },
-  { value: "snack", label: "Snack" },
-  { value: "dessert", label: "Dessert" },
-  { value: "chicken", label: "Chicken" },
-  { value: "beef", label: "Beef" },
-  { value: "pork", label: "Pork" },
-  { value: "fish", label: "Fish" },
-  { value: "seafood", label: "Seafood" },
-  { value: "soup", label: "Soup" },
-  { value: "pasta", label: "Pasta" },
-  { value: "salad", label: "Salad" },
-  { value: "vegetarian", label: "Vegetarian" },
-  { value: "vegan", label: "Vegan" },
-  { value: "gluten free", label: "Gluten Free" },
-  { value: "dairy free", label: "Dairy Free" },
-  { value: "keto", label: "Keto" },
-  { value: "low carb", label: "Low Carb" },
-  { value: "slow cooker", label: "Slow Cooker" },
-  { value: "meal prep", label: "Meal Prep" },
+  ...DEFAULT_CATEGORY_LIST.map((c) => ({
+    value: c.name,
+    label: c.name.charAt(0).toUpperCase() + c.name.slice(1),
+  })),
 ];
 
 const BATCH_SIZE = 18;

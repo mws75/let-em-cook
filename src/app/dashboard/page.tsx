@@ -17,6 +17,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import toast from "react-hot-toast";
+import { DEFAULT_CATEGORY_LIST } from "@/lib/categoryColors";
 
 function DashboardContent() {
   const router = useRouter();
@@ -26,7 +27,11 @@ function DashboardContent() {
   const [viewingRecipeId, setViewingRecipeId] = useState<number | null>(null);
   const [isLoadingRecipes, setIsLoadingRecipes] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [categories, setCategories] = useState<string[]>(
+    DEFAULT_CATEGORY_LIST.map((c) => c.name),
+  );
   const [selectedRecipes, setSelectedRecipes] = useState<Recipe[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [groceryList, setGroceryList] = useState<GroceryItem[]>([]);
   const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>(
     {},
@@ -73,7 +78,31 @@ function DashboardContent() {
       }
     };
 
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/categoires");
+        if (response.ok) {
+          const data = await response.json();
+          const userCustomCategories: string[] = data.categories.map(
+            (c: { category_name: string }) => c.category_name,
+          );
+          const defaultNames = new Set(
+            DEFAULT_CATEGORY_LIST.map((c) => c.name),
+          );
+          const extraCategories = userCustomCategories.filter(
+            (n) => !defaultNames.has(n),
+          );
+          if (extraCategories.length > 0) {
+            setCategories((prev) => [...prev, ...extraCategories]);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching categories", error);
+      }
+    };
+
     fetchRecipes();
+    fetchCategories();
   }, [isLoaded, user, router]);
 
   // Fetch subscription info
@@ -130,10 +159,13 @@ function DashboardContent() {
   const filteredRecipes = recipes.filter((recipe) => {
     const searchLower = searchTerm.toLowerCase();
     const nameMatch = recipe.name.toLowerCase().includes(searchLower);
+
+    const categoryMatch = selectedCategory === ""
+      || recipe.category.toLowerCase() === selectedCategory.toLowerCase();
     const ingredientsMatch = recipe.ingredients_json.some((ingredient) => {
       return ingredient.name.toLowerCase().includes(searchLower);
     });
-    return nameMatch || ingredientsMatch;
+    return (nameMatch || ingredientsMatch) && categoryMatch;
   });
 
   const handleCreateRecipeClick = () => {
@@ -351,7 +383,7 @@ function DashboardContent() {
                 className="w-32 bg-primary hover:bg-primary/80 border-2 border-border rounded-3xl py-4 mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 <span className="text-1xl font-bold text-text">
-                  {isGenerating ? "Generating..." : "Generate List"}
+                  {isGenerating ? "Generating..." : "Generate Grocery List"}
                 </span>
               </button>
               <button
@@ -494,6 +526,22 @@ function DashboardContent() {
               Recipes{" "}
             </h2>
             <div className="flex gap-2 ml-auto w-max">
+              <label htmlFor="category-select" className="text-text font-semibold self-center">
+                Category:
+              </label>
+              <select
+                id="category-select"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="px-4 py-2 border-2 border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors min-w-[150px]"
+              >
+                <option value="">All</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                  </option>
+                ))}
+              </select>
               <input
                 type="text"
                 placeholder="Search recipes..."

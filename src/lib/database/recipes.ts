@@ -1,7 +1,7 @@
 import { Recipe, ExploreRecipe, ExploreFilters } from "@/types/types";
 import { executeQuery, withTransaction } from "./connection";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
-
+import { CATEGORY_COLORS } from "../categoryColors";
 // ===========================================================================// Row Types
 // ===========================================================================
 
@@ -448,7 +448,11 @@ export async function insertRecipe(
       const [insertResult] = await connection.execute<ResultSetHeader>(
         `INSERT INTO ltc_categories (user_id, category_name, color_hex)
         VALUES (?, ?, ?)`,
-        [recipe.user_id, categoryName, "#6366f1"],
+        [
+          recipe.user_id,
+          categoryName,
+          CATEGORY_COLORS[categoryName.toLowerCase()] || "#6366F1",
+        ],
       );
       categoryId = insertResult.insertId;
     }

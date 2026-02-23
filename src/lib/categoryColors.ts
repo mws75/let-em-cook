@@ -25,3 +25,9 @@ export const CATEGORY_COLORS: Record<string, string> = {
 export function getCategoryColor(category: string): string {
   return CATEGORY_COLORS[category.toLowerCase()] || "#E0E0E0";
 }
+
+export const DEFAULT_CATEGORY_LIST: { name: string; color_hex: string }[] =
+  Object.entries(CATEGORY_COLORS).map(([name, color_hex]) => ({
+    name,
+    color_hex,
+  }));
