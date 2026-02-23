@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
       }));
       return NextResponse.json({ categories }, { status: 200 });
     }
-    const userId = getAuthenticatedUserId();
+    const userId = await getAuthenticatedUserId();
     const categories = await getUserCategories(userId);
     return NextResponse.json({ categories }, { status: 200 });
   } catch (error) {
