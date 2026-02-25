@@ -3,6 +3,7 @@ import RecipeDetailModal from "@/components/RecipeDetailModal";
 import RecipeCard from "@/components/RecipeCard";
 import { SignOutButton } from "@clerk/nextjs";
 import SelectedRecipeCard from "@/components/SelectedRecipeCard";
+import Calendar from "@/components/Calendar";
 import UpgradeButton from "@/components/UpgradeButton";
 import UpgradePrompt from "@/components/UpgradePrompt";
 import {
@@ -42,6 +43,7 @@ function DashboardContent() {
     null,
   );
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
 
   // Fetch recipes on component mount
   useEffect(() => {
@@ -160,8 +162,9 @@ function DashboardContent() {
     const searchLower = searchTerm.toLowerCase();
     const nameMatch = recipe.name.toLowerCase().includes(searchLower);
 
-    const categoryMatch = selectedCategory === ""
-      || recipe.category.toLowerCase() === selectedCategory.toLowerCase();
+    const categoryMatch =
+      selectedCategory === "" ||
+      recipe.category.toLowerCase() === selectedCategory.toLowerCase();
     const ingredientsMatch = recipe.ingredients_json.some((ingredient) => {
       return ingredient.name.toLowerCase().includes(searchLower);
     });
@@ -387,6 +390,14 @@ function DashboardContent() {
                 </span>
               </button>
               <button
+                onClick={() => setShowCalendar(!showCalendar)}
+                className="w-full md:w-32 bg-secondary hover:bg-secondary/80 border-2 border-border rounded-3xl py-4 mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              >
+                <span className="text-1xl font-bold text-text">
+                  {showCalendar ? "Hide" : "Create"} <br /> Calendar
+                </span>
+              </button>
+              <button
                 onClick={handleClearSelected}
                 className="w-full md:w-32 bg-accent hover:bg-accent/80 border-2 border-border rounded-3xl py-4 mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
@@ -516,7 +527,13 @@ function DashboardContent() {
           </section>
         )}
 
-        {/* Dashboard */}
+        {/* Meal Plan Calendar */}
+        <div className={showCalendar ? "" : "hidden"}>
+          <Calendar
+            selectedRecipes={selectedRecipes}
+            onClose={() => setShowCalendar(false)}
+          />
+        </div>
 
         {/* Recipes */}
         <section className="border-2 border-border rounded-3xl bg-surface shadow-lg p-6">
@@ -526,7 +543,10 @@ function DashboardContent() {
               Recipes{" "}
             </h2>
             <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto md:ml-auto">
-              <label htmlFor="category-select" className="text-text font-semibold self-center">
+              <label
+                htmlFor="category-select"
+                className="text-text font-semibold self-center"
+              >
                 Category:
               </label>
               <select
