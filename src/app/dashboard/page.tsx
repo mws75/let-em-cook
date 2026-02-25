@@ -361,14 +361,14 @@ function DashboardContent() {
       <div className="w-full max-w-5xl mx-auto px-4 pb-20 space-y-10">
         {/* Header Information */}
         <div className="flex justify-center mt-10 mb-10">
-          <h1 className="text-4xl text-text font-bold">
+          <h1 className="text-2xl md:text-4xl text-text font-bold">
             🔪 Let's Get Cooking!
           </h1>
         </div>
 
         {/* Meal Prep Section */}
         <section className="border-2 border-border rounded-3xl p-2 bg-surface shadow-lg">
-          <div className="flex gap-4 m-2">
+          <div className="flex flex-col md:flex-row gap-4 m-2">
             <div className="flex-1 border-2 border-border rounded-3xl p-8 bg-surface">
               <div className="flex flex-wrap gap-4">
                 {selectedRecipes.map((recipe) => (
@@ -376,11 +376,11 @@ function DashboardContent() {
                 ))}
               </div>
             </div>
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-row md:flex-col gap-2 md:gap-1">
               <button
                 onClick={generateGroceryList}
                 disabled={isGenerating || selectedRecipes.length === 0}
-                className="w-32 bg-primary hover:bg-primary/80 border-2 border-border rounded-3xl py-4 mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="w-full md:w-32 bg-primary hover:bg-primary/80 border-2 border-border rounded-3xl py-4 mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 <span className="text-1xl font-bold text-text">
                   {isGenerating ? "Generating..." : "Generate Grocery List"}
@@ -388,7 +388,7 @@ function DashboardContent() {
               </button>
               <button
                 onClick={handleClearSelected}
-                className="w-32 bg-accent hover:bg-accent/80 border-2 border-border rounded-3xl py-4 mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="w-full md:w-32 bg-accent hover:bg-accent/80 border-2 border-border rounded-3xl py-4 mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 <span className="text-1xl font-bold text-text">
                   Clear Selected
@@ -449,11 +449,11 @@ function DashboardContent() {
         {/* Grocery List Section */}
         {groceryList.length > 0 && (
           <section className="border-2 border-border rounded-3xl p-6 bg-surface shadow-lg">
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
               <h2 className="text-3xl text-text font-bold">
                 🛒 Your Grocery List
               </h2>
-              <div className="flex gap-3">
+              <div className="flex flex-wrap gap-2">
                 <button
                   onClick={selectAllItems}
                   className="px-4 py-2 bg-primary/20 hover:bg-primary/30 border-2 border-border rounded-xl font-semibold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
@@ -521,11 +521,11 @@ function DashboardContent() {
         {/* Recipes */}
         <section className="border-2 border-border rounded-3xl bg-surface shadow-lg p-6">
           {/* Search Bar */}
-          <div className="flex p-2">
+          <div className="flex flex-col md:flex-row gap-3 p-2">
             <h2 className="text-3xl text-text text-center font-bold pr-10">
               Recipes{" "}
             </h2>
-            <div className="flex gap-2 ml-auto w-max">
+            <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto md:ml-auto">
               <label htmlFor="category-select" className="text-text font-semibold self-center">
                 Category:
               </label>
@@ -533,7 +533,7 @@ function DashboardContent() {
                 id="category-select"
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-2 border-2 border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors min-w-[150px]"
+                className="px-4 py-2 border-2 border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors w-full sm:w-auto sm:min-w-[150px]"
               >
                 <option value="">All</option>
                 {categories.map((cat) => (
@@ -547,7 +547,7 @@ function DashboardContent() {
                 placeholder="Search recipes..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-96 px-4 py-2 border-2 border-border rounded-xl bg-surface text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
+                className="w-full md:w-96 px-4 py-2 border-2 border-border rounded-xl bg-surface text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
               />
               <button
                 type="button"

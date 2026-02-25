@@ -49,11 +49,11 @@ export default function Contact(){
     <div className="min-h-screen bg-background">
       <div className="w-full max-w-5xl mx-auto px-4 pb-20 space-y-5">
         <div className="flex justify-center mt-10 mb-10">
-          <h1 className="text-4xl text-text mx-auto px-4 pb-20 space-y-5">
+          <h1 className="text-2xl md:text-4xl text-text font-bold">
           Fill out the Form to Contact Support
           </h1>
         </div>
-        <section className="border-2 border-border rounded-3xl px-10 py-4 bg-surface shadow-lg flex flex-col gap-4">
+        <section className="border-2 border-border rounded-3xl px-4 sm:px-10 py-4 bg-surface shadow-lg flex flex-col gap-4">
         <input
           type="text"
           placeholder="Name"
@@ -71,23 +71,23 @@ export default function Contact(){
           <h2 className="text-text text-xl font-bold ml-10">Message</h2>
           <textarea
             id="contact_support_message"
-                        className="m-5 block min-h-64 w-9/12 rounded-lg border-2 border-border bg-surface p-2.5 text-sm text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
+                        className="mx-4 sm:mx-5 block min-h-48 sm:min-h-64 w-full sm:w-9/12 rounded-lg border-2 border-border bg-surface p-2.5 text-sm text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
             placeholder="message..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
         </section>
-        <div>
+        <div className="flex flex-col sm:flex-row gap-2">
           <button
             onClick={handleSubmitClick}
             disabled={isSubmitting}
-            className="w-1/3 px-6 py-2 mr-2 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+            className="w-full sm:w-1/3 px-6 py-2 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
           >
             {isSubmitting ? "Sending..." : "Send"}
           </button>
           <button
             onClick={handleCancelClick}
-            className="px-6 w-1/3 py-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+            className="px-6 w-full sm:w-1/3 py-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
           >
             Cancel
           </button>

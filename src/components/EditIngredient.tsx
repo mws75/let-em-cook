@@ -80,16 +80,16 @@ export default function EditIngredient({ ingredients, onChange }: Props) {
         <table className="w-full border-collapse text-sm">
           <thead className="bg-primary/20">
             <tr className="border-b-2 border-border">
-              <th className="px-6 py-4 text-left font-bold text-text">
+              <th className="px-3 py-2 sm:px-6 sm:py-4 text-left font-bold text-text">
                 🥬 Ingredient
               </th>
-              <th className="px-6 py-4 text-left font-bold text-text">
+              <th className="px-3 py-2 sm:px-6 sm:py-4 text-left font-bold text-text">
                 📊 Quantity
               </th>
-              <th className="px-6 py-4 text-left font-bold text-text">
+              <th className="px-3 py-2 sm:px-6 sm:py-4 text-left font-bold text-text">
                 📏 Unit
               </th>
-              <th className="px-6 py-4 text-left font-bold text-text">
+              <th className="px-3 py-2 sm:px-6 sm:py-4 text-left font-bold text-text">
                 ✂️ Prep
               </th>
             </tr>
@@ -103,7 +103,7 @@ export default function EditIngredient({ ingredients, onChange }: Props) {
                 }`}
               >
                 {/* Column 1: Read Only - Name */}
-                <td className="px-6 py-4">
+                <td className="px-3 py-2 sm:px-6 sm:py-4">
                   <div className="flex items-center gap-2">
                     <span className="text-lg">🌿</span>
                     <span className="text-text font-semibold">{row.name}</span>
@@ -111,20 +111,20 @@ export default function EditIngredient({ ingredients, onChange }: Props) {
                 </td>
 
                 {/* Column 2: Editable - Quantity */}
-                <td className="px-6 py-4">
+                <td className="px-3 py-2 sm:px-6 sm:py-4">
                   <input
                     type="number"
                     value={row.quantity}
                     onChange={(e) =>
                       updateCell(row.name, "quantity", Number(e.target.value))
                     }
-                    className="w-24 rounded-lg border-2 border-border px-3 py-2 bg-surface text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+                    className="w-16 sm:w-24 rounded-lg border-2 border-border px-3 py-2 bg-surface text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
                     placeholder="0"
                   />
                 </td>
 
                 {/* Column 3: Editable - Unit */}
-                <td className="px-6 py-4">
+                <td className="px-3 py-2 sm:px-6 sm:py-4">
                   <input
                     type="text"
                     value={row.unit}
@@ -132,20 +132,20 @@ export default function EditIngredient({ ingredients, onChange }: Props) {
                       updateCell(row.name, "unit", e.target.value)
                     }
                     list="units-list"
-                    className="w-32 rounded-lg border-2 border-border px-3 py-2 bg-surface text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+                    className="w-20 sm:w-32 rounded-lg border-2 border-border px-3 py-2 bg-surface text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
                     placeholder="cup"
                   />
                 </td>
 
                 {/* Column 4: Editable - Prep */}
-                <td className="px-6 py-4">
+                <td className="px-3 py-2 sm:px-6 sm:py-4">
                   <input
                     type="text"
                     value={row.prep || ""}
                     onChange={(e) =>
                       updateCell(row.name, "prep", e.target.value)
                     }
-                    className="w-40 rounded-lg border-2 border-border px-3 py-2 bg-surface text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+                    className="w-24 sm:w-40 rounded-lg border-2 border-border px-3 py-2 bg-surface text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
                     placeholder="diced, chopped..."
                   />
                 </td>

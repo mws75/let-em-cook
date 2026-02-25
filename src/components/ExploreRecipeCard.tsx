@@ -47,7 +47,7 @@ export default function ExploreRecipeCard({
   return (
     <div
       onClick={() => onClick(recipe_id)}
-      className="relative w-70 h-55 border-2 border-border rounded-2xl shadow-lg ml-2 mr-5 mb-5 hover:shadow-xl hover:scale-[1.01] transition-all cursor-pointer overflow-visible"
+      className="relative w-full h-auto min-h-[14rem] border-2 border-border rounded-2xl shadow-lg mb-4 hover:shadow-xl hover:scale-[1.01] transition-all cursor-pointer overflow-visible"
       style={{
         background: "#ffffff",
         boxShadow: `inset 0 0 20px 8px ${categoryColor}`,
@@ -99,7 +99,7 @@ export default function ExploreRecipeCard({
               {isAdding ? "Adding..." : "Add"}
             </button>
             {/* Tooltip */}
-            <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full right-0 mb-2 w-64 p-3 bg-background border-2 border-border rounded-xl shadow-lg text-sm text-text z-20">
+            <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full right-0 mb-2 w-48 sm:w-64 p-3 bg-background border-2 border-border rounded-xl shadow-lg text-sm text-text z-20">
               Click Add to add this recipe to your library, you can then edit
               the recipe to fit your preferences :)
             </div>

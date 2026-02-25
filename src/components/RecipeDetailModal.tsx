@@ -171,7 +171,7 @@ export default function RecipeDetailModal({
               </div>
 
               {/* Macros Section - Inline */}
-              <div className="px-5 py-2 bg-muted/30 flex items-center justify-center gap-4 text-xs">
+              <div className="px-5 py-2 bg-muted/30 flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs">
                 <span className="font-medium text-text">
                   <span className="text-accent">
                     {recipe.per_serving_calories}

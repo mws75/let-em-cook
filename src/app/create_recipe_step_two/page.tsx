@@ -121,13 +121,13 @@ export default function CreateRecipeStepTwo() {
       <div className="w-full max-w-5xl mx-auto px-4 pb-20 space-y-5">
         {/* Header */}
         <div className="flex justify-center mt-10 mb-10">
-          <h1 className="text-4xl text-text font-bold">
+          <h1 className="text-2xl md:text-4xl text-text font-bold">
             🥕 {isEditMode ? "Review Changes" : "Clean Up Ingredients"}
           </h1>
         </div>
 
         {/* Recipe Info Card */}
-        <section className="border-2 border-border rounded-3xl px-10 py-6 bg-surface shadow-lg">
+        <section className="border-2 border-border rounded-3xl px-4 sm:px-10 py-6 bg-surface shadow-lg">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-3xl text-text font-bold mb-2">
@@ -153,17 +153,17 @@ export default function CreateRecipeStepTwo() {
         </section>
 
         {/* Action Buttons */}
-        <div className="flex justify-end gap-4">
+        <div className="flex flex-col sm:flex-row justify-end gap-3">
           <button
             onClick={handleCancel}
-            className="px-6 py-3 bg-muted hover:bg-muted/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+            className="w-full sm:w-auto px-6 py-3 bg-muted hover:bg-muted/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
           >
             Cancel
           </button>
           <button
             onClick={handleSaveRecipe}
             disabled={isSubmitting}
-            className="px-8 py-3 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+            className="w-full sm:w-auto px-8 py-3 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
           >
             {isSubmitting ? "Saving..." : isEditMode ? "Update Recipe" : "Save Recipe"}
           </button>

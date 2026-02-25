@@ -228,14 +228,14 @@ export default function ExploreRecipes() {
             </div>
 
             {/* Filters Row */}
-            <div className="flex items-center gap-4 mb-6 flex-wrap">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-6 flex-wrap">
               <span className="text-xl text-text font-bold">Filters</span>
 
               {/* Category Filter */}
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-2 border-2 border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors min-w-[150px]"
+                className="px-4 py-2 border-2 border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors w-full sm:w-auto sm:min-w-[150px]"
               >
                 {CATEGORY_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -248,7 +248,7 @@ export default function ExploreRecipes() {
               <select
                 value={selectedCalories}
                 onChange={(e) => setSelectedCalories(e.target.value)}
-                className="px-4 py-2 border-2 border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors min-w-[150px]"
+                className="px-4 py-2 border-2 border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors w-full sm:w-auto sm:min-w-[150px]"
               >
                 {CALORIE_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -258,7 +258,7 @@ export default function ExploreRecipes() {
               </select>
               <button
                 onClick={handleBack}
-                className="flex-1 px-4 py-3 border-2 border-border rounded-xl bg-secondary hover:bg-secondary/80 text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors ml-auto max-w-[250px]"
+                className="flex-1 px-4 py-3 border-2 border-border rounded-xl bg-secondary hover:bg-secondary/80 text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors w-full sm:w-auto sm:ml-auto sm:max-w-[250px]"
               >
                 Back to Dashboard
               </button>
