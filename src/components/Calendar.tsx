@@ -25,6 +25,33 @@ const emptyWeek = (): WeekPlan =>
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
+type Macros = {
+  calories: number;
+  protein: number;
+  fat: number;
+  carbs: number;
+};
+
+const ZERO_MACROS: Macros = { calories: 0, protein: 0, fat: 0, carbs: 0 };
+
+const sumMacros = (recipes: Recipe[]): Macros =>
+  recipes.reduce(
+    (acc, r) => ({
+      calories: acc.calories + Math.round(r.per_serving_calories),
+      protein: acc.protein + Math.round(r.per_serving_protein_g),
+      fat: acc.fat + Math.round(r.per_serving_fat_g),
+      carbs: acc.carbs + Math.round(r.per_serving_carbs_g),
+    }),
+    { ...ZERO_MACROS },
+  );
+
+const addMacros = (a: Macros, b: Macros): Macros => ({
+  calories: a.calories + b.calories,
+  protein: a.protein + b.protein,
+  fat: a.fat + b.fat,
+  carbs: a.carbs + b.carbs,
+});
+
 type CalendarProps = {
   selectedRecipes: Recipe[];
   onClose: () => void;
@@ -267,7 +294,24 @@ export default function Calendar({ selectedRecipes, onClose }: CalendarProps) {
           {/* Snacks */}
           <div className="mb-6">
             <h3 className="text-lg text-text font-bold mb-2">Snacks</h3>
-            {renderDropZone("snacks", snacks, handleDropSnacks, removeSnack)}
+            <div className="flex gap-3">
+              <div className="w-20 sm:w-24 shrink-0 border-2 border-border rounded-xl bg-muted/30 p-2 flex flex-col items-center justify-center text-center">
+                {(() => {
+                  const m = sumMacros(snacks);
+                  if (m.calories === 0) return <span className="text-text-secondary text-xs">—</span>;
+                  return (
+                    <div className="text-xs leading-relaxed">
+                      <p className="font-bold text-text">{m.calories}</p>
+                      <p className="text-text-secondary">cal</p>
+                      <p className="text-text-secondary mt-0.5">{m.protein}P · {m.fat}F · {m.carbs}C</p>
+                    </div>
+                  );
+                })()}
+              </div>
+              <div className="flex-1">
+                {renderDropZone("snacks", snacks, handleDropSnacks, removeSnack)}
+              </div>
+            </div>
           </div>
 
           {/* Weekly Grid */}
@@ -287,30 +331,75 @@ export default function Calendar({ selectedRecipes, onClose }: CalendarProps) {
                 </tr>
               </thead>
               <tbody>
-                {DAYS.map((day) => (
-                  <tr key={day}>
-                    <td className="px-2 py-3 text-text font-bold text-sm border-2 border-border bg-muted/30 text-center align-middle">
-                      {capitalize(day)}
-                    </td>
-                    {MEALS.map((meal) => (
-                      <td
-                        key={`${day}-${meal}`}
-                        className="border-2 border-border p-1 align-top"
-                      >
-                        {renderDropZone(
-                          `${day}-${meal}`,
-                          week[day][meal],
-                          (e) => handleDropMeal(e, day, meal),
-                          (idx) => removeMealItem(day, meal, idx),
-                          "min-h-[5rem]",
+                {DAYS.map((day) => {
+                  const dayMacros = MEALS.reduce(
+                    (acc, meal) => addMacros(acc, sumMacros(week[day][meal])),
+                    { ...ZERO_MACROS },
+                  );
+                  return (
+                    <tr key={day}>
+                      <td className="px-2 py-2 text-text font-bold text-sm border-2 border-border bg-muted/30 text-center align-top">
+                        <span>{capitalize(day)}</span>
+                        {dayMacros.calories > 0 && (
+                          <div className="mt-1 font-normal text-xs leading-relaxed text-text-secondary">
+                            <p className="font-semibold text-text">{dayMacros.calories} cal</p>
+                            <p>{dayMacros.protein}P · {dayMacros.fat}F · {dayMacros.carbs}C</p>
+                          </div>
                         )}
                       </td>
-                    ))}
-                  </tr>
-                ))}
+                      {MEALS.map((meal) => (
+                        <td
+                          key={`${day}-${meal}`}
+                          className="border-2 border-border p-1 align-top"
+                        >
+                          {renderDropZone(
+                            `${day}-${meal}`,
+                            week[day][meal],
+                            (e) => handleDropMeal(e, day, meal),
+                            (idx) => removeMealItem(day, meal, idx),
+                            "min-h-[5rem]",
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
+
+          {/* Average Per Day */}
+          {(() => {
+            const daysWithFood = DAYS.filter((day) =>
+              MEALS.some((meal) => week[day][meal].length > 0),
+            );
+            const totalMacros = DAYS.reduce(
+              (acc, day) =>
+                MEALS.reduce(
+                  (inner, meal) => addMacros(inner, sumMacros(week[day][meal])),
+                  acc,
+                ),
+              { ...ZERO_MACROS },
+            );
+            if (totalMacros.calories === 0) return null;
+            const count = daysWithFood.length || 1;
+            return (
+              <div className="mt-4 border-2 border-border rounded-xl bg-muted/30 px-4 py-3 flex flex-wrap items-center justify-between gap-2">
+                <span className="text-sm font-bold text-text">
+                  Avg / Day ({count} {count === 1 ? "day" : "days"})
+                </span>
+                <span className="text-sm text-text-secondary">
+                  <span className="font-semibold text-text">{Math.round(totalMacros.calories / count)} cal</span>
+                  {" · "}
+                  {Math.round(totalMacros.protein / count)}g P
+                  {" · "}
+                  {Math.round(totalMacros.fat / count)}g F
+                  {" · "}
+                  {Math.round(totalMacros.carbs / count)}g C
+                </span>
+              </div>
+            );
+          })()}
         </div>
       </section>
     </>
