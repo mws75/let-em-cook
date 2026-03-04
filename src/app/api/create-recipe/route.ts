@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     const userId = await getAuthenticatedUserId();
 
     // convert request to json
-    const { recipeName, category, ingredients, instructions } =
+    const { recipeName, category, servings, isPublic, ingredients, instructions } =
       await request.json();
     // check input data is good
     if (
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const fullText = `Recipe Name: ${recipeName}\nCategory: ${category}\n Ingredients: ${ingredients}\nInstructions ${instructions}`;
+    const fullText = `Recipe Name: ${recipeName}\nCategory: ${category}\nServings: ${servings ?? 4}\nIs Public: ${isPublic ?? 0}\nIngredients: ${ingredients}\nInstructions: ${instructions}`;
 
     if (fullText.trim().length > MAX_RECIPE_LENGTH) {
       return NextResponse.json(
@@ -81,8 +81,10 @@ export async function POST(request: NextRequest) {
       throw new Error("Invalid json object");
     }
 
-    // Add user_id to the recipe data
+    // Override with user-provided values (don't trust OpenAI for these)
     data.user_id = userId;
+    data.servings = servings ?? 4;
+    data.is_public = isPublic ?? 0;
 
     console.log("api to create recipe json object as completed");
     return NextResponse.json({ data }, { status: 200 });

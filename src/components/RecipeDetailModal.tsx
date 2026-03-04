@@ -60,6 +60,9 @@ export default function RecipeDetailModal({
   }, []);
 
   const handleDeleteClick = async () => {
+    if (!window.confirm("Are you sure you want to delete this recipe?")) {
+      return;
+    }
     const toastId = toast.loading("deleting recipe");
     try {
       const response = await fetch(`/api/recipes/${recipeId}`, {

@@ -255,6 +255,8 @@ export default function CreateRecipe() {
         body: JSON.stringify({
           recipeName: recipeName.trim(),
           category: selectedCategory.trim(),
+          servings: selectedNumberOfServings,
+          isPublic: isPublicSelected,
           ingredients: ingredients_text,
           instructions: instructions_text,
         }),

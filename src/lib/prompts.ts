@@ -83,12 +83,17 @@ strings → "" (user_name default "mwspencer75")
 arrays → []
 is_public → 0
 instructions_json.step starts at 1, increments by 1.
+Preserve brand names in ingredient names (e.g. "Trader Joe's Mint Chip Ice Cream" stays as-is, NOT "mint chip ice cream").
 Normalize ingredient units to:
-tsp, tbsp, cup, fl oz, oz, lb, g, kg, ml, l, pt, qt, gal, pinch, dash, clove, slice, can, pkg, stick, bunch, sprig, pc, each
+tsp, tbsp, cup, fl oz, oz, lb, g, kg, ml, l, pt, qt, gal, pinch, dash, clove, slice, can, pkg, stick, bunch, sprig, pc, each, serving
 map common variants (teaspoon→tsp, tablespoon→tbsp, c→cup, lbs→lb)
 count with no unit → each
 unclear unit → "" and note original in prep
 no unit conversion math
+Convert fractions to decimals (rounded to 2 decimal places):
+1/8→0.13, 1/4→0.25, 1/3→0.33, 1/2→0.5, 2/3→0.67, 3/4→0.75
+mixed numbers: 1 1/2→1.5, 2 1/3→2.33, 1 2/3→1.67
+IMPORTANT: "2/3" means two-thirds (0.67), NOT 2 and 1/3
 Choose a fitting single emoji if none present, if no emoji pick one (🍽️ default).
 If no tags - Generate 2–6 lowercase tags.
 
@@ -123,9 +128,14 @@ Rules you MUST follow:
    - Numbers (no strings)
    - Per-serving values (total recipe ÷ servings)
    - Rounded to sensible real-world precision (whole calories, 1 decimal for grams)
-5. If ingredient quantities or units are ambiguous, make reasonable standard culinary assumptions.
-6. Optional ingredients ("optional": true) SHOULD be included in calculations unless clearly decorative.
-7. Sugar should reflect naturally occurring + added sugars where applicable.
+5. For branded or packaged foods (e.g. "Trader Joe's Mint Chip Ice Cream", "Chobani Greek Yogurt"):
+   - Use the actual nutrition label data for that specific product
+   - Use the brand's standard serving size to calculate macros
+   - Do NOT substitute generic values — branded products have specific nutrition profiles
+   - If quantity is given as "1 each" or "1 serving", use the product's labeled serving size
+6. If ingredient quantities or units are ambiguous, make reasonable standard culinary assumptions.
+7. Optional ingredients ("optional": true) SHOULD be included in calculations unless clearly decorative.
+8. Sugar should reflect naturally occurring + added sugars where applicable.
 
 Output requirements:
 - Return the FULL original JSON object

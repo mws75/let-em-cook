@@ -48,9 +48,21 @@
               "icon": "lucide-file",
               "title": "Feat - Calendar"
             }
+          },
+          {
+            "id": "6ec8e67fa46a9f8f",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.12.4"
+              },
+              "icon": "lucide-book-up",
+              "title": "Release Notes 1.12.4"
+            }
           }
         ],
-        "currentTab": 2
+        "currentTab": 3
       }
     ],
     "direction": "vertical"
@@ -212,7 +224,7 @@
       "bases:Create new base": false
     }
   },
-  "active": "560cf9ca2788f3a0",
+  "active": "6ec8e67fa46a9f8f",
   "lastOpenFiles": [
     "Pasted image 20260224215648.png",
     "00- TODO.md",
