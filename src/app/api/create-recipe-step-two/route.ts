@@ -81,10 +81,39 @@ export async function POST(request: NextRequest) {
         { role: "system", content: CALCULATE_MACROS },
         {
           role: "user",
-          content: `Return ONLY a JSON array of per-ingredient macros for these ingredients:\n\n${ingredientsPayload}`,
+          content: `Return per-ingredient macros for these ingredients:\n\n${ingredientsPayload}`,
         },
       ],
-      response_format: { type: "json_object" },
+      response_format: {
+        type: "json_schema",
+        json_schema: {
+          name: "ingredient_macros",
+          strict: true,
+          schema: {
+            type: "object",
+            properties: {
+              ingredients: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    name: { type: "string" },
+                    calories: { type: "number" },
+                    protein_g: { type: "number" },
+                    fat_g: { type: "number" },
+                    carbs_g: { type: "number" },
+                    sugar_g: { type: "number" },
+                  },
+                  required: ["name", "calories", "protein_g", "fat_g", "carbs_g", "sugar_g"],
+                  additionalProperties: false,
+                },
+              },
+            },
+            required: ["ingredients"],
+            additionalProperties: false,
+          },
+        },
+      },
       temperature: 0.3,
       max_tokens: 2500,
     });
@@ -98,25 +127,16 @@ export async function POST(request: NextRequest) {
     }
 
     console.log("OpenAI response received, parsing JSON...");
-    const parsed = JSON.parse(content);
-    // OpenAI json_object mode wraps arrays in an object — unwrap if needed
-    const breakdown: { name: string; calories: number; protein_g: number; fat_g: number; carbs_g: number; sugar_g: number }[] =
-      Array.isArray(parsed) ? parsed : Array.isArray(parsed.ingredients) ? parsed.ingredients : Object.values(parsed)[0] as typeof breakdown;
+    type IngredientMacro = { name: string; calories: number; protein_g: number; fat_g: number; carbs_g: number; sugar_g: number };
+    const parsed: { ingredients: IngredientMacro[] } = JSON.parse(content);
+    const breakdown = parsed.ingredients;
 
-    // Validate the breakdown
-    if (
-      !Array.isArray(breakdown) ||
-      breakdown.length !== recipe.ingredients_json.length ||
-      !breakdown.every(
-        (item: Record<string, unknown>) =>
-          typeof item.calories === "number" &&
-          typeof item.protein_g === "number" &&
-          typeof item.fat_g === "number" &&
-          typeof item.carbs_g === "number" &&
-          typeof item.sugar_g === "number",
-      )
-    ) {
-      console.error("OpenAI macro breakdown validation failed", { breakdown });
+    // Validate the breakdown length matches
+    if (breakdown.length !== recipe.ingredients_json.length) {
+      console.error("OpenAI macro breakdown length mismatch", {
+        expected: recipe.ingredients_json.length,
+        got: breakdown.length,
+      });
       throw new Error("OpenAI did not return valid per-ingredient macro data");
     }
 
