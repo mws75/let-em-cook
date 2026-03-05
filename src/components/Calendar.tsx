@@ -1,21 +1,8 @@
 "use client";
 import { useState } from "react";
-import { Recipe } from "@/types/types";
+import { Recipe, DAYS, MEALS, MealKey, DayKey } from "@/types/types";
 import { getCategoryColor } from "@/lib/categoryColors";
 
-const DAYS = [
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-  "sunday",
-] as const;
-const MEALS = ["breakfast", "lunch", "dinner"] as const;
-
-type DayKey = (typeof DAYS)[number];
-type MealKey = (typeof MEALS)[number];
 type DayPlan = Record<MealKey, Recipe[]>;
 type WeekPlan = Record<DayKey, DayPlan>;
 
@@ -298,18 +285,28 @@ export default function Calendar({ selectedRecipes, onClose }: CalendarProps) {
               <div className="w-20 sm:w-24 shrink-0 border-2 border-border rounded-xl bg-muted/30 p-2 flex flex-col items-center justify-center text-center">
                 {(() => {
                   const m = sumMacros(snacks);
-                  if (m.calories === 0) return <span className="text-text-secondary text-xs">—</span>;
+                  if (m.calories === 0)
+                    return (
+                      <span className="text-text-secondary text-xs">—</span>
+                    );
                   return (
                     <div className="text-xs leading-relaxed">
                       <p className="font-bold text-text">{m.calories}</p>
                       <p className="text-text-secondary">cal</p>
-                      <p className="text-text-secondary mt-0.5">{m.protein}P · {m.fat}F · {m.carbs}C</p>
+                      <p className="text-text-secondary mt-0.5">
+                        {m.protein}P · {m.fat}F · {m.carbs}C
+                      </p>
                     </div>
                   );
                 })()}
               </div>
               <div className="flex-1">
-                {renderDropZone("snacks", snacks, handleDropSnacks, removeSnack)}
+                {renderDropZone(
+                  "snacks",
+                  snacks,
+                  handleDropSnacks,
+                  removeSnack,
+                )}
               </div>
             </div>
           </div>
@@ -342,8 +339,13 @@ export default function Calendar({ selectedRecipes, onClose }: CalendarProps) {
                         <span>{capitalize(day)}</span>
                         {dayMacros.calories > 0 && (
                           <div className="mt-1 font-normal text-xs leading-relaxed text-text-secondary">
-                            <p className="font-semibold text-text">{dayMacros.calories} cal</p>
-                            <p>{dayMacros.protein}P · {dayMacros.fat}F · {dayMacros.carbs}C</p>
+                            <p className="font-semibold text-text">
+                              {dayMacros.calories} cal
+                            </p>
+                            <p>
+                              {dayMacros.protein}P · {dayMacros.fat}F ·{" "}
+                              {dayMacros.carbs}C
+                            </p>
                           </div>
                         )}
                       </td>
@@ -389,12 +391,12 @@ export default function Calendar({ selectedRecipes, onClose }: CalendarProps) {
                   Avg / Day ({count} {count === 1 ? "day" : "days"})
                 </span>
                 <span className="text-sm text-text-secondary">
-                  <span className="font-semibold text-text">{Math.round(totalMacros.calories / count)} cal</span>
+                  <span className="font-semibold text-text">
+                    {Math.round(totalMacros.calories / count)} cal
+                  </span>
                   {" · "}
-                  {Math.round(totalMacros.protein / count)}g P
-                  {" · "}
-                  {Math.round(totalMacros.fat / count)}g F
-                  {" · "}
+                  {Math.round(totalMacros.protein / count)}g P{" · "}
+                  {Math.round(totalMacros.fat / count)}g F{" · "}
                   {Math.round(totalMacros.carbs / count)}g C
                 </span>
               </div>
