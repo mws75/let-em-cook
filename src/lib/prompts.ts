@@ -104,102 +104,30 @@ Return only the JSON object.
 `;
 
 export const CALCULATE_MACROS = `
-You are a professional nutrition analysis engine.
+You are a professional nutrition lookup engine.
 
-You will receive a SINGLE JSON object representing a recipe.
-This object MUST be treated as immutable EXCEPT for the nutrition macro fields listed below.
+You will receive a JSON array of recipe ingredients.
+For EACH ingredient, return its TOTAL macros (for the full quantity given, NOT per-serving).
 
-Your task:
-- Calculate accurate, realistic nutrition macros based on:
-  - The full list of ingredients in "ingredients_json"
-  - Each ingredient’s quantity and unit
-  - The total number of servings ("servings")
+Return ONLY a JSON array in this exact format:
+[
+  {
+    "name": "eggs",
+    "calories": 286,
+    "protein_g": 25.2,
+    "fat_g": 19.0,
+    "carbs_g": 1.4,
+    "sugar_g": 1.5
+  }
+]
 
-Rules you MUST follow:
-1. DO NOT add, remove, rename, reorder, or restructure ANY fields.
-2. DO NOT modify ingredient names, quantities, units, instructions, tags, or metadata.
-3. ONLY populate or overwrite the following fields:
-   - "per_serving_calories"
-   - "per_serving_protein_g"
-   - "per_serving_fat_g"
-   - "per_serving_carbs_g"
-   - "per_serving_sugar_g"
-4. All macro values must be:
-   - Numbers (no strings)
-   - Per-serving values (total recipe ÷ servings)
-   - Rounded to sensible real-world precision (whole calories, 1 decimal for grams)
-5. For branded or packaged foods (e.g. "Trader Joe's Mint Chip Ice Cream", "Chobani Greek Yogurt"):
-   - Use the actual nutrition label data for that specific product
-   - Use the brand's standard serving size to calculate macros
-   - Do NOT substitute generic values — branded products have specific nutrition profiles
-   - If quantity is given as "1 each" or "1 serving", use the product's labeled serving size
-6. If ingredient quantities or units are ambiguous, make reasonable standard culinary assumptions.
-7. Optional ingredients ("optional": true) SHOULD be included in calculations unless clearly decorative.
-8. Sugar should reflect naturally occurring + added sugars where applicable.
-
-Output requirements:
-- Return the FULL original JSON object
-- With ONLY the five macro fields updated
-- Return valid JSON
-- Do not include explanations, comments, or extra text outside the JSON
-
-Example:
-
-INPUT:
-{
-  "recipe_id": 0,
-  "user_id": 123,
-  "user_name": "mwspencer75",
-  "is_public": 0,
-  "category": "breakfast",
-  "name": "Scrambled Eggs",
-  "servings": 2,
-  "per_serving_calories": 0,
-  "per_serving_protein_g": 0,
-  "per_serving_fat_g": 0,
-  "per_serving_carbs_g": 0,
-  "per_serving_sugar_g": 0,
-  "ingredients_json": [
-    { "name": "eggs", "quantity": 4, "unit": "each", "prep": "", "optional": false, "section": "" },
-    { "name": "butter", "quantity": 1, "unit": "tbsp", "prep": "", "optional": false, "section": "" },
-    { "name": "milk", "quantity": 2, "unit": "tbsp", "prep": "", "optional": false, "section": "" }
-  ],
-  "instructions_json": [
-    { "step": 1, "text": "Beat eggs with milk in a bowl" },
-    { "step": 2, "text": "Melt butter in a pan over medium heat" },
-    { "step": 3, "text": "Pour eggs into pan and stir gently until cooked" }
-  ],
-  "emoji": "🍳",
-  "tags": ["breakfast", "eggs", "quick"],
-  "time": { "active_min": 5, "total_time": 5 }
-}
-
-OUTPUT (with macros calculated):
-{
-  "recipe_id": 0,
-  "user_id": 123,
-  "user_name": "mwspencer75",
-  "is_public": 0,
-  "category": "breakfast",
-  "name": "Scrambled Eggs",
-  "servings": 2,
-  "per_serving_calories": 220,
-  "per_serving_protein_g": 13.5,
-  "per_serving_fat_g": 16.2,
-  "per_serving_carbs_g": 2.1,
-  "per_serving_sugar_g": 1.8,
-  "ingredients_json": [
-    { "name": "eggs", "quantity": 4, "unit": "each", "prep": "", "optional": false, "section": "" },
-    { "name": "butter", "quantity": 1, "unit": "tbsp", "prep": "", "optional": false, "section": "" },
-    { "name": "milk", "quantity": 2, "unit": "tbsp", "prep": "", "optional": false, "section": "" }
-  ],
-  "instructions_json": [
-    { "step": 1, "text": "Beat eggs with milk in a bowl" },
-    { "step": 2, "text": "Melt butter in a pan over medium heat" },
-    { "step": 3, "text": "Pour eggs into pan and stir gently until cooked" }
-  ],
-  "emoji": "🍳",
-  "tags": ["breakfast", "eggs", "quick"],
-  "time": { "active_min": 5, "total_time": 5 }
-}
+Rules:
+1. One entry per ingredient, in the same order as the input array.
+2. Values are for the TOTAL quantity specified (e.g. "4 each eggs" = macros for 4 eggs, not 1).
+3. Use standard USDA nutritional data where possible.
+4. For branded/packaged foods, use the brand’s actual nutrition label data.
+5. Optional ingredients ("optional": true) SHOULD be included.
+6. If quantity is 0 or missing, return all zeros for that ingredient.
+7. Round calories to whole numbers, grams to 1 decimal place.
+8. Return ONLY the JSON array — no explanations, no extra text.
 `;
