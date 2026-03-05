@@ -73,21 +73,22 @@ export async function POST(request: NextRequest) {
     }
 
     console.log("Calling OpenAI to calculate macros...");
-    // make open AI request
+    // Send only the ingredients array — smaller payload, more focused task
+    const ingredientsPayload = JSON.stringify(recipe.ingredients_json);
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         { role: "system", content: CALCULATE_MACROS },
         {
           role: "user",
-          content: `add the macros into the required JSON schema.  Return ONLY valid JSON: \n\n ${recipe_text}`,
+          content: `Return ONLY a JSON array of per-ingredient macros for these ingredients:\n\n${ingredientsPayload}`,
         },
       ],
       response_format: { type: "json_object" },
       temperature: 0.3,
       max_tokens: 2500,
     });
-    // check response
+
     const content = completion.choices[0]?.message?.content;
     if (!content) {
       console.error("OpenAI returned no content");
@@ -97,28 +98,56 @@ export async function POST(request: NextRequest) {
     }
 
     console.log("OpenAI response received, parsing JSON...");
-    // return response
-    const data = JSON.parse(content);
+    const parsed = JSON.parse(content);
+    // OpenAI json_object mode wraps arrays in an object — unwrap if needed
+    const breakdown: { name: string; calories: number; protein_g: number; fat_g: number; carbs_g: number; sugar_g: number }[] =
+      Array.isArray(parsed) ? parsed : Array.isArray(parsed.ingredients) ? parsed.ingredients : Object.values(parsed)[0] as typeof breakdown;
 
-    // Validate that macro fields were added
+    // Validate the breakdown
     if (
-      typeof data.per_serving_calories !== "number" ||
-      typeof data.per_serving_protein_g !== "number" ||
-      typeof data.per_serving_fat_g !== "number" ||
-      typeof data.per_serving_carbs_g !== "number" ||
-      typeof data.per_serving_sugar_g !== "number"
+      !Array.isArray(breakdown) ||
+      breakdown.length !== recipe.ingredients_json.length ||
+      !breakdown.every(
+        (item: Record<string, unknown>) =>
+          typeof item.calories === "number" &&
+          typeof item.protein_g === "number" &&
+          typeof item.fat_g === "number" &&
+          typeof item.carbs_g === "number" &&
+          typeof item.sugar_g === "number",
+      )
     ) {
-      console.error("OpenAI macro validation failed", {
-        calories: typeof data.per_serving_calories,
-        protein: typeof data.per_serving_protein_g,
-        fat: typeof data.per_serving_fat_g,
-        carbs: typeof data.per_serving_carbs_g,
-        sugar: typeof data.per_serving_sugar_g,
-      });
-      throw new Error("OpenAI did not return valid macro data");
+      console.error("OpenAI macro breakdown validation failed", { breakdown });
+      throw new Error("OpenAI did not return valid per-ingredient macro data");
     }
 
-    console.log("✅ API added macros successfully", {
+    console.log("Per-ingredient breakdown:", breakdown);
+
+    // Sum all ingredient macros deterministically
+    const totals = breakdown.reduce(
+      (acc, item) => ({
+        calories: acc.calories + item.calories,
+        protein_g: acc.protein_g + item.protein_g,
+        fat_g: acc.fat_g + item.fat_g,
+        carbs_g: acc.carbs_g + item.carbs_g,
+        sugar_g: acc.sugar_g + item.sugar_g,
+      }),
+      { calories: 0, protein_g: 0, fat_g: 0, carbs_g: 0, sugar_g: 0 },
+    );
+
+    // Divide by servings deterministically
+    const servings = recipe.servings || 4;
+    const data = {
+      ...recipe,
+      per_serving_calories: Math.round(totals.calories / servings),
+      per_serving_protein_g: Math.round((totals.protein_g / servings) * 10) / 10,
+      per_serving_fat_g: Math.round((totals.fat_g / servings) * 10) / 10,
+      per_serving_carbs_g: Math.round((totals.carbs_g / servings) * 10) / 10,
+      per_serving_sugar_g: Math.round((totals.sugar_g / servings) * 10) / 10,
+    };
+
+    console.log("✅ Macros calculated deterministically", {
+      totals,
+      servings,
       calories: data.per_serving_calories,
       protein: data.per_serving_protein_g,
     });
