@@ -297,10 +297,10 @@ export default function Calendar({
     extraClass: string = "",
   ) => (
     <div
-      className={`meal-plan-cell min-h-[4rem] border-2 rounded-xl p-2 transition-colors ${
+      className={`meal-plan-cell min-h-[4rem] p-2 transition-colors ${
         dragOverTarget === targetId
-          ? "bg-primary/20 border-primary"
-          : "border-border bg-surface"
+          ? "bg-primary/20"
+          : "bg-surface"
       } ${extraClass}`}
       onDragOver={(e) => handleDragOver(e, targetId)}
       onDragLeave={handleDragLeave}
