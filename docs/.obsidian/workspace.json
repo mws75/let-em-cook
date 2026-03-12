@@ -4,19 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "f10534aa8dec9f0b",
+        "id": "a9461b950fd90af0",
         "type": "tabs",
         "children": [
           {
-            "id": "6ec8e67fa46a9f8f",
+            "id": "6747c5da9c1d5762",
             "type": "leaf",
             "state": {
-              "type": "release-notes",
+              "type": "markdown",
               "state": {
-                "currentVersion": "1.12.4"
+                "file": "MEAL_PLAN_PERSISTENCE_GUIDE.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-book-up",
-              "title": "Release Notes 1.12.4"
+              "icon": "lucide-file",
+              "title": "MEAL_PLAN_PERSISTENCE_GUIDE"
             }
           }
         ]
@@ -76,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 241.5,
+    "width": 246.5,
     "collapsed": true
   },
   "right": {
@@ -182,7 +184,7 @@
       "bases:Create new base": false
     }
   },
-  "active": "6ec8e67fa46a9f8f",
+  "active": "6747c5da9c1d5762",
   "lastOpenFiles": [
     "RCA/Inconsistent_Macro_Calculations.md",
     "MEAL_PLAN_PERSISTENCE_GUIDE.md",

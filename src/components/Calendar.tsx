@@ -1,6 +1,15 @@
 "use client";
-import { useState } from "react";
-import { Recipe, DAYS, MEALS, MealKey, DayKey } from "@/types/types";
+import { useState, useRef, useEffect, useCallback } from "react";
+import {
+  Recipe,
+  DAYS,
+  MEALS,
+  MealKey,
+  DayKey,
+  QuickLogEntry,
+  MealSlotData,
+  MealPlanData,
+} from "@/types/types";
 import { getCategoryColor } from "@/lib/categoryColors";
 
 type DayPlan = Record<MealKey, Recipe[]>;
@@ -41,13 +50,118 @@ const addMacros = (a: Macros, b: Macros): Macros => ({
 
 type CalendarProps = {
   selectedRecipes: Recipe[];
+  allRecipes: Recipe[];
+  initialPlan: MealPlanData | null;
+  onPlanCleared: () => void;
   onClose: () => void;
 };
 
-export default function Calendar({ selectedRecipes, onClose }: CalendarProps) {
+export default function Calendar({
+  selectedRecipes,
+  allRecipes,
+  initialPlan,
+  onPlanCleared,
+  onClose,
+}: CalendarProps) {
   const [snacks, setSnacks] = useState<Recipe[]>([]);
   const [week, setWeek] = useState<WeekPlan>(emptyWeek());
   const [dragOverTarget, setDragOverTarget] = useState<string | null>(null);
+  const [saveStatus, setSaveStatus] = useState<
+    "idle" | "saving" | "saved" | "error"
+  >("idle");
+  const hasInitialized = useRef(false);
+  const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // -------------------- UseEffect ----------------------
+  useEffect(() => {
+    // prevents rehydration multiple times
+    if (!initialPlan || hasInitialized.current) return;
+
+    hasInitialized.current = true;
+    // Look up map
+    const recipeMap = new Map(allRecipes.map((r) => [r.recipe_id, r]));
+
+    const resolvedIds = (ids: number[]): Recipe[] => {
+      return ids.map((id) => recipeMap.get(id)).filter(Boolean) as Recipe[];
+    };
+
+    //Hydrate Week
+    const newWeek = emptyWeek();
+    for (const day of DAYS) {
+      for (const meal of MEALS) {
+        const slot = initialPlan.week?.[day]?.[meal];
+        if (slot) {
+          newWeek[day][meal] = resolvedIds(slot.recipeIds || []);
+        }
+      }
+    }
+    setWeek(newWeek);
+
+    // Hydrate Snacks
+    if (initialPlan.snacks) {
+      setSnacks(resolvedIds(initialPlan.snacks.recipeIds || []));
+    }
+  }, [initialPlan, allRecipes]);
+
+  // Serialization Helper
+  const serializePlan = useCallback((): MealPlanData => {
+    const weekData = {} as Record<DayKey, Record<MealKey, MealSlotData>>;
+    for (const day of DAYS) {
+      weekData[day] = {} as Record<MealKey, MealSlotData>;
+      for (const meal of MEALS) {
+        weekData[day][meal] = {
+          recipeIds: week[day][meal].map((r) => r.recipe_id),
+          quickLogs: [], // Will be populated later
+        };
+      }
+    }
+    return {
+      week: weekData,
+      snacks: {
+        recipeIds: snacks.map((r) => r.recipe_id),
+        quickLogs: [],
+      },
+    };
+  }, [week, snacks]);
+
+  const isPlanEmpty = useCallback((): boolean => {
+    const hasWeekContent = DAYS.some((day) =>
+      MEALS.some((meal) => week[day][meal].length > 0),
+    );
+    return !hasWeekContent && snacks.length === 0;
+  }, [week, snacks]);
+
+  // Debounce Method for AutoSave
+  useEffect(() => {
+    if (!hasInitialized.current) return;
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    saveTimeout.current = setTimeout(async () => {
+      if (isPlanEmpty()) return;
+      setSaveStatus("saving");
+      try {
+        // response
+        const res = await fetch("/api/meal-plan", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ plan: serializePlan() }),
+        });
+        // check response
+        setSaveStatus(res.ok ? "saved" : "error");
+      } catch (err) {
+        setSaveStatus("error");
+      }
+    }, 1000);
+    return () => {
+      if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    };
+  }, [week, snacks, serializePlan, isPlanEmpty]);
+
+  // Mark as initialized if there is no plan to hydrate
+  useEffect(() => {
+    if (!initialPlan && !hasInitialized.current) {
+      hasInitialized.current = true;
+    }
+  }, [initialPlan]);
 
   // -------------------- Drag & Drop --------------------
 
@@ -115,11 +229,16 @@ export default function Calendar({ selectedRecipes, onClose }: CalendarProps) {
     }));
   };
 
-  const handleClearAll = () => {
+  const handleClearAll = async () => {
     setSnacks([]);
     setWeek(emptyWeek());
+    try {
+      await fetch("/api/meal-plan", { method: "DELETE" });
+    } catch (err) {
+      console.error(err);
+    }
+    onPlanCleared();
   };
-
   // -------------------- Print --------------------
 
   const handlePrint = () => {
@@ -230,6 +349,23 @@ export default function Calendar({ selectedRecipes, onClose }: CalendarProps) {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
           <h2 className="text-3xl text-text font-bold">📅 Meal Plan</h2>
+          {saveStatus !== "idle" && (
+            <span
+              className={`text-xs font-medium no-print ${
+                saveStatus === "saving"
+                  ? "text-text-secondary"
+                  : saveStatus === "saved"
+                    ? "text-green-600"
+                    : "text-red-500"
+              }`}
+            >
+              {saveStatus === "saving"
+                ? "Saving..."
+                : saveStatus === "saved"
+                  ? "Saved"
+                  : "Save Failed"}
+            </span>
+          )}
           <div className="flex flex-wrap gap-2">
             <button
               onClick={handleClearAll}

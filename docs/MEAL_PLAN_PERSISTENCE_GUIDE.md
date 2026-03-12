@@ -135,7 +135,7 @@ export async function upsertMealPlan(
     throw new Error("Failed to save meal plan");
   }
 }
-
+		j
 export async function deleteMealPlan(userId: number): Promise<void> {
   if (!userId) throw new Error("User ID is required");
 
@@ -326,7 +326,7 @@ const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 Add a `useEffect` that runs once to restore the plan from `initialPlan`:
 
 ```ts
-useEffect(() => {
+useEffect(() => {Ó
   if (!initialPlan || hasInitialized.current) return;
   hasInitialized.current = true;
 

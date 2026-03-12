@@ -12,6 +12,7 @@ import {
   FREE_TIER_RECIPE_LIMIT,
   GroceryItem,
   Ingredients,
+  MealPlanData,
 } from "@/types/types";
 import { formatQuantity } from "@/lib/unitConverter";
 import { useState, useEffect, Suspense } from "react";
@@ -44,6 +45,8 @@ function DashboardContent() {
   );
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
+  const [mealPlan, setMealPlan] = useState<MealPlanData | null>(null);
+  const [mealPlanLoaded, setMealPlanLoaded] = useState(false);
 
   // Fetch recipes on component mount
   useEffect(() => {
@@ -102,7 +105,21 @@ function DashboardContent() {
         console.error("Error fetching categories", error);
       }
     };
+    const fetchMealPlan = async () => {
+      try {
+        const response = await fetch("/api/meal-plan");
+        if (response.ok) {
+          const data = await response.json();
+          setMealPlan(data.plan);
+        }
+      } catch (error) {
+        console.error("Error fetching meal plan", error);
+      } finally {
+        setMealPlanLoaded(true);
+      }
+    };
 
+    fetchMealPlan();
     fetchRecipes();
     fetchCategories();
   }, [isLoaded, user, router]);
@@ -528,12 +545,17 @@ function DashboardContent() {
         )}
 
         {/* Meal Plan Calendar */}
-        <div className={showCalendar ? "" : "hidden"}>
-          <Calendar
-            selectedRecipes={selectedRecipes}
-            onClose={() => setShowCalendar(false)}
-          />
-        </div>
+        {mealPlanLoaded && !isLoadingRecipes && (
+          <div className={showCalendar ? "" : "hidden"}>
+            <Calendar
+              selectedRecipes={selectedRecipes}
+              allRecipes={recipes}
+              initialPlan={mealPlan}
+              onPlanCleared={() => setMealPlan(null)}
+              onClose={() => setShowCalendar(false)}
+            />
+          </div>
+        )}
 
         {/* Recipes */}
         <section className="border-2 border-border rounded-3xl bg-surface shadow-lg p-6">
