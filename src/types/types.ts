@@ -97,3 +97,38 @@ export type ExploreFilters = {
   limit: number;
   offset?: number;
 };
+
+export const DAYS = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+] as const;
+
+export const MEALS = ["breakfast", "lunch", "dinner"] as const;
+
+export type DayKey = (typeof DAYS)[number];
+export type MealKey = (typeof MEALS)[number];
+
+export type QuickLogEntry = {
+  id: string;
+  name: string;
+  calories: number | null;
+  protein_g: number | null;
+  fat_g: number | null;
+  carbs_g: number | null;
+  sugar_g: number | null;
+};
+
+export type MealSlotData = {
+  recipeIds: number[];
+  quickLogs: QuickLogEntry[];
+};
+
+export type MealPlanData = {
+  week: Record<DayKey, Record<MealKey, MealSlotData>>;
+  snacks: MealSlotData;
+};

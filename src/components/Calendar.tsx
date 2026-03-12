@@ -1,21 +1,17 @@
 "use client";
-import { useState } from "react";
-import { Recipe } from "@/types/types";
+import { useState, useRef, useEffect, useCallback } from "react";
+import {
+  Recipe,
+  DAYS,
+  MEALS,
+  MealKey,
+  DayKey,
+  QuickLogEntry,
+  MealSlotData,
+  MealPlanData,
+} from "@/types/types";
 import { getCategoryColor } from "@/lib/categoryColors";
 
-const DAYS = [
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-  "sunday",
-] as const;
-const MEALS = ["breakfast", "lunch", "dinner"] as const;
-
-type DayKey = (typeof DAYS)[number];
-type MealKey = (typeof MEALS)[number];
 type DayPlan = Record<MealKey, Recipe[]>;
 type WeekPlan = Record<DayKey, DayPlan>;
 
@@ -54,13 +50,118 @@ const addMacros = (a: Macros, b: Macros): Macros => ({
 
 type CalendarProps = {
   selectedRecipes: Recipe[];
+  allRecipes: Recipe[];
+  initialPlan: MealPlanData | null;
+  onPlanCleared: () => void;
   onClose: () => void;
 };
 
-export default function Calendar({ selectedRecipes, onClose }: CalendarProps) {
+export default function Calendar({
+  selectedRecipes,
+  allRecipes,
+  initialPlan,
+  onPlanCleared,
+  onClose,
+}: CalendarProps) {
   const [snacks, setSnacks] = useState<Recipe[]>([]);
   const [week, setWeek] = useState<WeekPlan>(emptyWeek());
   const [dragOverTarget, setDragOverTarget] = useState<string | null>(null);
+  const [saveStatus, setSaveStatus] = useState<
+    "idle" | "saving" | "saved" | "error"
+  >("idle");
+  const hasInitialized = useRef(false);
+  const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // -------------------- UseEffect ----------------------
+  useEffect(() => {
+    // prevents rehydration multiple times
+    if (!initialPlan || hasInitialized.current) return;
+
+    hasInitialized.current = true;
+    // Look up map
+    const recipeMap = new Map(allRecipes.map((r) => [r.recipe_id, r]));
+
+    const resolvedIds = (ids: number[]): Recipe[] => {
+      return ids.map((id) => recipeMap.get(id)).filter(Boolean) as Recipe[];
+    };
+
+    //Hydrate Week
+    const newWeek = emptyWeek();
+    for (const day of DAYS) {
+      for (const meal of MEALS) {
+        const slot = initialPlan.week?.[day]?.[meal];
+        if (slot) {
+          newWeek[day][meal] = resolvedIds(slot.recipeIds || []);
+        }
+      }
+    }
+    setWeek(newWeek);
+
+    // Hydrate Snacks
+    if (initialPlan.snacks) {
+      setSnacks(resolvedIds(initialPlan.snacks.recipeIds || []));
+    }
+  }, [initialPlan, allRecipes]);
+
+  // Serialization Helper
+  const serializePlan = useCallback((): MealPlanData => {
+    const weekData = {} as Record<DayKey, Record<MealKey, MealSlotData>>;
+    for (const day of DAYS) {
+      weekData[day] = {} as Record<MealKey, MealSlotData>;
+      for (const meal of MEALS) {
+        weekData[day][meal] = {
+          recipeIds: week[day][meal].map((r) => r.recipe_id),
+          quickLogs: [], // Will be populated later
+        };
+      }
+    }
+    return {
+      week: weekData,
+      snacks: {
+        recipeIds: snacks.map((r) => r.recipe_id),
+        quickLogs: [],
+      },
+    };
+  }, [week, snacks]);
+
+  const isPlanEmpty = useCallback((): boolean => {
+    const hasWeekContent = DAYS.some((day) =>
+      MEALS.some((meal) => week[day][meal].length > 0),
+    );
+    return !hasWeekContent && snacks.length === 0;
+  }, [week, snacks]);
+
+  // Debounce Method for AutoSave
+  useEffect(() => {
+    if (!hasInitialized.current) return;
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    saveTimeout.current = setTimeout(async () => {
+      if (isPlanEmpty()) return;
+      setSaveStatus("saving");
+      try {
+        // response
+        const res = await fetch("/api/meal-plan", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ plan: serializePlan() }),
+        });
+        // check response
+        setSaveStatus(res.ok ? "saved" : "error");
+      } catch (err) {
+        setSaveStatus("error");
+      }
+    }, 1000);
+    return () => {
+      if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    };
+  }, [week, snacks, serializePlan, isPlanEmpty]);
+
+  // Mark as initialized if there is no plan to hydrate
+  useEffect(() => {
+    if (!initialPlan && !hasInitialized.current) {
+      hasInitialized.current = true;
+    }
+  }, [initialPlan]);
 
   // -------------------- Drag & Drop --------------------
 
@@ -128,11 +229,16 @@ export default function Calendar({ selectedRecipes, onClose }: CalendarProps) {
     }));
   };
 
-  const handleClearAll = () => {
+  const handleClearAll = async () => {
     setSnacks([]);
     setWeek(emptyWeek());
+    try {
+      await fetch("/api/meal-plan", { method: "DELETE" });
+    } catch (err) {
+      console.error(err);
+    }
+    onPlanCleared();
   };
-
   // -------------------- Print --------------------
 
   const handlePrint = () => {
@@ -243,6 +349,23 @@ export default function Calendar({ selectedRecipes, onClose }: CalendarProps) {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
           <h2 className="text-3xl text-text font-bold">📅 Meal Plan</h2>
+          {saveStatus !== "idle" && (
+            <span
+              className={`text-xs font-medium no-print ${
+                saveStatus === "saving"
+                  ? "text-text-secondary"
+                  : saveStatus === "saved"
+                    ? "text-green-600"
+                    : "text-red-500"
+              }`}
+            >
+              {saveStatus === "saving"
+                ? "Saving..."
+                : saveStatus === "saved"
+                  ? "Saved"
+                  : "Save Failed"}
+            </span>
+          )}
           <div className="flex flex-wrap gap-2">
             <button
               onClick={handleClearAll}
@@ -298,18 +421,28 @@ export default function Calendar({ selectedRecipes, onClose }: CalendarProps) {
               <div className="w-20 sm:w-24 shrink-0 border-2 border-border rounded-xl bg-muted/30 p-2 flex flex-col items-center justify-center text-center">
                 {(() => {
                   const m = sumMacros(snacks);
-                  if (m.calories === 0) return <span className="text-text-secondary text-xs">—</span>;
+                  if (m.calories === 0)
+                    return (
+                      <span className="text-text-secondary text-xs">—</span>
+                    );
                   return (
                     <div className="text-xs leading-relaxed">
                       <p className="font-bold text-text">{m.calories}</p>
                       <p className="text-text-secondary">cal</p>
-                      <p className="text-text-secondary mt-0.5">{m.protein}P · {m.fat}F · {m.carbs}C</p>
+                      <p className="text-text-secondary mt-0.5">
+                        {m.protein}P · {m.fat}F · {m.carbs}C
+                      </p>
                     </div>
                   );
                 })()}
               </div>
               <div className="flex-1">
-                {renderDropZone("snacks", snacks, handleDropSnacks, removeSnack)}
+                {renderDropZone(
+                  "snacks",
+                  snacks,
+                  handleDropSnacks,
+                  removeSnack,
+                )}
               </div>
             </div>
           </div>
@@ -342,8 +475,13 @@ export default function Calendar({ selectedRecipes, onClose }: CalendarProps) {
                         <span>{capitalize(day)}</span>
                         {dayMacros.calories > 0 && (
                           <div className="mt-1 font-normal text-xs leading-relaxed text-text-secondary">
-                            <p className="font-semibold text-text">{dayMacros.calories} cal</p>
-                            <p>{dayMacros.protein}P · {dayMacros.fat}F · {dayMacros.carbs}C</p>
+                            <p className="font-semibold text-text">
+                              {dayMacros.calories} cal
+                            </p>
+                            <p>
+                              {dayMacros.protein}P · {dayMacros.fat}F ·{" "}
+                              {dayMacros.carbs}C
+                            </p>
                           </div>
                         )}
                       </td>
@@ -389,12 +527,12 @@ export default function Calendar({ selectedRecipes, onClose }: CalendarProps) {
                   Avg / Day ({count} {count === 1 ? "day" : "days"})
                 </span>
                 <span className="text-sm text-text-secondary">
-                  <span className="font-semibold text-text">{Math.round(totalMacros.calories / count)} cal</span>
+                  <span className="font-semibold text-text">
+                    {Math.round(totalMacros.calories / count)} cal
+                  </span>
                   {" · "}
-                  {Math.round(totalMacros.protein / count)}g P
-                  {" · "}
-                  {Math.round(totalMacros.fat / count)}g F
-                  {" · "}
+                  {Math.round(totalMacros.protein / count)}g P{" · "}
+                  {Math.round(totalMacros.fat / count)}g F{" · "}
                   {Math.round(totalMacros.carbs / count)}g C
                 </span>
               </div>

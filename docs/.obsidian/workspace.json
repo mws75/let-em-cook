@@ -11,10 +11,14 @@
             "id": "6747c5da9c1d5762",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "MEAL_PLAN_PERSISTENCE_GUIDE.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "MEAL_PLAN_PERSISTENCE_GUIDE"
             }
           }
         ]
@@ -182,8 +186,8 @@
   },
   "active": "6747c5da9c1d5762",
   "lastOpenFiles": [
-    "MEAL_PLAN_PERSISTENCE_GUIDE.md",
     "RCA/Inconsistent_Macro_Calculations.md",
+    "MEAL_PLAN_PERSISTENCE_GUIDE.md",
     "Pasted image 20260224215648.png",
     "00- TODO.md",
     "Feat/Feat - Calendar.md",

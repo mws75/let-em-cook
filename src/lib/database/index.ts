@@ -8,3 +8,4 @@ export * from "./recipes";
 export * from "./contact";
 export * from "./engagement";
 export * from "./categories";
+export * from "./mealPlans";
