@@ -144,10 +144,12 @@ export default function RecipeDetailModal({
               {/* Title Section */}
               <div className="px-5 pt-3 pb-2 text-center border-b border-border/50 border-dashed">
                 <div className="flex items-center justify-center gap-2">
-                  <span className="text-4xl">{recipe.emoji || "🍽️"}</span>
-                  <h1 className="text-3xl font-bold text-text">{recipe.name}</h1>
+                  <span className="text-5xl">{recipe.emoji || "🍽️"}</span>
+                  <h1 className="text-4xl font-bold text-text">
+                    {recipe.name}
+                  </h1>
                 </div>
-                <div className="flex items-center justify-center gap-3 mt-1 text-text-secondary text-sm">
+                <div className="flex items-center justify-center gap-3 mt-1 text-text-secondary text-base">
                   <span className="px-2 py-0.5 bg-muted rounded-full">
                     {recipe.category}
                   </span>
@@ -167,14 +169,14 @@ export default function RecipeDetailModal({
                 </div>
                 {/* Show creator info if viewing someone else's recipe */}
                 {!isOwner && (
-                  <p className="text-sm text-text-secondary mt-2">
+                  <p className="text-base text-text-secondary mt-2">
                     Created by {recipe.user_name}
                   </p>
                 )}
               </div>
 
               {/* Macros Section - Inline */}
-              <div className="px-5 py-2 bg-muted/30 flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-sm">
+              <div className="px-5 py-2 bg-muted/30 flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-base">
                 <span className="font-medium text-text">
                   <span className="text-accent">
                     {recipe.per_serving_calories}
@@ -220,15 +222,17 @@ export default function RecipeDetailModal({
                 {/* Ingredients Section */}
                 <div className="px-4 py-3 border-t border-r-0 sm:border-r border-border/50">
                   <div className="flex items-center gap-1.5 mb-3">
-                    <span className="text-xl">🥗</span>
-                    <h2 className="text-xl font-bold text-text">Ingredients</h2>
+                    <span className="text-2xl">🥗</span>
+                    <h2 className="text-2xl font-bold text-text">
+                      Ingredients
+                    </h2>
                   </div>
                   <div className="space-y-5">
                     {Object.entries(ingredientsBySection).map(
                       ([section, ingredients]) => (
                         <div key={section}>
                           {Object.keys(ingredientsBySection).length > 1 && (
-                            <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-1 pl-1.5 border-l-2 border-secondary">
+                            <h3 className="text-base font-semibold text-text-secondary uppercase tracking-wide mb-1 pl-1.5 border-l-2 border-secondary">
                               {section}
                             </h3>
                           )}
@@ -236,7 +240,7 @@ export default function RecipeDetailModal({
                             {ingredients.map((ing, idx) => (
                               <li
                                 key={idx}
-                                className={`flex items-start gap-2 text-lg ${ing.optional ? "opacity-70" : ""}`}
+                                className={`flex items-start gap-2 text-xl ${ing.optional ? "opacity-70" : ""}`}
                               >
                                 <span className="w-3 h-3 rounded-full bg-primary/20 border border-primary/40 flex-shrink-0 mt-1" />
                                 <span className="text-text">
@@ -245,12 +249,12 @@ export default function RecipeDetailModal({
                                   </span>{" "}
                                   {ing.name}
                                   {ing.prep && (
-                                    <span className="text-text-secondary text-sm">
+                                    <span className="text-text-secondary text-base">
                                       , {ing.prep}
                                     </span>
                                   )}
                                   {ing.optional && (
-                                    <span className="text-text-secondary text-sm">
+                                    <span className="text-text-secondary text-base">
                                       {" "}
                                       (opt)
                                     </span>
@@ -268,8 +272,8 @@ export default function RecipeDetailModal({
                 {/* Instructions Section */}
                 <div className="px-4 py-3 border-t border-border/50 bg-muted/10">
                   <div className="flex items-center gap-1.5 mb-3">
-                    <span className="text-xl">📝</span>
-                    <h2 className="text-xl font-bold text-text">
+                    <span className="text-2xl">📝</span>
+                    <h2 className="text-2xl font-bold text-text">
                       Instructions
                     </h2>
                   </div>
@@ -278,10 +282,10 @@ export default function RecipeDetailModal({
                       .sort((a, b) => a.step - b.step)
                       .map((instruction) => (
                         <li key={instruction.step} className="flex gap-2">
-                          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-secondary/30 border border-secondary/50 flex items-center justify-center text-sm font-bold text-text">
+                          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-secondary/30 border border-secondary/50 flex items-center justify-center text-lg font-bold text-text">
                             {instruction.step}
                           </div>
-                          <p className="text-text text-base leading-normal">
+                          <p className="text-text text-xl leading-normal">
                             {instruction.text}
                           </p>
                         </li>
@@ -320,27 +324,10 @@ export default function RecipeDetailModal({
 
               <button
                 onClick={() => router.push(`/recipe/${recipeId}`)}
-                className="p-2 bg-secondary hover:bg-secondary/80 border-2 border-border rounded-xl shadow-md hover:shadow-lg hover:scale-[1.1] transition-all"
+                className="p-2 bg-secondary hover:bg-secondary/80 border-2 border-border rounded-xl shadow-md hover:shadow-lg hover:scale-[1.1] transition-all font-bold"
                 aria-label="Open full page"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 64 64"
-                  className="w-5 h-5"
-                  fill="none"
-                >
-                  {/* Arrow body */}
-                  <rect x="10" y="27" width="30" height="10" rx="5" fill="#4a5568" />
-                  {/* Arrow head */}
-                  <path
-                    d="M35 18 L54 32 L35 46"
-                    stroke="#4a5568"
-                    strokeWidth="7"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    fill="none"
-                  />
-                </svg>
+                View
               </button>
 
               <button
