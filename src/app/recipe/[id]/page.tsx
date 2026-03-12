@@ -111,7 +111,7 @@ export default function RecipeDetailPage() {
 
   return (
     <div className="min-h-screen bg-background py-6 px-4 print:py-2 print:px-4">
-      <div className="max-w-xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         {/* Recipe Card */}
         <div className="bg-surface border-2 border-border rounded-2xl shadow-xl overflow-hidden print:shadow-none print:border">
           {/* Header with decorative top border */}
@@ -120,10 +120,10 @@ export default function RecipeDetailPage() {
           {/* Title Section */}
           <div className="px-5 pt-3 pb-2 text-center border-b border-border/50 border-dashed">
             <div className="flex items-center justify-center gap-2">
-              <span className="text-2xl">{recipe.emoji || "🍽️"}</span>
-              <h1 className="text-xl font-bold text-text">{recipe.name}</h1>
+              <span className="text-5xl">{recipe.emoji || "🍽️"}</span>
+              <h1 className="text-4xl font-bold text-text">{recipe.name}</h1>
             </div>
-            <div className="flex items-center justify-center gap-3 mt-1 text-text-secondary text-xs">
+            <div className="flex items-center justify-center gap-3 mt-1 text-text-secondary text-base">
               <span className="px-2 py-0.5 bg-muted rounded-full">
                 {recipe.category}
               </span>
@@ -143,14 +143,14 @@ export default function RecipeDetailPage() {
             </div>
             {/* Show creator info if viewing someone else's recipe */}
             {!isOwner && (
-              <p className="text-xs text-text-secondary mt-2">
+              <p className="text-base text-text-secondary mt-2">
                 Created by {recipe.user_name}
               </p>
             )}
           </div>
 
           {/* Macros Section - Inline */}
-          <div className="px-5 py-2 bg-muted/30 flex items-center justify-center gap-4 text-xs">
+          <div className="px-5 py-2 bg-muted/30 flex items-center justify-center gap-4 text-base">
             <span className="font-medium text-text">
               <span className="text-accent">{recipe.per_serving_calories}</span>{" "}
               cal
@@ -191,16 +191,16 @@ export default function RecipeDetailPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 print:grid-cols-2 gap-0 print:min-h-[8.5in]">
             {/* Ingredients Section */}
             <div className="px-4 py-3 border-t border-r-0 sm:border-r print:border-r border-border/50">
-              <div className="flex items-center gap-1.5 mb-2">
-                <span className="text-sm">🥗</span>
-                <h2 className="text-sm font-bold text-text">Ingredients</h2>
+              <div className="flex items-center gap-1.5 mb-3">
+                <span className="text-2xl">🥗</span>
+                <h2 className="text-2xl font-bold text-text">Ingredients</h2>
               </div>
               <div className="space-y-5">
                 {Object.entries(ingredientsBySection).map(
                   ([section, ingredients]) => (
                     <div key={section}>
                       {Object.keys(ingredientsBySection).length > 1 && (
-                        <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-1 pl-1.5 border-l-2 border-secondary">
+                        <h3 className="text-base font-semibold text-text-secondary uppercase tracking-wide mb-1 pl-1.5 border-l-2 border-secondary">
                           {section}
                         </h3>
                       )}
@@ -208,7 +208,7 @@ export default function RecipeDetailPage() {
                         {ingredients.map((ing, idx) => (
                           <li
                             key={idx}
-                            className={`flex items-start gap-2 text-sm ${ing.optional ? "opacity-70" : ""}`}
+                            className={`flex items-start gap-2 text-xl ${ing.optional ? "opacity-70" : ""}`}
                           >
                             <span className="w-3 h-3 rounded-full bg-primary/20 border border-primary/40 flex-shrink-0 mt-1 print:border-primary" />
                             <span className="text-text">
@@ -217,12 +217,12 @@ export default function RecipeDetailPage() {
                               </span>{" "}
                               {ing.name}
                               {ing.prep && (
-                                <span className="text-text-secondary text-xs">
+                                <span className="text-text-secondary text-base">
                                   , {ing.prep}
                                 </span>
                               )}
                               {ing.optional && (
-                                <span className="text-text-secondary text-xs">
+                                <span className="text-text-secondary text-base">
                                   {" "}
                                   (opt)
                                 </span>
@@ -239,19 +239,19 @@ export default function RecipeDetailPage() {
 
             {/* Instructions Section */}
             <div className="px-4 py-3 border-t border-border/50 bg-muted/10">
-              <div className="flex items-center gap-1.5 mb-2">
-                <span className="text-sm">📝</span>
-                <h2 className="text-sm font-bold text-text">Instructions</h2>
+              <div className="flex items-center gap-1.5 mb-3">
+                <span className="text-2xl">📝</span>
+                <h2 className="text-2xl font-bold text-text">Instructions</h2>
               </div>
               <ol className="space-y-2">
                 {recipe.instructions_json
                   .sort((a, b) => a.step - b.step)
                   .map((instruction) => (
                     <li key={instruction.step} className="flex gap-2">
-                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-secondary/30 border border-secondary/50 flex items-center justify-center text-xs font-bold text-text">
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-secondary/30 border border-secondary/50 flex items-center justify-center text-lg font-bold text-text">
                         {instruction.step}
                       </div>
-                      <p className="text-text text-sm leading-snug">
+                      <p className="text-text text-xl leading-normal">
                         {instruction.text}
                       </p>
                     </li>
