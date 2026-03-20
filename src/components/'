@@ -1,0 +1,99 @@
+"use client";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { QuickLogEntry } from "@/types/types";
+import { parseNum } from "@/lib/helpers/utils";
+
+type QuickLogModalProps = {
+  isOpen: boolean;
+  onCloseClick: () => void;
+  onSubmit: (entry: QuickLogEntry) => void;
+  slotLabel: string;
+};
+
+const parseNumbers = (v: string): number | null => {
+  if (v.trim() === "") return null;
+  const n = Number(v);
+  return isNaN(n) ? null : n;
+};
+
+export default function QuickLogEntryModal({
+  isOpen,
+  onClose,
+  onSubmit,
+}: QuickLogModalProps) {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const [name, setName] = useState("");
+  const [calories, setCalories] = useState("");
+  const [protein, setProtein] = useState("");
+  const [fat, setFat] = useState("");
+  const [carbs, setCarbs] = useState("");
+  const [sugar, setSugar] = useState("");
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onCloseClick();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [onCloseClick]);
+
+  const onSubmit = async () => {
+    const entry: QuickLogEntry = {
+      id: crypto.randomUUID(),
+      name: name.trim(),
+      calories: parseNumbers(calories),
+      protein_g: parseNumbers(protein),
+      fat_g: parseNumbers(fat),
+      carbs_g: parseNumbers(carbs),
+      sugar_g: parseNumbers(sugar),
+    };
+    try {
+      console.log("Submit meal entry");
+    } catch (error) {
+      console.error("Error: ", error);
+    } finally {
+      setName("");
+      setCalories("");
+      setProtein("");
+      setFat("");
+      setCarbs("");
+      setSugar("");
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 bg-black/50 z-40 flex items-center justify-center p-4"
+      onClick={onCloseClick}
+    >
+      {/* Layer 2 Modal Container */}
+      <div className="bg-background rounded-2xl max-w-5xl w-full max-h-[90vh] shadow-2xl">
+        {isLoading && (
+          <div className="flex items-center justify-center py-12">
+            <div className="text-2xl text-text-secondary animate-pulse">
+              Loading Form...
+            </div>
+          </div>
+        )}
+
+        {error && (
+          <div className="flex flex-col items-center justify-center py-12 gap-4">
+            <div className="text-2xl text-accent">{error}</div>
+            <button
+              onClick={onCloseClick}
+              className="px-6 py-2 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md"
+            >
+              {" "}
+              Close
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
