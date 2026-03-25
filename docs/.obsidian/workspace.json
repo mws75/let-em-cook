@@ -11,10 +11,14 @@
             "id": "6747c5da9c1d5762",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "MEAL_PLAN_PERSISTENCE_GUIDE.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "MEAL_PLAN_PERSISTENCE_GUIDE"
             }
           }
         ]
@@ -74,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 246.5,
+    "width": 430.5,
     "collapsed": true
   },
   "right": {
@@ -182,9 +186,10 @@
   },
   "active": "6747c5da9c1d5762",
   "lastOpenFiles": [
+    "AA - Summary - AA.md",
+    "MEAL_PLAN_PERSISTENCE_GUIDE.md",
     "templates",
     "style_guide",
-    "MEAL_PLAN_PERSISTENCE_GUIDE.md",
     "RCA/Inconsistent_Macro_Calculations.md",
     "Pasted image 20260224215648.png",
     "00- TODO.md",
@@ -193,7 +198,6 @@
     "CONSOLIDATE_CATEGORIES_PLAN.md",
     "Explore_Recipes_Implementation_Guide.md",
     "LOG.md",
-    "AA - Summary - AA.md",
     "Recipe_Modal_Implementation_Guide.md",
     "Notes/CheckBox Component.md",
     "Notes",
