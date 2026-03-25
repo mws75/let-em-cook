@@ -15,11 +15,8 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background font-sans">
-      <main className="">
-        <LandingPage />
-        <p>this is the main page</p>
-      </main>
-    </div>
+    <main>
+      <LandingPage />
+    </main>
   );
 }
