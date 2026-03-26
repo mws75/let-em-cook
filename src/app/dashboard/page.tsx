@@ -6,6 +6,7 @@ import SelectedRecipeCard from "@/components/SelectedRecipeCard";
 import Calendar from "@/components/Calendar";
 import UpgradeButton from "@/components/UpgradeButton";
 import UpgradePrompt from "@/components/UpgradePrompt";
+import GettingStartedSidebar from "@/components/GettingStartedSidebar";
 import {
   Recipe,
   SubscriptionInfo,
@@ -363,6 +364,7 @@ function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-background">
+      <GettingStartedSidebar />
       {viewingRecipeId && (
         <RecipeDetailModal
           recipeId={viewingRecipeId}

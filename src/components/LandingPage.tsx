@@ -339,7 +339,26 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-bg overflow-x-hidden">
+    <div className="min-h-screen bg-bg overflow-x-hidden scroll-smooth">
+      {/* ── Sticky Nav ── */}
+      <nav className="sticky top-0 z-50 bg-bg/80 backdrop-blur-md border-b-2 border-border/50">
+        <div className="max-w-5xl mx-auto px-5 py-3 flex items-center justify-between">
+          <span className="text-lg font-extrabold text-text">Let Em Cook</span>
+          <div className="flex items-center gap-2.5">
+            <SignInButton mode="modal">
+              <button className="px-5 py-2 bg-surface hover:bg-muted border-2 border-border text-text rounded-xl text-sm font-bold shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+                Log In
+              </button>
+            </SignInButton>
+            <SignUpButton mode="modal">
+              <button className="px-5 py-2 bg-accent hover:bg-accent/85 border-2 border-accent/80 text-white rounded-xl text-sm font-bold shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+                Sign Up
+              </button>
+            </SignUpButton>
+          </div>
+        </div>
+      </nav>
+
       {/* ── Inline keyframes ── */}
       <style>{`
         @keyframes fadeUp {
@@ -381,7 +400,7 @@ export default function LandingPage() {
       {/* ════════════════════════════════════
           HERO
          ════════════════════════════════════ */}
-      <section className="relative min-h-[92vh] flex items-center justify-center px-5 py-20">
+      <section className="relative min-h-[70vh] flex items-center justify-center px-5 py-16">
         {/* Background decorative blobs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-20 -right-20 w-72 h-72 bg-primary/10 rounded-full blur-3xl float-slow" />
@@ -430,12 +449,235 @@ export default function LandingPage() {
                 Get Started — Free
               </button>
             </SignUpButton>
-            <a
-              href="#demo"
-              className="bg-surface hover:bg-muted border-2 border-border text-text rounded-2xl px-8 py-3.5 text-lg font-bold shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200"
+          </div>
+
+          {/* Scroll prompt to demo */}
+          <a
+            href="#demo"
+            className={`inline-flex flex-col items-center gap-2 mt-12 group reveal ${hero.visible ? "show stagger-5" : ""}`}
+          >
+            <span className="px-8 py-3.5 bg-surface hover:bg-muted border-2 border-border text-text rounded-2xl text-lg font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all duration-200">
+              See It In Action — Try The Demo
+            </span>
+            <span className="text-2xl mt-1" style={{ animation: "float 1.5s ease-in-out infinite" }}>
+              ↓
+            </span>
+          </a>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════
+          TRY IT — DRAG & DROP PLANNER
+         ════════════════════════════════════ */}
+      <section id="demo" className="px-5 py-16 sm:py-24">
+        <div
+          ref={tryit.ref}
+          className={`max-w-5xl mx-auto reveal ${tryit.visible ? "show" : ""}`}
+        >
+          <div className="text-center mb-10">
+            <h2
+              className={`text-3xl sm:text-4xl font-extrabold text-text mb-3 reveal ${tryit.visible ? "show stagger-1" : ""}`}
             >
-              See How It Works
-            </a>
+              Try it yourself
+            </h2>
+            <p
+              className={`text-text-secondary text-base sm:text-lg reveal ${tryit.visible ? "show stagger-2" : ""}`}
+            >
+              Drag recipes into the calendar to plan your week. Go ahead — it
+              actually works.
+            </p>
+          </div>
+
+          <div
+            className={`flex flex-col gap-6 reveal ${tryit.visible ? "show stagger-3" : ""}`}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            {/* Recipe cards — horizontal row on top */}
+            <div>
+              <p className="text-xs font-bold text-text-secondary uppercase tracking-wide mb-3 ml-1">
+                Your Recipes — drag into the calendar below
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+                {DEMO_RECIPES.map((recipe) => (
+                  <div
+                    key={recipe.id}
+                    draggable
+                    onDragStart={() => handleDragStart(recipe)}
+                    onDragEnd={() => {
+                      setDragging(null);
+                      setDragOverSlot(null);
+                    }}
+                    onTouchStart={() => handleTouchStart(recipe)}
+                    className={`group bg-surface border-2 border-border rounded-2xl p-3 cursor-grab active:cursor-grabbing hover:shadow-md hover:scale-[1.03] transition-all duration-200 select-none ${
+                      dragging?.id === recipe.id ? "opacity-50 scale-95" : ""
+                    }`}
+                    style={{
+                      boxShadow: `inset 0 0 12px ${recipe.color}40`,
+                    }}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-xl">{recipe.emoji}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-text text-sm truncate">
+                          {recipe.name}
+                        </p>
+                        <p className="text-text-secondary text-xs">
+                          {recipe.cal} cal · {recipe.protein}g P
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Calendar drop zones — full width below */}
+            <div>
+              <div className="flex items-center justify-between mb-3 ml-1">
+                <p className="text-xs font-bold text-text-secondary uppercase tracking-wide">
+                  This Week
+                </p>
+                {totalPlanned > 0 && (
+                  <button
+                    onClick={() => {
+                      const init: Record<string, DemoRecipe[]> = {};
+                      DEMO_DAYS.forEach((d) => SLOTS.forEach((s) => (init[`${d}-${s}`] = [])));
+                      setCalendar(init);
+                    }}
+                    className="text-xs text-text-secondary hover:text-accent transition-colors"
+                  >
+                    Clear all
+                  </button>
+                )}
+              </div>
+
+              {/* Slot label column + day columns */}
+              <div className="grid gap-2 sm:gap-2.5" style={{ gridTemplateColumns: "auto repeat(5, 1fr)" }}>
+                {/* Header row: empty corner + day names */}
+                <div />
+                {DEMO_DAYS.map((day) => (
+                  <p key={day} className="text-xs sm:text-sm font-bold text-text-secondary text-center py-1">
+                    {day}
+                  </p>
+                ))}
+
+                {/* Slot rows: Breakfast, Lunch, Dinner */}
+                {SLOTS.map((slot) => (
+                  <React.Fragment key={slot}>
+                    <div className="flex items-center">
+                      <p className="text-[10px] sm:text-xs font-semibold text-text-secondary/60 whitespace-nowrap">
+                        {slot}
+                      </p>
+                    </div>
+                    {DEMO_DAYS.map((day) => {
+                      const slotKey = `${day}-${slot}` as SlotKey;
+                      const recipes = calendar[slotKey];
+                      const isOver = dragOverSlot === slotKey;
+                      return (
+                        <div
+                          key={slotKey}
+                          data-slot={slotKey}
+                          onDragOver={(e) => {
+                            e.preventDefault();
+                            setDragOverSlot(slotKey);
+                          }}
+                          onDragLeave={() => setDragOverSlot(null)}
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            handleDrop(slotKey);
+                          }}
+                          className={`min-h-[72px] sm:min-h-[88px] rounded-2xl border-2 p-2 sm:p-2.5 transition-all duration-200 flex flex-col gap-1.5 ${
+                            isOver
+                              ? "border-primary bg-primary/10 scale-[1.03]"
+                              : "border-border bg-surface"
+                          }`}
+                        >
+                          {recipes.map((recipe) => (
+                            <div
+                              key={recipe.id}
+                              className="group/chip bg-surface border border-border rounded-xl px-2 py-1.5 flex items-center gap-1.5"
+                              style={{ boxShadow: `inset 0 0 10px ${recipe.color}50` }}
+                            >
+                              <span className="text-sm sm:text-base">{recipe.emoji}</span>
+                              <span className="text-[10px] sm:text-xs font-medium text-text truncate flex-1">
+                                {recipe.name.split(" ").slice(0, 2).join(" ")}
+                              </span>
+                              <button
+                                onClick={() => handleRemoveFromSlot(slotKey, recipe.id)}
+                                className="text-text-secondary hover:text-accent text-xs opacity-0 group-hover/chip:opacity-100 transition-opacity"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ))}
+                          {recipes.length === 0 && !dragging && (
+                            <div className="flex-1 flex items-center justify-center">
+                              <span className="text-[10px] text-text-secondary/30">—</span>
+                            </div>
+                          )}
+                          {dragging && (
+                            <div className="border-2 border-dashed border-primary/30 rounded-xl h-8 flex items-center justify-center">
+                              <span className="text-xs text-primary/50">+</span>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </React.Fragment>
+                ))}
+
+                {/* Macro totals row */}
+                <div className="flex items-center">
+                  <p className="text-[10px] sm:text-xs font-semibold text-text-secondary/60">
+                    Total
+                  </p>
+                </div>
+                {DEMO_DAYS.map((day) => {
+                  const recipes = getDayRecipes(day);
+                  const totalCal = recipes.reduce((s, r) => s + r.cal, 0);
+                  const totalP = recipes.reduce((s, r) => s + r.protein, 0);
+                  return (
+                    <div key={`${day}-totals`} className="text-center py-1.5 border-t-2 border-border/50">
+                      {recipes.length > 0 ? (
+                        <>
+                          <p className="text-xs sm:text-sm font-bold text-text">
+                            {totalCal}
+                            <span className="font-normal text-text-secondary"> cal</span>
+                          </p>
+                          <p className="text-[10px] sm:text-xs text-text-secondary">
+                            {totalP}g P
+                          </p>
+                        </>
+                      ) : (
+                        <p className="text-xs text-text-secondary/30">—</p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Feedback message */}
+              <div className="mt-4 text-center min-h-[2rem]">
+                {totalPlanned === 0 && (
+                  <p className="text-sm text-text-secondary">
+                    👆 Drag a recipe into any day to get started
+                  </p>
+                )}
+                {totalPlanned > 0 && totalPlanned < 5 && (
+                  <p className="text-sm text-text-secondary">
+                    Nice! {totalPlanned} meal{totalPlanned > 1 ? "s" : ""}{" "}
+                    planned — keep going!
+                  </p>
+                )}
+                {totalPlanned >= 5 && (
+                  <p className="text-sm text-text">
+                    🔥 {totalPlanned} meals planned! Imagine generating a
+                    grocery list from this in one click.
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -443,7 +685,7 @@ export default function LandingPage() {
       {/* ════════════════════════════════════
           INTERACTIVE DEMO
          ════════════════════════════════════ */}
-      <section id="demo" className="px-5 py-16 sm:py-24">
+      <section className="px-5 py-16 sm:py-24">
         <div
           ref={demo.ref}
           className={`max-w-4xl mx-auto reveal ${demo.visible ? "show" : ""}`}
@@ -593,221 +835,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════
-          TRY IT — DRAG & DROP PLANNER
-         ════════════════════════════════════ */}
-      <section className="px-5 py-16 sm:py-24">
-        <div
-          ref={tryit.ref}
-          className={`max-w-5xl mx-auto reveal ${tryit.visible ? "show" : ""}`}
-        >
-          <div className="text-center mb-10">
-            <h2
-              className={`text-3xl sm:text-4xl font-extrabold text-text mb-3 reveal ${tryit.visible ? "show stagger-1" : ""}`}
-            >
-              Try it yourself
-            </h2>
-            <p
-              className={`text-text-secondary text-base sm:text-lg reveal ${tryit.visible ? "show stagger-2" : ""}`}
-            >
-              Drag recipes into the calendar to plan your week. Go ahead — it
-              actually works.
-            </p>
-          </div>
 
-          <div
-            className={`flex flex-col gap-6 reveal ${tryit.visible ? "show stagger-3" : ""}`}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
-            {/* Recipe cards — horizontal row on top */}
-            <div>
-              <p className="text-xs font-bold text-text-secondary uppercase tracking-wide mb-3 ml-1">
-                Your Recipes — drag into the calendar below
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
-                {DEMO_RECIPES.map((recipe) => (
-                  <div
-                    key={recipe.id}
-                    draggable
-                    onDragStart={() => handleDragStart(recipe)}
-                    onDragEnd={() => {
-                      setDragging(null);
-                      setDragOverSlot(null);
-                    }}
-                    onTouchStart={() => handleTouchStart(recipe)}
-                    className={`group bg-surface border-2 border-border rounded-2xl p-3 cursor-grab active:cursor-grabbing hover:shadow-md hover:scale-[1.03] transition-all duration-200 select-none ${
-                      dragging?.id === recipe.id ? "opacity-50 scale-95" : ""
-                    }`}
-                    style={{
-                      boxShadow: `inset 0 0 12px ${recipe.color}40`,
-                    }}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <span className="text-xl">{recipe.emoji}</span>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-text text-sm truncate">
-                          {recipe.name}
-                        </p>
-                        <p className="text-text-secondary text-xs">
-                          {recipe.cal} cal · {recipe.protein}g P
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Calendar drop zones — full width below */}
-            <div>
-              <div className="flex items-center justify-between mb-3 ml-1">
-                <p className="text-xs font-bold text-text-secondary uppercase tracking-wide">
-                  This Week
-                </p>
-                {totalPlanned > 0 && (
-                  <button
-                    onClick={() => {
-                      const init: Record<string, DemoRecipe[]> = {};
-                      DEMO_DAYS.forEach((d) => SLOTS.forEach((s) => (init[`${d}-${s}`] = [])));
-                      setCalendar(init);
-                    }}
-                    className="text-xs text-text-secondary hover:text-accent transition-colors"
-                  >
-                    Clear all
-                  </button>
-                )}
-              </div>
-
-              {/* Slot label column + 7 day columns */}
-              <div className="grid gap-2 sm:gap-2.5" style={{ gridTemplateColumns: "auto repeat(5, 1fr)" }}>
-                {/* Header row: empty corner + day names */}
-                <div />
-                {DEMO_DAYS.map((day) => (
-                  <p key={day} className="text-xs sm:text-sm font-bold text-text-secondary text-center py-1">
-                    {day}
-                  </p>
-                ))}
-
-                {/* Slot rows: Breakfast, Lunch, Dinner */}
-                {SLOTS.map((slot) => (
-                  <React.Fragment key={slot}>
-                    <div className="flex items-center">
-                      <p className="text-[10px] sm:text-xs font-semibold text-text-secondary/60 whitespace-nowrap">
-                        {slot}
-                      </p>
-                    </div>
-                    {DEMO_DAYS.map((day) => {
-                      const slotKey = `${day}-${slot}` as SlotKey;
-                      const recipes = calendar[slotKey];
-                      const isOver = dragOverSlot === slotKey;
-                      return (
-                        <div
-                          key={slotKey}
-                          data-slot={slotKey}
-                          onDragOver={(e) => {
-                            e.preventDefault();
-                            setDragOverSlot(slotKey);
-                          }}
-                          onDragLeave={() => setDragOverSlot(null)}
-                          onDrop={(e) => {
-                            e.preventDefault();
-                            handleDrop(slotKey);
-                          }}
-                          className={`min-h-[72px] sm:min-h-[88px] rounded-2xl border-2 p-2 sm:p-2.5 transition-all duration-200 flex flex-col gap-1.5 ${
-                            isOver
-                              ? "border-primary bg-primary/10 scale-[1.03]"
-                              : "border-border bg-surface"
-                          }`}
-                        >
-                          {recipes.map((recipe) => (
-                            <div
-                              key={recipe.id}
-                              className="group/chip bg-surface border border-border rounded-xl px-2 py-1.5 flex items-center gap-1.5"
-                              style={{ boxShadow: `inset 0 0 10px ${recipe.color}50` }}
-                            >
-                              <span className="text-sm sm:text-base">{recipe.emoji}</span>
-                              <span className="text-[10px] sm:text-xs font-medium text-text truncate flex-1">
-                                {recipe.name.split(" ").slice(0, 2).join(" ")}
-                              </span>
-                              <button
-                                onClick={() => handleRemoveFromSlot(slotKey, recipe.id)}
-                                className="text-text-secondary hover:text-accent text-xs opacity-0 group-hover/chip:opacity-100 transition-opacity"
-                              >
-                                ✕
-                              </button>
-                            </div>
-                          ))}
-                          {recipes.length === 0 && !dragging && (
-                            <div className="flex-1 flex items-center justify-center">
-                              <span className="text-[10px] text-text-secondary/30">—</span>
-                            </div>
-                          )}
-                          {dragging && (
-                            <div className="border-2 border-dashed border-primary/30 rounded-xl h-8 flex items-center justify-center">
-                              <span className="text-xs text-primary/50">+</span>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </React.Fragment>
-                ))}
-
-                {/* Macro totals row */}
-                <div className="flex items-center">
-                  <p className="text-[10px] sm:text-xs font-semibold text-text-secondary/60">
-                    Total
-                  </p>
-                </div>
-                {DEMO_DAYS.map((day) => {
-                  const recipes = getDayRecipes(day);
-                  const totalCal = recipes.reduce((s, r) => s + r.cal, 0);
-                  const totalP = recipes.reduce((s, r) => s + r.protein, 0);
-                  return (
-                    <div key={`${day}-totals`} className="text-center py-1.5 border-t-2 border-border/50">
-                      {recipes.length > 0 ? (
-                        <>
-                          <p className="text-xs sm:text-sm font-bold text-text">
-                            {totalCal}
-                            <span className="font-normal text-text-secondary"> cal</span>
-                          </p>
-                          <p className="text-[10px] sm:text-xs text-text-secondary">
-                            {totalP}g P
-                          </p>
-                        </>
-                      ) : (
-                        <p className="text-xs text-text-secondary/30">—</p>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Feedback message */}
-              <div className="mt-4 text-center min-h-[2rem]">
-                {totalPlanned === 0 && (
-                  <p className="text-sm text-text-secondary">
-                    👆 Drag a recipe into any day to get started
-                  </p>
-                )}
-                {totalPlanned > 0 && totalPlanned < 5 && (
-                  <p className="text-sm text-text-secondary">
-                    Nice! {totalPlanned} meal{totalPlanned > 1 ? "s" : ""}{" "}
-                    planned — keep going!
-                  </p>
-                )}
-                {totalPlanned >= 5 && (
-                  <p className="text-sm text-text">
-                    🔥 {totalPlanned} meals planned! Imagine generating a
-                    grocery list from this in one click.
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ════════════════════════════════════
           FINAL CTA

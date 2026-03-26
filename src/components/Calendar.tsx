@@ -502,6 +502,7 @@ export default function Calendar({
         onCloseClick={() => setQuickLogTarget(null)}
         onSubmitClick={handleQuickLogSubmit}
         slotLabel={getQuickLogLabel()}
+        recipes={allRecipes}
       />
       <section className="border-2 border-border rounded-3xl p-6 bg-surface shadow-lg">
         {/* Header */}
