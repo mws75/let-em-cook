@@ -3,6 +3,9 @@ import { User as ClerkUser } from "@clerk/nextjs/server";
 import { executeQuery, withTransaction } from "./database/connection";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { User } from "@/types/types";
+import { headers } from "next/headers";
+import { createHmac } from "crypto";
+
 interface UserRow extends RowDataPacket {
   user_id: number;
   user_name: string;
@@ -15,7 +18,34 @@ interface UserRow extends RowDataPacket {
   stripe_subscription_id: string | null;
 }
 
+function verifyMobileToken(token: string): number | null {
+  try {
+    const [header, body, signature] = token.split(".");
+    const secret = process.env.CLERK_SECRET_KEY!;
+    const expectedSig = createHmac("sha256", secret)
+      .update(`${header}.${body}`)
+      .digest("base64url");
+    if (signature !== expectedSig) return null;
+
+    const payload = JSON.parse(Buffer.from(body, "base64url").toString());
+    if (payload.exp < Math.floor(Date.now() / 1000)) return null;
+    return payload.sub as number;
+  } catch {
+    return null;
+  }
+}
+
 export async function getAuthenticatedUserId(): Promise<number> {
+  // Check for mobile Bearer token first
+  const headersList = await headers();
+  const authHeader = headersList.get("authorization");
+  if (authHeader?.startsWith("Bearer ")) {
+    const token = authHeader.slice(7);
+    const userId = verifyMobileToken(token);
+    if (userId) return userId;
+  }
+
+  // Fall back to Clerk session auth
   const user = await currentUser();
   if (!user) {
     throw new Error("Not authenticated");
