@@ -26,25 +26,97 @@ const COUNT_UNITS = new Set([
   "piece",
   "clove",
   "slice",
-  "slices",
   "can",
-  "cans",
   "pkg",
   "stick",
   "bunch",
   "sprig",
   "leaf",
-  "leaves",
   "head",
   "medium",
   "large",
   "small",
+  "knob",
+  "bar",
+  "block",
+  "package",
+  "bottle",
+  "jar",
 ]);
 
 const OTHER_UNITS = new Set(["pinch", "dash", "to taste", "handful", ""]);
 
+// Synonym map: maps many spellings/plurals to a single canonical unit
+// so aggregation and display collapse them together.
+const UNIT_SYNONYMS: Record<string, string> = {
+  // volume plurals + variants
+  tsps: "tsp",
+  teaspoon: "tsp",
+  teaspoons: "tsp",
+  tbsps: "tbsp",
+  tablespoon: "tbsp",
+  tablespoons: "tbsp",
+  cups: "cup",
+  "fluid ounce": "fl oz",
+  "fluid ounces": "fl oz",
+  pts: "pt",
+  pint: "pt",
+  pints: "pt",
+  qts: "qt",
+  quart: "qt",
+  quarts: "qt",
+  gallon: "gal",
+  gallons: "gal",
+  milliliter: "ml",
+  milliliters: "ml",
+  liter: "l",
+  liters: "l",
+  // weight plurals + variants
+  ozs: "oz",
+  ounce: "oz",
+  ounces: "oz",
+  lbs: "lb",
+  pound: "lb",
+  pounds: "lb",
+  gram: "g",
+  grams: "g",
+  kilogram: "kg",
+  kilograms: "kg",
+  // count plurals + synonyms
+  pcs: "pc",
+  pieces: "piece",
+  cloves: "clove",
+  slices: "slice",
+  cans: "can",
+  packages: "pkg",
+  pkgs: "pkg",
+  sticks: "stick",
+  bunches: "bunch",
+  sprigs: "sprig",
+  leaves: "leaf",
+  heads: "head",
+  knobs: "knob",
+  bars: "bar",
+  blocks: "block",
+  bottles: "bottle",
+  jars: "jar",
+};
+
+// Units that should NOT render before the ingredient name.
+// "each" is a placeholder for "one of these", so "3 Apples" reads better than "3 each Apples".
+const HIDDEN_DISPLAY_UNITS = new Set(["each", "pc", "piece"]);
+
+export function normalizeUnit(unit: string): string {
+  const trimmed = (unit || "").toLowerCase().trim();
+  return UNIT_SYNONYMS[trimmed] ?? trimmed;
+}
+
+export function shouldHideUnitOnDisplay(unit: string): boolean {
+  return HIDDEN_DISPLAY_UNITS.has(normalizeUnit(unit));
+}
+
 export function getUnitType(unit: string): UnitType {
-  const normalized = unit.toLowerCase().trim();
+  const normalized = normalizeUnit(unit);
 
   if (VOLUME_TO_ML[normalized]) return "volume";
   if (WEIGHT_TO_G[normalized]) return "weight";
@@ -69,7 +141,7 @@ export function convertToBaseUnit(
   quantity: number,
   unit: string
 ): { value: number; baseUnit: string } | null {
-  const normalized = unit.toLowerCase().trim();
+  const normalized = normalizeUnit(unit);
   const unitType = getUnitType(normalized);
 
   if (unitType === "volume" && VOLUME_TO_ML[normalized]) {
@@ -91,7 +163,7 @@ export function convertFromBaseUnit(
   value: number,
   targetUnit: string
 ): number | null {
-  const normalized = targetUnit.toLowerCase().trim();
+  const normalized = normalizeUnit(targetUnit);
 
   if (VOLUME_TO_ML[normalized]) {
     return value / VOLUME_TO_ML[normalized];
@@ -153,16 +225,16 @@ export function formatQuantity(qty: number): string {
 }
 
 export function chooseDisplayUnit(units: string[]): string {
-  // Count occurrences of each unit
+  // Count occurrences of each unit (after synonym normalization)
   const counts = new Map<string, number>();
   for (const unit of units) {
-    const normalized = unit.toLowerCase().trim();
+    const normalized = normalizeUnit(unit);
     counts.set(normalized, (counts.get(normalized) || 0) + 1);
   }
 
   // Return most common unit
   let maxCount = 0;
-  let mostCommon = units[0] || "";
+  let mostCommon = normalizeUnit(units[0] || "");
   for (const [unit, count] of counts) {
     if (count > maxCount) {
       maxCount = count;

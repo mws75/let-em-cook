@@ -15,7 +15,7 @@ import {
   Ingredients,
   MealPlanData,
 } from "@/types/types";
-import { formatQuantity } from "@/lib/unitConverter";
+import { formatQuantity, shouldHideUnitOnDisplay } from "@/lib/unitConverter";
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
@@ -325,10 +325,16 @@ function DashboardContent() {
   };
 
   const formatGroceryItemDisplay = (item: GroceryItem): string => {
-    if (item.quantity && item.unit) {
-      return `${formatQuantity(item.quantity)} ${item.unit} ${item.displayName}`;
-    } else if (item.quantity) {
-      return `${formatQuantity(item.quantity)} ${item.displayName}`;
+    const qty = item.quantity ? formatQuantity(item.quantity) : "";
+    const showUnit = item.unit && !shouldHideUnitOnDisplay(item.unit);
+    if (qty && showUnit) {
+      return `${qty} ${item.unit} ${item.displayName}`;
+    }
+    if (qty) {
+      return `${qty} ${item.displayName}`;
+    }
+    if (item.unit === "to taste") {
+      return `${item.displayName} (to taste)`;
     }
     return item.displayName;
   };

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openai, handleOpenAIError } from "@/lib/openai";
 import { aggregateIngredients } from "@/lib/ingredientAggregator";
-import { formatQuantity } from "@/lib/unitConverter";
+import { formatQuantity, shouldHideUnitOnDisplay } from "@/lib/unitConverter";
 import { Ingredients, GroceryItem } from "@/types/types";
 
 export async function POST(request: NextRequest) {
@@ -20,12 +20,19 @@ export async function POST(request: NextRequest) {
     // Aggregate ingredients with unit conversion
     const aggregatedItems = aggregateIngredients(ingredients as Ingredients[]);
 
-    // Format for OpenAI sorting (e.g., "2 cups flour")
+    // Format for OpenAI sorting (e.g., "2 cups flour"). Must match the
+    // dashboard's formatGroceryItemDisplay so the string-to-item lookup works.
     const formattedForSorting = aggregatedItems.map((item) => {
-      if (item.quantity && item.unit) {
-        return `${formatQuantity(item.quantity)} ${item.unit} ${item.displayName}`;
-      } else if (item.quantity) {
-        return `${formatQuantity(item.quantity)} ${item.displayName}`;
+      const qty = item.quantity ? formatQuantity(item.quantity) : "";
+      const showUnit = item.unit && !shouldHideUnitOnDisplay(item.unit);
+      if (qty && showUnit) {
+        return `${qty} ${item.unit} ${item.displayName}`;
+      }
+      if (qty) {
+        return `${qty} ${item.displayName}`;
+      }
+      if (item.unit === "to taste") {
+        return `${item.displayName} (to taste)`;
       }
       return item.displayName;
     });
