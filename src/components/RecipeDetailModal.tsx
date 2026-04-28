@@ -19,8 +19,16 @@ export default function RecipeDetailModal({
   const [isOwner, setIsOwner] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [checkedIngredients, setCheckedIngredients] = useState<Set<string>>(
+    new Set(),
+  );
+  const [checkedSteps, setCheckedSteps] = useState<Set<number>>(new Set());
 
   useEffect(() => {
+    // Reset progress when switching recipes
+    setCheckedIngredients(new Set());
+    setCheckedSteps(new Set());
+
     const fetchRecipe = async () => {
       try {
         const response = await fetch(`/api/recipes/${recipeId}`);
@@ -39,6 +47,24 @@ export default function RecipeDetailModal({
 
     fetchRecipe();
   }, [recipeId]);
+
+  const toggleIngredient = (key: string) => {
+    setCheckedIngredients((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  const toggleStep = (step: number) => {
+    setCheckedSteps((prev) => {
+      const next = new Set(prev);
+      if (next.has(step)) next.delete(step);
+      else next.add(step);
+      return next;
+    });
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -88,17 +114,17 @@ export default function RecipeDetailModal({
 
   const ingredientsBySection = recipe
     ? recipe.ingredients_json.reduce(
-        (acc, ingredient) => {
-          const section = ingredient.section || "Main";
-          if (acc[section] === undefined) {
-            acc[section] = [];
-          }
+      (acc, ingredient) => {
+        const section = ingredient.section || "Main";
+        if (acc[section] === undefined) {
+          acc[section] = [];
+        }
 
-          acc[section].push(ingredient);
-          return acc;
-        },
-        {} as Record<string, Ingredients[]>,
-      )
+        acc[section].push(ingredient);
+        return acc;
+      },
+      {} as Record<string, Ingredients[]>,
+    )
     : {};
 
   return (
@@ -237,31 +263,50 @@ export default function RecipeDetailModal({
                             </h3>
                           )}
                           <ul className="space-y-0.5">
-                            {ingredients.map((ing, idx) => (
-                              <li
-                                key={idx}
-                                className={`flex items-start gap-2 text-xl ${ing.optional ? "opacity-70" : ""}`}
-                              >
-                                <span className="w-3 h-3 rounded-full bg-primary/20 border border-primary/40 flex-shrink-0 mt-1" />
-                                <span className="text-text">
-                                  <span className="font-medium">
-                                    {ing.quantity} {ing.unit}
-                                  </span>{" "}
-                                  {ing.name}
-                                  {ing.prep && (
-                                    <span className="text-text-secondary text-base">
-                                      , {ing.prep}
+                            {ingredients.map((ing, idx) => {
+                              const key = `${section}-${idx}`;
+                              const isChecked = checkedIngredients.has(key);
+                              return (
+                                <li key={idx}>
+                                  <button
+                                    type="button"
+                                    role="checkbox"
+                                    aria-checked={isChecked}
+                                    onClick={() => toggleIngredient(key)}
+                                    className={`flex items-start gap-2 text-xl text-left w-full py-0.5 rounded hover:bg-muted/40 transition-colors ${ing.optional ? "opacity-70" : ""} ${isChecked ? "opacity-50" : ""}`}
+                                  >
+                                    <span
+                                      className={`w-5 h-5 rounded border-2 flex-shrink-0 mt-1 flex items-center justify-center transition-colors ${isChecked ? "bg-primary border-primary" : "bg-primary/10 border-primary/40"}`}
+                                    >
+                                      {isChecked && (
+                                        <span className="text-white text-sm leading-none font-bold">
+                                          ✓
+                                        </span>
+                                      )}
                                     </span>
-                                  )}
-                                  {ing.optional && (
-                                    <span className="text-text-secondary text-base">
-                                      {" "}
-                                      (opt)
+                                    <span
+                                      className={`text-text ${isChecked ? "line-through" : ""}`}
+                                    >
+                                      <span className="font-medium">
+                                        {ing.quantity} {ing.unit}
+                                      </span>{" "}
+                                      {ing.name}
+                                      {ing.prep && (
+                                        <span className="text-text-secondary text-base">
+                                          , {ing.prep}
+                                        </span>
+                                      )}
+                                      {ing.optional && (
+                                        <span className="text-text-secondary text-base">
+                                          {" "}
+                                          (opt)
+                                        </span>
+                                      )}
                                     </span>
-                                  )}
-                                </span>
-                              </li>
-                            ))}
+                                  </button>
+                                </li>
+                              );
+                            })}
                           </ul>
                         </div>
                       ),
@@ -280,16 +325,31 @@ export default function RecipeDetailModal({
                   <ol className="space-y-2">
                     {recipe.instructions_json
                       .sort((a, b) => a.step - b.step)
-                      .map((instruction) => (
-                        <li key={instruction.step} className="flex gap-2">
-                          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-secondary/30 border border-secondary/50 flex items-center justify-center text-lg font-bold text-text">
-                            {instruction.step}
-                          </div>
-                          <p className="text-text text-xl leading-normal">
-                            {instruction.text}
-                          </p>
-                        </li>
-                      ))}
+                      .map((instruction) => {
+                        const isChecked = checkedSteps.has(instruction.step);
+                        return (
+                          <li key={instruction.step}>
+                            <button
+                              type="button"
+                              role="checkbox"
+                              aria-checked={isChecked}
+                              onClick={() => toggleStep(instruction.step)}
+                              className={`flex gap-2 w-full text-left py-0.5 rounded hover:bg-muted/40 transition-colors ${isChecked ? "opacity-50" : ""}`}
+                            >
+                              <div
+                                className={`flex-shrink-0 w-8 h-8 rounded-full border flex items-center justify-center text-lg font-bold transition-colors ${isChecked ? "bg-primary border-primary text-white" : "bg-secondary/30 border-secondary/50 text-text"}`}
+                              >
+                                {instruction.step}
+                              </div>
+                              <p
+                                className={`text-text text-xl leading-normal ${isChecked ? "line-through" : ""}`}
+                              >
+                                {instruction.text}
+                              </p>
+                            </button>
+                          </li>
+                        );
+                      })}
                   </ol>
                 </div>
               </div>
