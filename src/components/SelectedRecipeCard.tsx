@@ -13,13 +13,10 @@ export default function SelectedRecipeCard({
 
   return (
     <div
-      className="border-2 border-border rounded-2xl px-5 py-2 shadow-md"
-      style={{
-        background: "#ffffff",
-        boxShadow: `inset 0 0 20px 8px ${categoryColor}`,
-      }}
+      className="inline-flex items-center border border-border rounded-full px-3.5 py-1.5"
+      style={{ backgroundColor: categoryColor }}
     >
-      <span className="text-base text-text font-bold">{name}</span>
+      <span className="text-sm text-text font-medium">{name}</span>
     </div>
   );
 }

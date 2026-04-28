@@ -66,21 +66,26 @@ export default function RecipeCard({
 
   return (
     <div
-      className="relative rounded-2xl border-2 border-border shadow-md p-3 hover:shadow-lg hover:scale-[1.01] transition-all"
-      style={{
-        background: "#ffffff",
-        boxShadow: `inset 0 0 20px 8px ${categoryColor}`,
-      }}
+      className="group relative rounded-2xl border border-border p-4 transition-[filter] hover:brightness-[0.97]"
+      style={{ backgroundColor: categoryColor }}
     >
       <input
         type="checkbox"
         checked={isSelected || false}
-        className="absolute top-2 right-2 w-6 h-6 cursor-pointer accent-accent z-10"
+        className="absolute top-3 right-3 w-5 h-5 cursor-pointer accent-primary z-10"
         onChange={handleRecipeCheckBoxChange}
         onClick={(e) => e.stopPropagation()}
       />
-      <div className="block cursor-pointer" onClick={() => onClick?.(recipe_id)}>
-        <h2 className="text-base text-text font-bold pr-8 truncate">{name}</h2>
+      <div
+        className="block cursor-pointer pr-7"
+        onClick={() => onClick?.(recipe_id)}
+      >
+        {category && (
+          <span className="inline-block mb-2 text-[11px] uppercase tracking-wider text-text-secondary">
+            {category}
+          </span>
+        )}
+        <h2 className="text-base text-text font-semibold truncate">{name}</h2>
         <div className="flex gap-3 mt-2 text-xs text-text-secondary">
           <span>{per_serving_calories} cal</span>
           <span>{per_serving_protein_g}g P</span>
@@ -89,42 +94,25 @@ export default function RecipeCard({
         </div>
       </div>
 
-      <div className="flex justify-end mt-2">
+      <div className="flex justify-end mt-3">
         <button
           onClick={handleDeleteClick}
-          className="p-1.5 bg-background hover:bg-background/80 border-2 border-border rounded-xl shadow-md hover:shadow-lg hover:scale-[1.1] transition-all"
+          className="p-1.5 rounded-full text-text-secondary hover:text-text hover:bg-black/5 transition-colors"
           aria-label="Delete recipe"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 64 64"
-            className="w-5 h-5"
+            viewBox="0 0 24 24"
+            className="w-4 h-4"
             fill="none"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
-            <rect x="14" y="12" width="36" height="6" rx="3" fill="#4a5568" />
-            <rect x="25" y="7" width="14" height="7" rx="3.5" fill="#4a5568" />
-            <path
-              d="M16 18h32l-3 36a4 4 0 0 1-4 3.5H23A4 4 0 0 1 19 54Z"
-              fill="#4a5568"
-            />
-            <line
-              x1="27"
-              y1="26"
-              x2="27"
-              y2="48"
-              stroke="#fdfbf7"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-            />
-            <line
-              x1="37"
-              y1="26"
-              x2="37"
-              y2="48"
-              stroke="#fdfbf7"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-            />
+            <path d="M3 6h18" />
+            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            <path d="M19 6 18 20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
           </svg>
         </button>
       </div>

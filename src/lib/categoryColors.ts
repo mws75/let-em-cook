@@ -1,29 +1,32 @@
+// Subtle pastel palette — designed to be readable when used as a flat tile
+// background. Each color sits around 88-92% lightness so dark text stays
+// legible without any extra treatment.
 export const CATEGORY_COLORS: Record<string, string> = {
-  breakfast: "#FFD180",
-  lunch: "#81D4FA",
-  dinner: "#CE93D8",
-  snack: "#A5D6A7",
-  dessert: "#F48FB1",
-  chicken: "#FFCC80",
-  beef: "#EF9A9A",
-  pork: "#FFAB91",
-  fish: "#80DEEA",
-  seafood: "#80CBC4",
-  soup: "#FFF59D",
-  pasta: "#FFE082",
-  salad: "#66BB6A",
-  vegetarian: "#C5E1A5",
-  vegan: "#69F0AE",
-  "gluten free": "#B0BEC5",
-  "dairy free": "#B3E5FC",
-  keto: "#FFCDD2",
-  "low carb": "#D7CCC8",
-  "slow cooker": "#BCAAA4",
-  "meal prep": "#90CAF9",
+  breakfast: "#FFE5B4", // peach
+  lunch: "#D5EAF7", // sky
+  dinner: "#E2D1EA", // lavender
+  snack: "#D5E8D6", // mint
+  dessert: "#F4D4DF", // rose
+  chicken: "#FFE7C2", // warm peach
+  beef: "#F2D2D2", // dusty rose
+  pork: "#FADAD0", // salmon
+  fish: "#D2E8EB", // aqua
+  seafood: "#D3E2DD", // sea green
+  soup: "#FFF3C4", // butter
+  pasta: "#FFEBC2", // gold
+  salad: "#DDEBD3", // leaf
+  vegetarian: "#E2EAD0", // sage
+  vegan: "#D2EDD9", // fresh mint
+  "gluten free": "#DCE2E6", // slate
+  "dairy free": "#DCEEF7", // pale cyan
+  keto: "#F2DCDD", // powder pink
+  "low carb": "#E8E1DF", // warm gray
+  "slow cooker": "#DED4D0", // taupe
+  "meal prep": "#D2DEEE", // cornflower
 };
 
 export function getCategoryColor(category: string): string {
-  return CATEGORY_COLORS[category.toLowerCase()] || "#E0E0E0";
+  return CATEGORY_COLORS[category.toLowerCase()] || "#ECECEC";
 }
 
 export const DEFAULT_CATEGORY_LIST: { name: string; color_hex: string }[] =

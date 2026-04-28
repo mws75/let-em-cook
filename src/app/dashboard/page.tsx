@@ -395,9 +395,9 @@ function DashboardContent() {
         </div>
 
         {/* Meal Prep Section */}
-        <section className="border-2 border-border rounded-3xl p-2 bg-surface shadow-lg">
+        <section className="border border-border rounded-3xl p-2 bg-surface">
           <div className="flex flex-col md:flex-row gap-4 m-2">
-            <div className="flex-1 border-2 border-border rounded-3xl p-8 bg-surface">
+            <div className="flex-1 border border-border rounded-3xl p-8 bg-surface">
               <div className="flex flex-wrap gap-4">
                 {selectedRecipes.map((recipe) => (
                   <SelectedRecipeCard key={recipe.recipe_id} recipe={recipe} />
@@ -408,7 +408,7 @@ function DashboardContent() {
               <button
                 onClick={generateGroceryList}
                 disabled={isGenerating || selectedRecipes.length === 0}
-                className="w-full md:w-32 bg-primary hover:bg-primary/80 border-2 border-border rounded-3xl py-4 mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="w-full md:w-32 bg-primary hover:bg-primary/80 border border-border rounded-3xl py-4 mb-3 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="text-1xl font-bold text-text">
                   {isGenerating ? "Generating..." : "Generate Grocery List"}
@@ -416,7 +416,7 @@ function DashboardContent() {
               </button>
               <button
                 onClick={() => setShowCalendar(!showCalendar)}
-                className="w-full md:w-32 bg-secondary hover:bg-secondary/80 border-2 border-border rounded-3xl py-4 mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="w-full md:w-32 bg-secondary hover:bg-secondary/80 border border-border rounded-3xl py-4 mb-3 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="text-1xl font-bold text-text">
                   {showCalendar ? "Hide" : "Create"} <br /> Calendar
@@ -424,7 +424,7 @@ function DashboardContent() {
               </button>
               <button
                 onClick={handleClearSelected}
-                className="w-full md:w-32 bg-accent hover:bg-accent/80 border-2 border-border rounded-3xl py-4 mb-3 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="w-full md:w-32 bg-accent hover:bg-accent/80 border border-border rounded-3xl py-4 mb-3 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="text-1xl font-bold text-text">
                   Clear Selected
@@ -441,7 +441,7 @@ function DashboardContent() {
             {subscription && subscription.planTier === "pro" && (
               <button
                 onClick={handleManageSubscription}
-                className="w-full bg-accent hover:bg-accent/80 border-2 border-border rounded-3xl py-3 mb-2 shadow-md hover:shadow-lg transition-all"
+                className="w-full bg-accent hover:bg-accent/80 border border-border rounded-3xl py-3 mb-2 transition-colors"
               >
                 <span className="text-lg font-semibold text-text">
                   Manage Subscription
@@ -451,7 +451,7 @@ function DashboardContent() {
             <SignOutButton redirectUrl="/">
               <button
                 onClick={handleSignOut}
-                className="w-full bg-muted hobver:bg-muted/80 border-2 border-border rounded-3xl py-3 mb-2 shadow-md hover:shadow-lg transition-all"
+                className="w-full bg-muted hobver:bg-muted/80 border border-border rounded-3xl py-3 mb-2 transition-colors"
               >
                 <span className="text-lg font-semibold text-text">
                   Sign Out
@@ -460,7 +460,7 @@ function DashboardContent() {
             </SignOutButton>
           </div>
           <button
-            className="w-full my-2 bg-secondary hover:bg-secondary/80 border-2 border-border rounded-3xl py-4 shadow-md hover:shadow-lg transition-all"
+            className="w-full my-2 bg-secondary hover:bg-secondary/80 border border-border rounded-3xl py-4 transition-colors"
             onClick={handleExploreClick}
           >
             <span className="text-2xl font-bold text-text">
@@ -468,7 +468,7 @@ function DashboardContent() {
             </span>
           </button>
           <button
-            className="w-full bg-primary hover:bg-primary/80 border-2 border-border rounded-3xl py-4 shadow-md hover:shadow-lg transition-all"
+            className="w-full bg-primary hover:bg-primary/80 border border-border rounded-3xl py-4 transition-colors"
             onClick={handleCreateRecipeClick}
           >
             <span className="text-2xl font-bold text-text">Create Recipe</span>
@@ -477,14 +477,14 @@ function DashboardContent() {
 
         {/* Error Display */}
         {error && (
-          <div className="border-2 border-red-500 rounded-3xl p-4 bg-red-50 shadow-lg">
+          <div className="border border-red-500 rounded-3xl p-4 bg-red-50">
             <p className="text-red-700 font-semibold">⚠️ {error}</p>
           </div>
         )}
 
         {/* Grocery List Section */}
         {groceryList.length > 0 && (
-          <section className="border-2 border-border rounded-3xl p-6 bg-surface shadow-lg">
+          <section className="border border-border rounded-3xl p-6 bg-surface">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
               <h2 className="text-3xl text-text font-bold">
                 🛒 Your Grocery List
@@ -492,25 +492,25 @@ function DashboardContent() {
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={selectAllItems}
-                  className="px-4 py-2 bg-primary/20 hover:bg-primary/30 border-2 border-border rounded-xl font-semibold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                  className="px-4 py-2 bg-primary/20 hover:bg-primary/30 border border-border rounded-xl font-semibold text-text transition-colors"
                 >
                   Select All
                 </button>
                 <button
                   onClick={deselectAllItems}
-                  className="px-4 py-2 bg-muted hover:bg-muted/80 border-2 border-border rounded-xl font-semibold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                  className="px-4 py-2 bg-muted hover:bg-muted/80 border border-border rounded-xl font-semibold text-text transition-colors"
                 >
                   Deselect All
                 </button>
                 <button
                   onClick={downloadGroceryList}
-                  className="px-6 py-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                  className="px-6 py-2 bg-accent hover:bg-accent/80 border border-border rounded-xl font-bold text-text transition-colors"
                 >
                   Download List
                 </button>
               </div>
             </div>
-            <div className="mb-4 p-3 bg-secondary/10 border-2 border-border rounded-xl">
+            <div className="mb-4 p-3 bg-secondary/10 border border-border rounded-xl">
               <p className="text-sm text-text-secondary">
                 ✓{" "}
                 <strong>
@@ -525,7 +525,7 @@ function DashboardContent() {
                 return (
                   <div
                     key={itemKey}
-                    className={`flex items-center gap-3 p-3 border-2 border-border rounded-xl hover:shadow-md transition-all cursor-pointer ${
+                    className={`flex items-center gap-3 p-3 border border-border rounded-xl transition-colors cursor-pointer ${
                       checkedItems[itemKey]
                         ? "bg-primary/10"
                         : "bg-muted opacity-60"
@@ -566,7 +566,7 @@ function DashboardContent() {
         )}
 
         {/* Recipes */}
-        <section className="border-2 border-border rounded-3xl bg-surface shadow-lg p-6">
+        <section className="border border-border rounded-3xl bg-surface p-6">
           {/* Search Bar */}
           <div className="flex flex-col md:flex-row gap-3 p-2">
             <h2 className="text-3xl text-text text-center font-bold pr-10">
@@ -583,7 +583,7 @@ function DashboardContent() {
                 id="category-select"
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-2 border-2 border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors w-full sm:w-auto sm:min-w-[150px]"
+                className="px-4 py-2 border border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors w-full sm:w-auto sm:min-w-[150px]"
               >
                 <option value="">All</option>
                 {categories.map((cat) => (
@@ -597,12 +597,12 @@ function DashboardContent() {
                 placeholder="Search recipes..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full md:w-96 px-4 py-2 border-2 border-border rounded-xl bg-surface text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
+                className="w-full md:w-96 px-4 py-2 border border-border rounded-xl bg-surface text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
               />
               <button
                 type="button"
                 onClick={() => setSearchTerm("")}
-                className="px-6 py-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                className="px-6 py-2 bg-accent hover:bg-accent/80 border border-border rounded-xl font-bold text-text transition-colors"
               >
                 Clear
               </button>
@@ -648,7 +648,7 @@ function DashboardContent() {
           </div>
         </section>
       </div>
-      <footer className="w-full border-t-2 border-border bg-surface mt-10">
+      <footer className="w-full border-t border-border bg-surface mt-10">
         <div className="max-w-5xl mx-auto px-4 py-6 flex justify-center">
           <button
             onClick={() => router.push("/contact")}
