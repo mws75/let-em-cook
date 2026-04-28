@@ -38,7 +38,7 @@ const DEMO_STEPS = [
     accent: "bg-primary",
     content: (
       <div className="space-y-3">
-        <div className="flex items-center gap-3 bg-surface border-2 border-border rounded-2xl p-3">
+        <div className="flex items-center gap-3 bg-surface border border-border rounded-2xl p-3">
           <div className="w-10 h-10 rounded-xl bg-primary/30 flex items-center justify-center text-lg">
             🍝
           </div>
@@ -54,7 +54,7 @@ const DEMO_STEPS = [
             <span className="text-white text-xs">✓</span>
           </div>
         </div>
-        <div className="flex items-center gap-3 bg-surface border-2 border-border rounded-2xl p-3">
+        <div className="flex items-center gap-3 bg-surface border border-border rounded-2xl p-3">
           <div className="w-10 h-10 rounded-xl bg-secondary/40 flex items-center justify-center text-lg">
             🥗
           </div>
@@ -70,7 +70,7 @@ const DEMO_STEPS = [
             <span className="text-text-secondary text-xs">+</span>
           </div>
         </div>
-        <div className="flex items-center gap-3 bg-surface border-2 border-border rounded-2xl p-3 opacity-60">
+        <div className="flex items-center gap-3 bg-surface border border-border rounded-2xl p-3 opacity-60">
           <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center text-lg">
             🌮
           </div>
@@ -95,7 +95,7 @@ const DEMO_STEPS = [
         {["Mon", "Tue", "Wed", "Thu", "Fri"].map((day, i) => (
           <div
             key={day}
-            className="flex items-center gap-3 bg-surface border-2 border-border rounded-2xl p-2.5"
+            className="flex items-center gap-3 bg-surface border border-border rounded-2xl p-2.5"
           >
             <span className="text-xs font-bold text-text-secondary w-8">
               {day}
@@ -151,10 +151,10 @@ const DEMO_STEPS = [
             <p className="text-xs font-bold text-text-secondary mb-1 ml-1">
               {group.cat}
             </p>
-            <div className="bg-surface border-2 border-border rounded-2xl p-2.5 space-y-1.5">
+            <div className="bg-surface border border-border rounded-2xl p-2.5 space-y-1.5">
               {group.items.map((item) => (
                 <div key={item} className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded border-2 border-primary/50" />
+                  <div className="w-4 h-4 rounded border border-primary/50" />
                   <span className="text-xs text-text">{item}</span>
                 </div>
               ))}
@@ -180,12 +180,12 @@ type DemoRecipe = {
 };
 
 const DEMO_RECIPES: DemoRecipe[] = [
-  { id: 1, name: "Garlic Butter Pasta",    emoji: "🍝", cal: 420, protein: 12, category: "pasta",   color: "#FFE082" },
-  { id: 2, name: "Chicken Caesar Salad",   emoji: "🥗", cal: 380, protein: 32, category: "salad",   color: "#66BB6A" },
-  { id: 3, name: "Beef Tacos",             emoji: "🌮", cal: 510, protein: 28, category: "beef",    color: "#EF9A9A" },
-  { id: 4, name: "Salmon & Rice Bowl",     emoji: "🐟", cal: 480, protein: 35, category: "fish",    color: "#80DEEA" },
-  { id: 5, name: "Veggie Stir Fry",        emoji: "🥦", cal: 290, protein: 14, category: "vegetarian", color: "#C5E1A5" },
-  { id: 6, name: "BBQ Chicken Wrap",       emoji: "🌯", cal: 450, protein: 30, category: "chicken", color: "#FFCC80" },
+  { id: 1, name: "Garlic Butter Pasta",    emoji: "🍝", cal: 420, protein: 12, category: "pasta",   color: "#FFEBC2" },
+  { id: 2, name: "Chicken Caesar Salad",   emoji: "🥗", cal: 380, protein: 32, category: "salad",   color: "#DDEBD3" },
+  { id: 3, name: "Beef Tacos",             emoji: "🌮", cal: 510, protein: 28, category: "beef",    color: "#F2D2D2" },
+  { id: 4, name: "Salmon & Rice Bowl",     emoji: "🐟", cal: 480, protein: 35, category: "fish",    color: "#D2E8EB" },
+  { id: 5, name: "Veggie Stir Fry",        emoji: "🥦", cal: 290, protein: 14, category: "vegetarian", color: "#E2EAD0" },
+  { id: 6, name: "BBQ Chicken Wrap",       emoji: "🌯", cal: 450, protein: 30, category: "chicken", color: "#FFE7C2" },
 ];
 
 const DEMO_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -341,17 +341,17 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-bg overflow-x-hidden scroll-smooth">
       {/* ── Sticky Nav ── */}
-      <nav className="sticky top-0 z-50 bg-bg/80 backdrop-blur-md border-b-2 border-border/50">
+      <nav className="sticky top-0 z-50 bg-bg/80 backdrop-blur-md border-b border-border/50">
         <div className="max-w-5xl mx-auto px-5 py-3 flex items-center justify-between">
           <span className="text-lg font-extrabold text-text">Let Em Cook</span>
           <div className="flex items-center gap-2.5">
             <SignInButton mode="modal">
-              <button className="px-5 py-2 bg-surface hover:bg-muted border-2 border-border text-text rounded-xl text-sm font-bold shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <button className="px-5 py-2 bg-surface hover:bg-muted border border-border text-text rounded-xl text-sm font-bold transition-all duration-200">
                 Log In
               </button>
             </SignInButton>
             <SignUpButton mode="modal">
-              <button className="px-5 py-2 bg-accent hover:bg-accent/85 border-2 border-accent/80 text-white rounded-xl text-sm font-bold shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <button className="px-5 py-2 bg-accent hover:bg-accent/85 border border-accent/80 text-white rounded-xl text-sm font-bold transition-all duration-200">
                 Sign Up
               </button>
             </SignUpButton>
@@ -414,7 +414,7 @@ export default function LandingPage() {
         >
           {/* Badge */}
           <div
-            className={`inline-flex items-center gap-2 bg-surface border-2 border-border rounded-full px-4 py-1.5 mb-8 shadow-sm reveal ${hero.visible ? "show stagger-1" : ""}`}
+            className={`inline-flex items-center gap-2 bg-surface border border-border rounded-full px-4 py-1.5 mb-8  reveal ${hero.visible ? "show stagger-1" : ""}`}
           >
             <span className="text-sm">🔥</span>
             <span className="text-xs font-semibold text-text-secondary tracking-wide uppercase">
@@ -445,7 +445,7 @@ export default function LandingPage() {
             className={`flex flex-col sm:flex-row gap-3 justify-center reveal ${hero.visible ? "show stagger-4" : ""}`}
           >
             <SignUpButton mode="modal">
-              <button className="bg-accent hover:bg-accent/85 border-2 border-accent/80 text-white rounded-2xl px-8 py-3.5 text-lg font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all duration-200">
+              <button className="bg-accent hover:bg-accent/85 border border-accent/80 text-white rounded-2xl px-8 py-3.5 text-lg font-bold transition-all duration-200">
                 Get Started — Free
               </button>
             </SignUpButton>
@@ -456,7 +456,7 @@ export default function LandingPage() {
             href="#demo"
             className={`inline-flex flex-col items-center gap-2 mt-12 group reveal ${hero.visible ? "show stagger-5" : ""}`}
           >
-            <span className="px-8 py-3.5 bg-surface hover:bg-muted border-2 border-border text-text rounded-2xl text-lg font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all duration-200">
+            <span className="px-8 py-3.5 bg-surface hover:bg-muted border border-border text-text rounded-2xl text-lg font-bold transition-all duration-200">
               See It In Action — Try The Demo
             </span>
             <span className="text-2xl mt-1" style={{ animation: "float 1.5s ease-in-out infinite" }}>
@@ -509,12 +509,10 @@ export default function LandingPage() {
                       setDragOverSlot(null);
                     }}
                     onTouchStart={() => handleTouchStart(recipe)}
-                    className={`group bg-surface border-2 border-border rounded-2xl p-3 cursor-grab active:cursor-grabbing hover:shadow-md hover:scale-[1.03] transition-all duration-200 select-none ${
+                    className={`group border border-border rounded-2xl p-3 cursor-grab active:cursor-grabbing transition-[filter] duration-200 hover:brightness-[0.97] select-none ${
                       dragging?.id === recipe.id ? "opacity-50 scale-95" : ""
                     }`}
-                    style={{
-                      boxShadow: `inset 0 0 12px ${recipe.color}40`,
-                    }}
+                    style={{ backgroundColor: recipe.color }}
                   >
                     <div className="flex items-center gap-2.5">
                       <span className="text-xl">{recipe.emoji}</span>
@@ -587,7 +585,7 @@ export default function LandingPage() {
                             e.preventDefault();
                             handleDrop(slotKey);
                           }}
-                          className={`min-h-[72px] sm:min-h-[88px] rounded-2xl border-2 p-2 sm:p-2.5 transition-all duration-200 flex flex-col gap-1.5 ${
+                          className={`min-h-[72px] sm:min-h-[88px] rounded-2xl border p-2 sm:p-2.5 transition-all duration-200 flex flex-col gap-1.5 ${
                             isOver
                               ? "border-primary bg-primary/10 scale-[1.03]"
                               : "border-border bg-surface"
@@ -596,8 +594,8 @@ export default function LandingPage() {
                           {recipes.map((recipe) => (
                             <div
                               key={recipe.id}
-                              className="group/chip bg-surface border border-border rounded-xl px-2 py-1.5 flex items-center gap-1.5"
-                              style={{ boxShadow: `inset 0 0 10px ${recipe.color}50` }}
+                              className="group/chip border border-border rounded-xl px-2 py-1.5 flex items-center gap-1.5"
+                              style={{ backgroundColor: recipe.color }}
                             >
                               <span className="text-sm sm:text-base">{recipe.emoji}</span>
                               <span className="text-[10px] sm:text-xs font-medium text-text truncate flex-1">
@@ -617,7 +615,7 @@ export default function LandingPage() {
                             </div>
                           )}
                           {dragging && (
-                            <div className="border-2 border-dashed border-primary/30 rounded-xl h-8 flex items-center justify-center">
+                            <div className="border border-dashed border-primary/30 rounded-xl h-8 flex items-center justify-center">
                               <span className="text-xs text-primary/50">+</span>
                             </div>
                           )}
@@ -638,7 +636,7 @@ export default function LandingPage() {
                   const totalCal = recipes.reduce((s, r) => s + r.cal, 0);
                   const totalP = recipes.reduce((s, r) => s + r.protein, 0);
                   return (
-                    <div key={`${day}-totals`} className="text-center py-1.5 border-t-2 border-border/50">
+                    <div key={`${day}-totals`} className="text-center py-1.5 border-t border-border/50">
                       {recipes.length > 0 ? (
                         <>
                           <p className="text-xs sm:text-sm font-bold text-text">
@@ -712,9 +710,9 @@ export default function LandingPage() {
               <button
                 key={step.title}
                 onClick={() => handleStepClick(i)}
-                className={`relative flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-2xl border-2 font-semibold text-sm transition-all duration-300 ${
+                className={`relative flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-2xl border font-semibold text-sm transition-all duration-300 ${
                   activeStep === i
-                    ? `${step.accent} border-border text-text shadow-md scale-[1.04]`
+                    ? `${step.accent} border-border text-text  scale-[1.04]`
                     : "bg-surface border-border text-text-secondary hover:bg-muted"
                 }`}
               >
@@ -738,9 +736,9 @@ export default function LandingPage() {
           </div>
 
           {/* Demo preview card */}
-          <div className="bg-surface border-2 border-border rounded-3xl shadow-lg overflow-hidden">
+          <div className="bg-surface border border-border rounded-3xl overflow-hidden">
             {/* Title bar */}
-            <div className="flex items-center gap-3 px-5 py-3 border-b-2 border-border bg-muted/50">
+            <div className="flex items-center gap-3 px-5 py-3 border-b border-border bg-muted/50">
               <div className="flex gap-1.5">
                 <div className="w-3 h-3 rounded-full bg-accent/60" />
                 <div className="w-3 h-3 rounded-full bg-secondary/60" />
@@ -814,12 +812,12 @@ export default function LandingPage() {
             {FEATURES.map((f, i) => (
               <div
                 key={f.title}
-                className={`group bg-surface border-2 border-border rounded-3xl p-6 shadow-sm hover:shadow-lg hover:scale-[1.02] hover:border-primary/30 transition-all duration-300 reveal ${
+                className={`group bg-surface border border-border rounded-3xl p-6    hover:border-primary/30 transition-all duration-300 reveal ${
                   features.visible ? `show stagger-${(i % 5) + 1}` : ""
                 }`}
               >
                 <div
-                  className={`w-12 h-12 ${f.color} rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform duration-300`}
+                  className={`w-12 h-12 ${f.color} rounded-2xl flex items-center justify-center text-2xl mb-4 group- transition-transform duration-300`}
                 >
                   {f.icon}
                 </div>
@@ -861,12 +859,12 @@ export default function LandingPage() {
             className={`flex flex-col sm:flex-row gap-3 justify-center reveal ${cta.visible ? "show stagger-3" : ""}`}
           >
             <SignUpButton mode="modal">
-              <button className="bg-accent hover:bg-accent/85 border-2 border-accent/80 text-white rounded-2xl px-10 py-4 text-xl font-bold shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all duration-200">
+              <button className="bg-accent hover:bg-accent/85 border border-accent/80 text-white rounded-2xl px-10 py-4 text-xl font-bold transition-all duration-200">
                 Sign Up Free
               </button>
             </SignUpButton>
             <SignInButton mode="modal">
-              <button className="bg-surface hover:bg-muted border-2 border-border text-text rounded-2xl px-10 py-4 text-xl font-bold shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <button className="bg-surface hover:bg-muted border border-border text-text rounded-2xl px-10 py-4 text-xl font-bold transition-all duration-200">
                 Log In
               </button>
             </SignInButton>
@@ -875,7 +873,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t-2 border-border px-5 py-8 text-center">
+      <footer className="border-t border-border px-5 py-8 text-center">
         <p className="text-text-secondary text-sm">
           © {new Date().getFullYear()} Let Em Cook. Made with 🔥 for home cooks
           everywhere.

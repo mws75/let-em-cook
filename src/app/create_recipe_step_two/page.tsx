@@ -102,7 +102,7 @@ export default function CreateRecipeStepTwo() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="border-2 border-border rounded-3xl p-8 bg-surface shadow-lg">
+        <div className="border border-border rounded-3xl p-8 bg-surface ">
           <p className="text-2xl text-text font-bold">
             Loading your recipe... 🍳
           </p>
@@ -127,7 +127,7 @@ export default function CreateRecipeStepTwo() {
         </div>
 
         {/* Recipe Info Card */}
-        <section className="border-2 border-border rounded-3xl px-4 sm:px-10 py-6 bg-surface shadow-lg">
+        <section className="border border-border rounded-3xl px-4 sm:px-10 py-6 bg-surface ">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-3xl text-text font-bold mb-2">
@@ -141,7 +141,7 @@ export default function CreateRecipeStepTwo() {
         </section>
 
         {/* Ingredients Editor Section */}
-        <section className="border-2 border-border rounded-3xl p-6 bg-surface shadow-lg">
+        <section className="border border-border rounded-3xl p-6 bg-surface ">
           <h2 className="text-2xl text-text font-bold mb-6 flex items-center gap-2">
             <span>🛒</span>
             Review & Edit Ingredients
@@ -156,14 +156,14 @@ export default function CreateRecipeStepTwo() {
         <div className="flex flex-col sm:flex-row justify-end gap-3">
           <button
             onClick={handleCancel}
-            className="w-full sm:w-auto px-6 py-3 bg-muted hover:bg-muted/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+            className="w-full sm:w-auto px-6 py-3 bg-muted hover:bg-muted/80 border border-border rounded-xl font-bold text-text transition-all"
           >
             Cancel
           </button>
           <button
             onClick={handleSaveRecipe}
             disabled={isSubmitting}
-            className="w-full sm:w-auto px-8 py-3 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+            className="w-full sm:w-auto px-8 py-3 bg-primary hover:bg-primary/80 border border-border rounded-xl font-bold text-text transition-all"
           >
             {isSubmitting ? "Saving..." : isEditMode ? "Update Recipe" : "Save Recipe"}
           </button>

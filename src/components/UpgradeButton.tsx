@@ -33,7 +33,7 @@ export default function UpgradeButton({ className = "" }: UpgradeButtonProps) {
     <button
       onClick={handleUpgrade}
       disabled={isLoading}
-      className={`w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 border-2 border-border rounded-3xl py-4 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100 ${className}`}
+      className={`w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 border border-border rounded-3xl py-4    transition-all disabled:opacity-50  ${className}`}
     >
       <span className="text-xl font-bold text-text block">
         {isLoading ? "Loading..." : `Upgrade to Pro - $${PRO_TIER_PRICE}/mo`}

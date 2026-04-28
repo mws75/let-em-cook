@@ -66,7 +66,7 @@ export default function RecipeCard({
 
   return (
     <div
-      className="group relative rounded-2xl border border-border p-4 transition-[filter] hover:brightness-[0.97]"
+      className="group relative rounded-2xl border border-border p-4 transition duration-150 hover:brightness-[0.97] hover:shadow-sm"
       style={{ backgroundColor: categoryColor }}
     >
       <input

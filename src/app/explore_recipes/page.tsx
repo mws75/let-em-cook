@@ -204,7 +204,7 @@ export default function ExploreRecipes() {
       <div className="w-full max-w-5xl mx-auto px-4 pb-20 space-y-10">
         <div className="flex-1 max-w-6xl mx-auto px-4 py-6 w-full">
           {/* Main Container */}
-          <div className="border-2 border-border rounded-3xl bg-surface shadow-lg p-6">
+          <div className="border border-border rounded-3xl bg-surface p-6">
             {/* Header */}
             <h1 className="text-3xl text-text font-bold mb-6">
               Explore Recipes
@@ -217,11 +217,11 @@ export default function ExploreRecipes() {
                 placeholder="Search..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-1 px-4 py-3 border-2 border-border rounded-xl bg-surface text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
+                className="flex-1 px-4 py-3 border border-border rounded-xl bg-surface text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
               />
               <button
                 onClick={clearFilters}
-                className="px-6 py-3 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                className="px-6 py-3 bg-accent hover:bg-accent/80 border border-border rounded-xl font-bold text-text transition-all"
               >
                 Clear
               </button>
@@ -235,7 +235,7 @@ export default function ExploreRecipes() {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-2 border-2 border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors w-full sm:w-auto sm:min-w-[150px]"
+                className="px-4 py-2 border border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors w-full sm:w-auto sm:min-w-[150px]"
               >
                 {CATEGORY_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -248,7 +248,7 @@ export default function ExploreRecipes() {
               <select
                 value={selectedCalories}
                 onChange={(e) => setSelectedCalories(e.target.value)}
-                className="px-4 py-2 border-2 border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors w-full sm:w-auto sm:min-w-[150px]"
+                className="px-4 py-2 border border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors w-full sm:w-auto sm:min-w-[150px]"
               >
                 {CALORIE_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -258,7 +258,7 @@ export default function ExploreRecipes() {
               </select>
               <button
                 onClick={handleBack}
-                className="flex-1 px-4 py-3 border-2 border-border rounded-xl bg-secondary hover:bg-secondary/80 text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors w-full sm:w-auto sm:ml-auto sm:max-w-[250px]"
+                className="flex-1 px-4 py-3 border border-border rounded-xl bg-secondary hover:bg-secondary/80 text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors w-full sm:w-auto sm:ml-auto sm:max-w-[250px]"
               >
                 Back to Dashboard
               </button>
@@ -266,7 +266,7 @@ export default function ExploreRecipes() {
 
             {/* Error Display */}
             {error && (
-              <div className="border-2 border-red-500 rounded-xl p-4 bg-red-50 mb-6">
+              <div className="border border-red-500 rounded-xl p-4 bg-red-50 mb-6">
                 <p className="text-red-700 font-semibold">{error}</p>
               </div>
             )}
@@ -324,7 +324,7 @@ export default function ExploreRecipes() {
         </div>
       </div>
       {/* Footer - Full width at bottom */}
-      <footer className="w-full border-t-2 border-border bg-surface mt-10">
+      <footer className="w-full border-t border-border bg-surface mt-10">
         <div className="max-w-5xl mx-auto px-4 py-6 flex justify-center">
           <button
             onClick={() => router.push("/contact")}

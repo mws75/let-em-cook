@@ -359,9 +359,9 @@ export default function Calendar({
     return (
       <div
         key={key}
-        className={`inline-flex items-center gap-1 border-2 border-border rounded-xl px-3 py-1 text-sm font-bold text-text ${
+        className={`inline-flex items-center gap-1 border border-border rounded-xl px-3 py-1 text-sm font-bold text-text ${
           options?.draggable
-            ? "cursor-grab active:cursor-grabbing hover:shadow-md"
+            ? "cursor-grab active:cursor-grabbing "
             : ""
         }`}
         draggable={options?.draggable}
@@ -369,10 +369,7 @@ export default function Calendar({
           options?.draggable ? (e) => handleDragStart(e, recipe) : undefined
         }
         onDragEnd={options?.draggable ? handleDragEnd : undefined}
-        style={{
-          background: "#ffffff",
-          boxShadow: `inset 0 0 12px 4px ${categoryColor}`,
-        }}
+        style={{ backgroundColor: categoryColor }}
       >
         <span>
           {recipe.emoji} {recipe.name}
@@ -444,7 +441,7 @@ export default function Calendar({
   ) => (
     <div
       key={key}
-      className="inline-flex items-center gap-1 border-2 border-dashed border-text-secondary rounded-xl px-3 py-1 text-sm font-bold text-text bg-muted/30"
+      className="inline-flex items-center gap-1 border border-dashed border-text-secondary rounded-xl px-3 py-1 text-sm font-bold text-text bg-muted/30"
     >
       <span>
         {entry.name}
@@ -504,7 +501,7 @@ export default function Calendar({
         slotLabel={getQuickLogLabel()}
         recipes={allRecipes}
       />
-      <section className="border-2 border-border rounded-3xl p-6 bg-surface shadow-lg">
+      <section className="border border-border rounded-3xl p-6 bg-surface ">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
           <h2 className="text-3xl text-text font-bold">📅 Meal Plan</h2>
@@ -528,19 +525,19 @@ export default function Calendar({
           <div className="flex flex-wrap gap-2">
             <button
               onClick={handleClearAll}
-              className="px-4 py-2 bg-muted hover:bg-muted/80 border-2 border-border rounded-xl font-semibold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+              className="px-4 py-2 bg-muted hover:bg-muted/80 border border-border rounded-xl font-semibold text-text transition-all"
             >
               Clear All
             </button>
             <button
               onClick={handlePrint}
-              className="px-6 py-2 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+              className="px-6 py-2 bg-primary hover:bg-primary/80 border border-border rounded-xl font-bold text-text transition-all"
             >
               Print Meal Plan
             </button>
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+              className="px-4 py-2 bg-accent hover:bg-accent/80 border border-border rounded-xl font-bold text-text transition-all"
             >
               Close
             </button>
@@ -556,7 +553,7 @@ export default function Calendar({
           {/* Recipe Palette - drag from here */}
           <div className="mb-6 no-print">
             <h3 className="text-lg text-text font-bold mb-2">Recipes</h3>
-            <div className="border-2 border-border rounded-xl p-3 bg-muted/20">
+            <div className="border border-border rounded-xl p-3 bg-muted/20">
               <div className="flex flex-wrap gap-2">
                 {selectedRecipes.length > 0 ? (
                   selectedRecipes.map((recipe) =>
@@ -577,7 +574,7 @@ export default function Calendar({
           <div className="mb-6">
             <h3 className="text-lg text-text font-bold mb-2">Snacks</h3>
             <div className="flex gap-3">
-              <div className="w-20 sm:w-24 shrink-0 border-2 border-border rounded-xl bg-muted/30 p-2 flex flex-col items-center justify-center text-center">
+              <div className="w-20 sm:w-24 shrink-0 border border-border rounded-xl bg-muted/30 p-2 flex flex-col items-center justify-center text-center">
                 {(() => {
                   const m = slotMacros(snacks, snackQuickLogs);
                   if (m.calories === 0)
@@ -614,11 +611,11 @@ export default function Calendar({
             <table className="w-full border-collapse">
               <thead>
                 <tr>
-                  <th className="w-20 sm:w-24 px-2 py-3 text-text font-bold text-sm border-2 border-border bg-muted/30" />
+                  <th className="w-20 sm:w-24 px-2 py-3 text-text font-bold text-sm border border-border bg-muted/30" />
                   {MEALS.map((meal) => (
                     <th
                       key={meal}
-                      className="px-2 py-3 text-text font-bold text-sm sm:text-base border-2 border-border bg-muted/30"
+                      className="px-2 py-3 text-text font-bold text-sm sm:text-base border border-border bg-muted/30"
                     >
                       {capitalize(meal)}
                     </th>
@@ -637,7 +634,7 @@ export default function Calendar({
                   );
                   return (
                     <tr key={day}>
-                      <td className="px-2 py-2 text-text font-bold text-sm border-2 border-border bg-muted/30 text-center align-top">
+                      <td className="px-2 py-2 text-text font-bold text-sm border border-border bg-muted/30 text-center align-top">
                         <span>{capitalize(day)}</span>
                         {dayMacros.calories > 0 && (
                           <div className="mt-1 font-normal text-xs leading-relaxed text-text-secondary">
@@ -654,7 +651,7 @@ export default function Calendar({
                       {MEALS.map((meal) => (
                         <td
                           key={`${day}-${meal}`}
-                          className="border-2 border-border p-1 align-top"
+                          className="border border-border p-1 align-top"
                         >
                           {renderDropZone(
                             `${day}-${meal}`,
@@ -699,7 +696,7 @@ export default function Calendar({
             if (totalMacros.calories === 0) return null;
             const count = daysWithFood.length || 1;
             return (
-              <div className="mt-4 border-2 border-border rounded-xl bg-muted/30 px-4 py-3 flex flex-wrap items-center justify-between gap-2">
+              <div className="mt-4 border border-border rounded-xl bg-muted/30 px-4 py-3 flex flex-wrap items-center justify-between gap-2">
                 <span className="text-sm font-bold text-text">
                   Avg / Day ({count} {count === 1 ? "day" : "days"})
                 </span>

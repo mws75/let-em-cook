@@ -88,7 +88,7 @@ export default function RecipeDetailPage() {
         </div>
         <button
           onClick={handleBack}
-          className="px-6 py-2 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+          className="px-6 py-2 bg-primary hover:bg-primary/80 border border-border rounded-xl font-bold text-text transition-all"
         >
           {fromExplore ? "Back to Explore" : "Back to Dashboard"}
         </button>
@@ -113,7 +113,7 @@ export default function RecipeDetailPage() {
     <div className="min-h-screen bg-background py-6 px-4 print:py-2 print:px-4">
       <div className="max-w-5xl mx-auto">
         {/* Recipe Card */}
-        <div className="bg-surface border-2 border-border rounded-2xl shadow-xl overflow-hidden print:shadow-none print:border">
+        <div className="bg-surface border border-border rounded-2xl overflow-hidden print:shadow-none print:border">
           {/* Header with decorative top border */}
           <div className="bg-gradient-to-r from-primary/20 via-secondary/20 to-primary/20 h-2 print:h-1" />
 
@@ -200,7 +200,7 @@ export default function RecipeDetailPage() {
                   ([section, ingredients]) => (
                     <div key={section}>
                       {Object.keys(ingredientsBySection).length > 1 && (
-                        <h3 className="text-base font-semibold text-text-secondary uppercase tracking-wide mb-1 pl-1.5 border-l-2 border-secondary">
+                        <h3 className="text-base font-semibold text-text-secondary uppercase tracking-wide mb-1 pl-1.5 border-l border-secondary">
                           {section}
                         </h3>
                       )}
@@ -268,7 +268,7 @@ export default function RecipeDetailPage() {
         <div className="flex justify-center gap-4 mt-4 print:hidden">
           <button
             onClick={handleBack}
-            className="px-6 py-2 bg-surface hover:bg-muted border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+            className="px-6 py-2 bg-surface hover:bg-muted border border-border rounded-xl font-bold text-text transition-all"
           >
             Back
           </button>
@@ -279,7 +279,7 @@ export default function RecipeDetailPage() {
                 sessionStorage.setItem("recipe_edit", JSON.stringify(recipe));
                 router.push("/create_recipe");
               }}
-              className="px-6 py-2 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+              className="px-6 py-2 bg-primary hover:bg-primary/80 border border-border rounded-xl font-bold text-text transition-all"
             >
               Edit
             </button>
@@ -287,7 +287,7 @@ export default function RecipeDetailPage() {
             <button
               onClick={handleAddRecipe}
               disabled={isAdding}
-              className="px-6 py-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all disabled:opacity-50"
+              className="px-6 py-2 bg-accent hover:bg-accent/80 border border-border rounded-xl font-bold text-text transition-all disabled:opacity-50"
             >
               {isAdding ? "Adding..." : "Add to My Recipes"}
             </button>

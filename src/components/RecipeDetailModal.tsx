@@ -135,7 +135,7 @@ export default function RecipeDetailModal({
     >
       {/* Layer 2: Modal container */}
       <div
-        className="bg-background rounded-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+        className="bg-background rounded-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto "
         onClick={(e) => e.stopPropagation()}
       >
         {/* Loading state */}
@@ -153,7 +153,7 @@ export default function RecipeDetailModal({
             <div className="text-2xl text-accent">{error}</div>
             <button
               onClick={onCloseClick}
-              className="px-6 py-2 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md"
+              className="px-6 py-2 bg-primary hover:bg-primary/80 border border-border rounded-xl font-bold text-text "
             >
               Close
             </button>
@@ -163,7 +163,7 @@ export default function RecipeDetailModal({
         {/* Recipe content */}
         {recipe && (
           <>
-            <div className="bg-surface border-2 border-border rounded-2xl shadow-xl overflow-hidden">
+            <div className="bg-surface border border-border rounded-2xl overflow-hidden">
               {/* Header with decorative top border */}
               <div className="bg-gradient-to-r from-primary/20 via-secondary/20 to-primary/20 h-2" />
 
@@ -258,7 +258,7 @@ export default function RecipeDetailModal({
                       ([section, ingredients]) => (
                         <div key={section}>
                           {Object.keys(ingredientsBySection).length > 1 && (
-                            <h3 className="text-base font-semibold text-text-secondary uppercase tracking-wide mb-1 pl-1.5 border-l-2 border-secondary">
+                            <h3 className="text-base font-semibold text-text-secondary uppercase tracking-wide mb-1 pl-1.5 border-l border-secondary">
                               {section}
                             </h3>
                           )}
@@ -276,7 +276,7 @@ export default function RecipeDetailModal({
                                     className={`flex items-start gap-2 text-xl text-left w-full py-0.5 rounded hover:bg-muted/40 transition-colors ${ing.optional ? "opacity-70" : ""} ${isChecked ? "opacity-50" : ""}`}
                                   >
                                     <span
-                                      className={`w-5 h-5 rounded border-2 flex-shrink-0 mt-1 flex items-center justify-center transition-colors ${isChecked ? "bg-primary border-primary" : "bg-primary/10 border-primary/40"}`}
+                                      className={`w-5 h-5 rounded border flex-shrink-0 mt-1 flex items-center justify-center transition-colors ${isChecked ? "bg-primary border-primary" : "bg-primary/10 border-primary/40"}`}
                                     >
                                       {isChecked && (
                                         <span className="text-white text-sm leading-none font-bold">
@@ -362,7 +362,7 @@ export default function RecipeDetailModal({
             <div className="flex justify-center gap-4 p-4">
               <button
                 onClick={onCloseClick}
-                className="px-6 py-2 bg-surface hover:bg-muted border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                className="px-6 py-2 bg-surface hover:bg-muted border border-border rounded-xl font-bold text-text transition-all"
               >
                 Close
               </button>
@@ -376,7 +376,7 @@ export default function RecipeDetailModal({
                     );
                     router.push("/create_recipe");
                   }}
-                  className="px-6 py-2 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                  className="px-6 py-2 bg-primary hover:bg-primary/80 border border-border rounded-xl font-bold text-text transition-all"
                 >
                   Edit
                 </button>
@@ -384,7 +384,7 @@ export default function RecipeDetailModal({
 
               <button
                 onClick={() => router.push(`/recipe/${recipeId}`)}
-                className="p-2 bg-secondary hover:bg-secondary/80 border-2 border-border rounded-xl shadow-md hover:shadow-lg hover:scale-[1.1] transition-all font-bold"
+                className="p-2 bg-secondary hover:bg-secondary/80 border border-border rounded-xl transition-all font-bold"
                 aria-label="Open full page"
               >
                 View
@@ -392,7 +392,7 @@ export default function RecipeDetailModal({
 
               <button
                 onClick={handleDeleteClick}
-                className="p-1.5 bg-background hover:bg-background/80 border-2 border-border rounded-xl shadow-md hover:shadow-lg hover:scale-[1.1] transition-all"
+                className="p-1.5 bg-background hover:bg-background/80 border border-border rounded-xl transition-all"
                 aria-label="Delete recipe"
               >
                 <svg

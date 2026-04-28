@@ -76,10 +76,10 @@ export default function EditIngredient({ ingredients, onChange }: Props) {
 
   return (
     <div className="w-full">
-      <div className="overflow-x-auto rounded-xl border-2 border-border bg-muted/30">
+      <div className="overflow-x-auto rounded-xl border border-border bg-muted/30">
         <table className="w-full border-collapse text-sm">
           <thead className="bg-primary/20">
-            <tr className="border-b-2 border-border">
+            <tr className="border-b border-border">
               <th className="px-3 py-2 sm:px-6 sm:py-4 text-left font-bold text-text">
                 🥬 Ingredient
               </th>
@@ -118,7 +118,7 @@ export default function EditIngredient({ ingredients, onChange }: Props) {
                     onChange={(e) =>
                       updateCell(row.name, "quantity", Number(e.target.value))
                     }
-                    className="w-16 sm:w-24 rounded-lg border-2 border-border px-3 py-2 bg-surface text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+                    className="w-16 sm:w-24 rounded-lg border border-border px-3 py-2 bg-surface text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
                     placeholder="0"
                   />
                 </td>
@@ -132,7 +132,7 @@ export default function EditIngredient({ ingredients, onChange }: Props) {
                       updateCell(row.name, "unit", e.target.value)
                     }
                     list="units-list"
-                    className="w-20 sm:w-32 rounded-lg border-2 border-border px-3 py-2 bg-surface text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+                    className="w-20 sm:w-32 rounded-lg border border-border px-3 py-2 bg-surface text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
                     placeholder="cup"
                   />
                 </td>
@@ -145,7 +145,7 @@ export default function EditIngredient({ ingredients, onChange }: Props) {
                     onChange={(e) =>
                       updateCell(row.name, "prep", e.target.value)
                     }
-                    className="w-24 sm:w-40 rounded-lg border-2 border-border px-3 py-2 bg-surface text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+                    className="w-24 sm:w-40 rounded-lg border border-border px-3 py-2 bg-surface text-text outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
                     placeholder="diced, chopped..."
                   />
                 </td>
@@ -163,7 +163,7 @@ export default function EditIngredient({ ingredients, onChange }: Props) {
       </div>
 
       {/* Helpful tip */}
-      <div className="mt-4 p-4 bg-secondary/10 border-2 border-border rounded-xl">
+      <div className="mt-4 p-4 bg-secondary/10 border border-border rounded-xl">
         <p className="text-sm text-text-secondary">
           💡 <strong>Tip:</strong> Update quantities and units to match your
           preferences. The prep field is for instructions like "diced",

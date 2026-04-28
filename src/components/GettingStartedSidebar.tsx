@@ -79,7 +79,7 @@ export default function GettingStartedSidebar() {
       {/* Toggle button — always visible */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed top-4 right-4 z-50 w-10 h-10 flex items-center justify-center rounded-xl border-2 border-border shadow-lg transition-all duration-200 hover:scale-110 ${
+        className={`fixed top-4 right-4 z-50 w-10 h-10 flex items-center justify-center rounded-xl border border-border  transition-all duration-200  ${
           isOpen ? "bg-accent/20 text-text" : "bg-surface text-text-secondary hover:bg-muted"
         }`}
         aria-label={isOpen ? "Close guide" : "Getting started guide"}
@@ -97,7 +97,7 @@ export default function GettingStartedSidebar() {
 
       {/* Sidebar panel */}
       <div
-        className={`fixed top-0 right-0 h-full z-40 w-[320px] sm:w-[360px] bg-surface border-l-2 border-border shadow-xl transition-transform duration-300 ease-out overflow-y-auto ${
+        className={`fixed top-0 right-0 h-full z-40 w-[320px] sm:w-[360px] bg-surface border-l border-border  transition-transform duration-300 ease-out overflow-y-auto ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -111,12 +111,12 @@ export default function GettingStartedSidebar() {
           </p>
 
           {/* Workflow toggle */}
-          <div className="flex gap-1.5 p-1 bg-muted border-2 border-border rounded-2xl mb-6">
+          <div className="flex gap-1.5 p-1 bg-muted border border-border rounded-2xl mb-6">
             <button
               onClick={() => setWorkflow("mealprep")}
               className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
                 workflow === "mealprep"
-                  ? "bg-surface text-text shadow-sm border border-border"
+                  ? "bg-surface text-text  border border-border"
                   : "text-text-secondary hover:text-text"
               }`}
             >
@@ -126,7 +126,7 @@ export default function GettingStartedSidebar() {
               onClick={() => setWorkflow("logasyougo")}
               className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
                 workflow === "logasyougo"
-                  ? "bg-surface text-text shadow-sm border border-border"
+                  ? "bg-surface text-text  border border-border"
                   : "text-text-secondary hover:text-text"
               }`}
             >
@@ -135,7 +135,7 @@ export default function GettingStartedSidebar() {
           </div>
 
           {/* Workflow description */}
-          <div className="bg-muted border-2 border-border rounded-2xl p-3.5 mb-6">
+          <div className="bg-muted border border-border rounded-2xl p-3.5 mb-6">
             <p className="text-xs text-text-secondary leading-relaxed">
               {workflow === "mealprep"
                 ? "Plan your meals ahead of time. Add recipes, build a weekly calendar, and generate a grocery list before you shop."
@@ -153,7 +153,7 @@ export default function GettingStartedSidebar() {
                 {/* Step number + connector line */}
                 <div className="flex flex-col items-center">
                   <div
-                    className={`w-9 h-9 rounded-xl ${step.color} border-2 border-border flex items-center justify-center text-lg shrink-0`}
+                    className={`w-9 h-9 rounded-xl ${step.color} border border-border flex items-center justify-center text-lg shrink-0`}
                   >
                     {step.icon}
                   </div>
@@ -179,7 +179,7 @@ export default function GettingStartedSidebar() {
           </div>
 
           {/* Pro tip */}
-          <div className="mt-6 bg-primary/10 border-2 border-primary/20 rounded-2xl p-3.5">
+          <div className="mt-6 bg-primary/10 border border-primary/20 rounded-2xl p-3.5">
             <p className="text-xs font-bold text-text mb-1">Pro tip</p>
             <p className="text-xs text-text-secondary leading-relaxed">
               {workflow === "mealprep"
@@ -191,7 +191,7 @@ export default function GettingStartedSidebar() {
           {/* Dismiss */}
           <button
             onClick={() => setIsOpen(false)}
-            className="w-full mt-5 py-3 bg-primary hover:bg-primary/80 border-2 border-border rounded-2xl text-sm font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+            className="w-full mt-5 py-3 bg-primary hover:bg-primary/80 border border-border rounded-2xl text-sm font-bold text-text transition-all"
           >
             Got it, let me cook!
           </button>

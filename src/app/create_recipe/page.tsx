@@ -312,18 +312,18 @@ export default function CreateRecipe() {
         </div>
 
         {/* Name Block */}
-        <section className="border-2 border-border rounded-3xl px-4 sm:px-10 py-4 bg-surface shadow-lg flex flex-col gap-4">
+        <section className="border border-border rounded-3xl px-4 sm:px-10 py-4 bg-surface flex flex-col gap-4">
           <input
             type="text"
             placeholder="Name..."
             value={recipeName}
             onChange={(e) => setRecipeName(e.target.value)}
-            className="w-full px-2 py-2 border-2 border-border rounded-xl bg-surface text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
+            className="w-full px-2 py-2 border border-border rounded-xl bg-surface text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
           />
           <select
             onChange={(e) => setSelectedCategory(e.target.value)}
             value={selectedCategory}
-            className="w-full px-2 py-2 border-2 border-border rounded-xl bg-surface text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
+            className="w-full px-2 py-2 border border-border rounded-xl bg-surface text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
           >
             <option value="" disabled>
               Category...
@@ -343,7 +343,7 @@ export default function CreateRecipe() {
                   setSelectedNumberOfServings(Number(e.target.value))
                 }
                 value={selectedNumberOfServings}
-                className="px-2 py-2 border-2 border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors"
+                className="px-2 py-2 border border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors"
               >
                 {numberOfServings.map((num) => (
                   <option key={num} value={num}>
@@ -364,22 +364,22 @@ export default function CreateRecipe() {
           </div>
         </section>
         {/* Ingredient Block */}
-        <section className="border-2 border-border rounded-3xl p-2 bg-surface shadow-lg">
+        <section className="border border-border rounded-3xl p-2 bg-surface ">
           <h2 className="text-text text-xl font-bold ml-10">Ingredients</h2>
           <textarea
             id="ingredients_message"
-            className="mx-4 sm:mx-5 block min-h-48 sm:min-h-64 w-full sm:w-9/12 rounded-lg border-2 border-border bg-surface p-2.5 text-sm text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
+            className="mx-4 sm:mx-5 block min-h-48 sm:min-h-64 w-full sm:w-9/12 rounded-lg border border-border bg-surface p-2.5 text-sm text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
             placeholder="Ingredients..."
             value={ingredients}
             onChange={(e) => setIngredients(e.target.value)}
           />
         </section>
         {/* Instructions Block */}
-        <section className="border-2 border-border rounded-3xl p-2 bg-surface shadow-lg">
+        <section className="border border-border rounded-3xl p-2 bg-surface ">
           <h2 className="text-text text-xl font-bold ml-10">Instructions</h2>
           <textarea
             id="instructions_message"
-            className="mx-4 sm:mx-5 block min-h-48 sm:min-h-64 w-full sm:w-9/12 rounded-lg border-2 border-border bg-surface p-2.5 text-sm text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
+            className="mx-4 sm:mx-5 block min-h-48 sm:min-h-64 w-full sm:w-9/12 rounded-lg border border-border bg-surface p-2.5 text-sm text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
             placeholder="Instructions..."
             value={instructions}
             onChange={(e) => setInstructions(e.target.value)}
@@ -389,13 +389,13 @@ export default function CreateRecipe() {
           <button
             onClick={handleSubmitClick}
             disabled={isSubmitting}
-            className="w-full sm:w-1/3 px-6 py-2 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+            className="w-full sm:w-1/3 px-6 py-2 bg-primary hover:bg-primary/80 border border-border rounded-xl font-bold text-text transition-all"
           >
             {isSubmitting ? "Submitting..." : isEditMode ? "Update" : "Submit"}
           </button>
           <button
             onClick={handleCancelClick}
-            className="px-6 w-full sm:w-1/3 py-2 bg-accent hover:bg-accent/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+            className="px-6 w-full sm:w-1/3 py-2 bg-accent hover:bg-accent/80 border border-border rounded-xl font-bold text-text transition-all"
           >
             cancel
           </button>

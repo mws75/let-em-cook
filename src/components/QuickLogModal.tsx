@@ -108,7 +108,7 @@ export default function QuickLogEntryModal({
       onClick={onCloseClick}
     >
       <div
-        className="bg-surface border-2 border-border rounded-2xl shadow-xl w-full max-w-md overflow-hidden"
+        className="bg-surface border border-border rounded-2xl w-full max-w-md overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Decorative top border */}
@@ -128,12 +128,12 @@ export default function QuickLogEntryModal({
         <div className="px-5 py-4 space-y-4">
           {/* Mode tabs */}
           {recipes.length > 0 && (
-            <div className="flex gap-1.5 p-1 bg-muted border-2 border-border rounded-2xl">
+            <div className="flex gap-1.5 p-1 bg-muted border border-border rounded-2xl">
               <button
                 onClick={() => { setMode("manual"); clearForm(); }}
                 className={`flex-1 py-2 px-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
                   mode === "manual"
-                    ? "bg-surface text-text shadow-sm border border-border"
+                    ? "bg-surface text-text  border border-border"
                     : "text-text-secondary hover:text-text"
                 }`}
               >
@@ -143,7 +143,7 @@ export default function QuickLogEntryModal({
                 onClick={() => { setMode("recipe"); clearForm(); }}
                 className={`flex-1 py-2 px-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
                   mode === "recipe"
-                    ? "bg-surface text-text shadow-sm border border-border"
+                    ? "bg-surface text-text  border border-border"
                     : "text-text-secondary hover:text-text"
                 }`}
               >
@@ -161,9 +161,9 @@ export default function QuickLogEntryModal({
                 value={recipeSearch}
                 onChange={(e) => setRecipeSearch(e.target.value)}
                 placeholder="Search your recipes..."
-                className="w-full px-3 py-2 bg-background border-2 border-border rounded-xl text-text placeholder:text-text-secondary/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-colors mb-2"
+                className="w-full px-3 py-2 bg-background border border-border rounded-xl text-text placeholder:text-text-secondary/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-colors mb-2"
               />
-              <div className="max-h-40 overflow-y-auto space-y-1.5 border-2 border-border rounded-xl p-2 bg-background">
+              <div className="max-h-40 overflow-y-auto space-y-1.5 border border-border rounded-xl p-2 bg-background">
                 {filteredRecipes.length > 0 ? (
                   filteredRecipes.map((recipe) => (
                     <button
@@ -209,7 +209,7 @@ export default function QuickLogEntryModal({
               value={name}
               onChange={(e) => { setName(e.target.value); setSelectedRecipeId(null); }}
               placeholder="e.g. Protein shake"
-              className="w-full px-3 py-2 bg-background border-2 border-border rounded-xl text-text placeholder:text-text-secondary/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-colors"
+              className="w-full px-3 py-2 bg-background border border-border rounded-xl text-text placeholder:text-text-secondary/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-colors"
             />
           </div>
 
@@ -231,7 +231,7 @@ export default function QuickLogEntryModal({
                     value={calories}
                     onChange={(e) => setCalories(e.target.value)}
                     placeholder="0"
-                    className="w-full px-3 py-2 pr-10 bg-background border-2 border-border rounded-xl text-text placeholder:text-text-secondary/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-colors"
+                    className="w-full px-3 py-2 pr-10 bg-background border border-border rounded-xl text-text placeholder:text-text-secondary/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-colors"
                   />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-text-secondary">
                     cal
@@ -249,7 +249,7 @@ export default function QuickLogEntryModal({
                     value={protein}
                     onChange={(e) => setProtein(e.target.value)}
                     placeholder="0"
-                    className="w-full px-3 py-2 pr-7 bg-background border-2 border-border rounded-xl text-text placeholder:text-text-secondary/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-colors"
+                    className="w-full px-3 py-2 pr-7 bg-background border border-border rounded-xl text-text placeholder:text-text-secondary/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-colors"
                   />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-text-secondary">
                     g
@@ -267,7 +267,7 @@ export default function QuickLogEntryModal({
                     value={fat}
                     onChange={(e) => setFat(e.target.value)}
                     placeholder="0"
-                    className="w-full px-3 py-2 pr-7 bg-background border-2 border-border rounded-xl text-text placeholder:text-text-secondary/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-colors"
+                    className="w-full px-3 py-2 pr-7 bg-background border border-border rounded-xl text-text placeholder:text-text-secondary/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-colors"
                   />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-text-secondary">
                     g
@@ -285,7 +285,7 @@ export default function QuickLogEntryModal({
                     value={carbs}
                     onChange={(e) => setCarbs(e.target.value)}
                     placeholder="0"
-                    className="w-full px-3 py-2 pr-7 bg-background border-2 border-border rounded-xl text-text placeholder:text-text-secondary/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-colors"
+                    className="w-full px-3 py-2 pr-7 bg-background border border-border rounded-xl text-text placeholder:text-text-secondary/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-colors"
                   />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-text-secondary">
                     g
@@ -303,7 +303,7 @@ export default function QuickLogEntryModal({
                     value={sugar}
                     onChange={(e) => setSugar(e.target.value)}
                     placeholder="0"
-                    className="w-full px-3 py-2 pr-7 bg-background border-2 border-border rounded-xl text-text placeholder:text-text-secondary/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-colors"
+                    className="w-full px-3 py-2 pr-7 bg-background border border-border rounded-xl text-text placeholder:text-text-secondary/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-colors"
                   />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-text-secondary">
                     g
@@ -318,14 +318,14 @@ export default function QuickLogEntryModal({
         <div className="flex justify-center gap-4 px-5 pb-4 pt-2">
           <button
             onClick={onCloseClick}
-            className="px-6 py-2 bg-surface hover:bg-muted border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+            className="px-6 py-2 bg-surface hover:bg-muted border border-border rounded-xl font-bold text-text transition-all"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
             disabled={!name.trim()}
-            className="px-6 py-2 bg-primary hover:bg-primary/80 border-2 border-border rounded-xl font-bold text-text shadow-md hover:shadow-lg hover:scale-[1.02] transition-all disabled:opacity-40 disabled:hover:scale-100 disabled:hover:shadow-md"
+            className="px-6 py-2 bg-primary hover:bg-primary/80 border border-border rounded-xl font-bold text-text transition-all disabled:opacity-40 disabled:"
           >
             Add
           </button>

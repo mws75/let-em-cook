@@ -41,7 +41,7 @@ export default function UpgradePrompt({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
-      <div className="bg-surface border-2 border-border p-8 rounded-3xl shadow-xl max-w-md mx-4">
+      <div className="bg-surface border border-border p-8 rounded-3xl max-w-md mx-4">
         <div className="text-center">
           <div className="text-6xl mb-4">
             <span role="img" aria-label="chef">
@@ -60,7 +60,7 @@ export default function UpgradePrompt({
             recipes.
           </p>
 
-          <div className="bg-gradient-to-r from-primary/20 to-accent/20 border-2 border-border rounded-2xl p-4 mb-6">
+          <div className="bg-gradient-to-r from-primary/20 to-accent/20 border border-border rounded-2xl p-4 mb-6">
             <p className="text-lg font-bold text-text mb-1">
               Upgrade to Pro
             </p>
@@ -76,14 +76,14 @@ export default function UpgradePrompt({
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 px-6 py-3 bg-muted hover:bg-muted/80 border-2 border-border rounded-xl font-semibold text-text transition-all"
+              className="flex-1 px-6 py-3 bg-muted hover:bg-muted/80 border border-border rounded-xl font-semibold text-text transition-all"
             >
               Maybe Later
             </button>
             <button
               onClick={handleUpgrade}
               disabled={isLoading}
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-primary to-accent hover:opacity-90 border-2 border-border rounded-xl font-bold text-text shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-primary to-accent hover:opacity-90 border border-border rounded-xl font-bold text-text transition-all disabled:opacity-50"
             >
               {isLoading ? "Loading..." : "Upgrade Now"}
             </button>
