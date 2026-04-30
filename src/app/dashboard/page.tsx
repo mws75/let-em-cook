@@ -387,25 +387,25 @@ function DashboardContent() {
         onClose={() => setShowUpgradePrompt(false)}
         recipeCount={subscription?.recipeCount || 0}
       />
-      <div className="w-full max-w-5xl mx-auto px-4 pb-20 space-y-10">
+      <div className="w-full max-w-5xl mx-auto px-3 sm:px-4 pb-20 space-y-6 sm:space-y-10">
         {/* Header Information */}
-        <div className="flex justify-center mt-10 mb-6">
+        <div className="flex justify-center mt-6 sm:mt-10 mb-2 sm:mb-6">
           <h1 className="text-2xl md:text-4xl text-text font-bold">
-            🔪 Let's Get Cooking!
+            🔪 Let&apos;s Get Cooking!
           </h1>
         </div>
 
         {/* Daily Tracker CTA — prominent entry point */}
         <Link
           href="/dashboard/tracker"
-          className="block border border-border rounded-3xl bg-gradient-to-r from-primary/15 via-secondary/15 to-primary/15 hover:from-primary/25 hover:via-secondary/25 hover:to-primary/25 px-6 py-4 transition-colors"
+          className="block border border-border rounded-2xl sm:rounded-3xl bg-gradient-to-r from-primary/15 via-secondary/15 to-primary/15 hover:from-primary/25 hover:via-secondary/25 hover:to-primary/25 px-4 sm:px-6 py-3 sm:py-4 transition-colors"
         >
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center justify-between gap-3 sm:gap-4">
             <div className="min-w-0">
-              <p className="text-lg sm:text-xl font-bold text-text">
+              <p className="text-base sm:text-xl font-bold text-text">
                 📊 Daily Macro Tracker
               </p>
-              <p className="text-sm text-text-secondary mt-0.5">
+              <p className="text-xs sm:text-sm text-text-secondary mt-0.5">
                 Log what you actually ate today — calories, protein, fat,
                 carbs.
               </p>
@@ -417,40 +417,38 @@ function DashboardContent() {
         </Link>
 
         {/* Meal Prep Section */}
-        <section className="border border-border rounded-3xl p-2 bg-surface">
-          <div className="flex flex-col md:flex-row gap-4 m-2">
-            <div className="flex-1 border border-border rounded-3xl p-8 bg-surface">
-              <div className="flex flex-wrap gap-4">
+        <section className="border border-border rounded-2xl sm:rounded-3xl p-2 bg-surface">
+          <div className="flex flex-col md:flex-row gap-3 sm:gap-4 m-1 sm:m-2">
+            <div className="flex-1 border border-border rounded-2xl sm:rounded-3xl p-4 sm:p-8 bg-surface">
+              <div className="flex flex-wrap gap-3 sm:gap-4">
                 {selectedRecipes.map((recipe) => (
                   <SelectedRecipeCard key={recipe.recipe_id} recipe={recipe} />
                 ))}
               </div>
             </div>
-            <div className="flex flex-row md:flex-col gap-2 md:gap-1">
+            <div className="flex flex-col gap-2 md:gap-1">
               <button
                 onClick={generateGroceryList}
                 disabled={isGenerating || selectedRecipes.length === 0}
-                className="w-full md:w-32 bg-primary hover:bg-primary/80 border border-border rounded-3xl py-4 mb-3 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full md:w-32 bg-primary hover:bg-primary/80 border border-border rounded-2xl sm:rounded-3xl py-3 sm:py-4 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span className="text-1xl font-bold text-text">
+                <span className="font-bold text-text">
                   {isGenerating ? "Generating..." : "Generate Grocery List"}
                 </span>
               </button>
               <button
                 onClick={() => setShowCalendar(!showCalendar)}
-                className="w-full md:w-32 bg-secondary hover:bg-secondary/80 border border-border rounded-3xl py-4 mb-3 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full md:w-32 bg-secondary hover:bg-secondary/80 border border-border rounded-2xl sm:rounded-3xl py-3 sm:py-4 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span className="text-1xl font-bold text-text">
-                  {showCalendar ? "Hide" : "Create"} <br /> Calendar
+                <span className="font-bold text-text">
+                  {showCalendar ? "Hide" : "Create"} Calendar
                 </span>
               </button>
               <button
                 onClick={handleClearSelected}
-                className="w-full md:w-32 bg-accent hover:bg-accent/80 border border-border rounded-3xl py-4 mb-3 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full md:w-32 bg-accent hover:bg-accent/80 border border-border rounded-2xl sm:rounded-3xl py-3 sm:py-4 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span className="text-1xl font-bold text-text">
-                  Clear Selected
-                </span>
+                <span className="font-bold text-text">Clear Selected</span>
               </button>
             </div>
           </div>
@@ -459,13 +457,13 @@ function DashboardContent() {
             <UpgradeButton className="mb-2" />
           )}
           {/* Manage Subscription for Pro users */}
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
             {subscription && subscription.planTier === "pro" && (
               <button
                 onClick={handleManageSubscription}
-                className="w-full bg-accent hover:bg-accent/80 border border-border rounded-3xl py-3 mb-2 transition-colors"
+                className="w-full bg-accent hover:bg-accent/80 border border-border rounded-2xl sm:rounded-3xl py-3 mb-2 transition-colors"
               >
-                <span className="text-lg font-semibold text-text">
+                <span className="text-base sm:text-lg font-semibold text-text">
                   Manage Subscription
                 </span>
               </button>
@@ -473,27 +471,29 @@ function DashboardContent() {
             <SignOutButton redirectUrl="/">
               <button
                 onClick={handleSignOut}
-                className="w-full bg-muted hobver:bg-muted/80 border border-border rounded-3xl py-3 mb-2 transition-colors"
+                className="w-full bg-muted hover:bg-muted/80 border border-border rounded-2xl sm:rounded-3xl py-3 mb-2 transition-colors"
               >
-                <span className="text-lg font-semibold text-text">
+                <span className="text-base sm:text-lg font-semibold text-text">
                   Sign Out
                 </span>
               </button>
             </SignOutButton>
           </div>
           <button
-            className="w-full my-2 bg-secondary hover:bg-secondary/80 border border-border rounded-3xl py-4 transition-colors"
+            className="w-full my-2 bg-secondary hover:bg-secondary/80 border border-border rounded-2xl sm:rounded-3xl py-3 sm:py-4 transition-colors"
             onClick={handleExploreClick}
           >
-            <span className="text-2xl font-bold text-text">
+            <span className="text-xl sm:text-2xl font-bold text-text">
               Explore Recipes
             </span>
           </button>
           <button
-            className="w-full bg-primary hover:bg-primary/80 border border-border rounded-3xl py-4 transition-colors"
+            className="w-full bg-primary hover:bg-primary/80 border border-border rounded-2xl sm:rounded-3xl py-3 sm:py-4 transition-colors"
             onClick={handleCreateRecipeClick}
           >
-            <span className="text-2xl font-bold text-text">Create Recipe</span>
+            <span className="text-xl sm:text-2xl font-bold text-text">
+              Create Recipe
+            </span>
           </button>
         </section>
 
@@ -506,27 +506,27 @@ function DashboardContent() {
 
         {/* Grocery List Section */}
         {groceryList.length > 0 && (
-          <section className="border border-border rounded-3xl p-6 bg-surface">
+          <section className="border border-border rounded-2xl sm:rounded-3xl p-3 sm:p-6 bg-surface">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-              <h2 className="text-3xl text-text font-bold">
+              <h2 className="text-2xl sm:text-3xl text-text font-bold">
                 🛒 Your Grocery List
               </h2>
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={selectAllItems}
-                  className="px-4 py-2 bg-primary/20 hover:bg-primary/30 border border-border rounded-xl font-semibold text-text transition-colors"
+                  className="px-3 sm:px-4 py-2 text-sm bg-primary/20 hover:bg-primary/30 border border-border rounded-xl font-semibold text-text transition-colors"
                 >
                   Select All
                 </button>
                 <button
                   onClick={deselectAllItems}
-                  className="px-4 py-2 bg-muted hover:bg-muted/80 border border-border rounded-xl font-semibold text-text transition-colors"
+                  className="px-3 sm:px-4 py-2 text-sm bg-muted hover:bg-muted/80 border border-border rounded-xl font-semibold text-text transition-colors"
                 >
                   Deselect All
                 </button>
                 <button
                   onClick={downloadGroceryList}
-                  className="px-6 py-2 bg-accent hover:bg-accent/80 border border-border rounded-xl font-bold text-text transition-colors"
+                  className="px-4 sm:px-6 py-2 text-sm bg-accent hover:bg-accent/80 border border-border rounded-xl font-bold text-text transition-colors"
                 >
                   Download List
                 </button>
@@ -586,16 +586,16 @@ function DashboardContent() {
         )}
 
         {/* Recipes */}
-        <section className="border border-border rounded-3xl bg-surface p-6">
+        <section className="border border-border rounded-2xl sm:rounded-3xl bg-surface p-3 sm:p-6">
           {/* Search Bar */}
-          <div className="flex flex-col md:flex-row gap-3 p-2">
-            <h2 className="text-3xl text-text text-center font-bold pr-10">
-              Recipes{" "}
+          <div className="flex flex-col md:flex-row gap-3 p-1 sm:p-2">
+            <h2 className="text-2xl sm:text-3xl text-text font-bold">
+              Recipes
             </h2>
             <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto md:ml-auto">
               <label
                 htmlFor="category-select"
-                className="text-text font-semibold self-center"
+                className="text-text font-semibold self-start sm:self-center"
               >
                 Category:
               </label>
@@ -629,9 +629,9 @@ function DashboardContent() {
             </div>
           </div>
           {/* Category */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 p-2 sm:p-4">
             {isLoadingRecipes ? (
-              <div className="col-span-3 flex flex-col items-center justify-center py-12">
+              <div className="col-span-full flex flex-col items-center justify-center py-12">
                 <div className="text-6xl mb-4">🍳</div>
                 <p className="text-2xl text-text font-semibold">
                   Loading your recipes...
@@ -651,18 +651,18 @@ function DashboardContent() {
                 />
               ))
             ) : recipes.length === 0 ? (
-              <div className="col-span-3 flex flex-col items-center justify-center py-12">
+              <div className="col-span-full flex flex-col items-center justify-center py-12">
                 <div className="text-6xl mb-4">📝</div>
                 <p className="text-2xl text-text font-semibold mb-2">
                   No recipes yet!
                 </p>
                 <p className="text-text-secondary">
-                  Click "Create Recipe" to add your first recipe
+                  Click &quot;Create Recipe&quot; to add your first recipe
                 </p>
               </div>
             ) : (
-              <p className="text-text text-center col-span-3">
-                No results found for "{searchTerm}"
+              <p className="text-text text-center col-span-full">
+                No results found for &quot;{searchTerm}&quot;
               </p>
             )}
           </div>

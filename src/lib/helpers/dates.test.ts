@@ -2,6 +2,7 @@ import {
   addDays,
   dateForThisWeeksDay,
   dayKeyFromDate,
+  dayOfMonth,
   dayOfWeekShort,
   isDateString,
   parseDateString,
@@ -94,6 +95,13 @@ describe("shortMonthDay", () => {
   it("formats MM/DD with zero-padding", () => {
     expect(shortMonthDay("2026-04-30")).toBe("04/30");
     expect(shortMonthDay("2026-12-09")).toBe("12/09");
+  });
+});
+
+describe("dayOfMonth", () => {
+  it("returns just the DD with zero-padding", () => {
+    expect(dayOfMonth("2026-04-30")).toBe("30");
+    expect(dayOfMonth("2026-04-09")).toBe("09");
   });
 });
 

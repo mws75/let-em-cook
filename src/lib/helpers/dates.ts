@@ -52,6 +52,11 @@ export function shortMonthDay(s: string): string {
   ).padStart(2, "0")}`;
 }
 
+// Just the DD — used on narrow screens where MM/DD doesn't fit.
+export function dayOfMonth(s: string): string {
+  return String(parseDateString(s).getDate()).padStart(2, "0");
+}
+
 export function fullDateLabel(s: string): string {
   return parseDateString(s).toLocaleDateString(undefined, {
     weekday: "long",

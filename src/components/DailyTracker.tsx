@@ -16,6 +16,7 @@ import TrackerLogModal from "./TrackerLogModal";
 import {
   addDays,
   dayKeyFromDate,
+  dayOfMonth,
   dayOfWeekShort,
   fullDateLabel,
   shortMonthDay,
@@ -450,12 +451,12 @@ export default function DailyTracker({ initialDate }: DailyTrackerProps = {}) {
         onSubmit={handleSubmitEntry}
       />
 
-      <section className="border border-border rounded-3xl p-6 bg-surface space-y-5">
+      <section className="border border-border rounded-3xl p-3 sm:p-6 bg-surface space-y-4 sm:space-y-5">
         {/* Header */}
-        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3">
           <div>
-            <h2 className="text-3xl text-text font-bold">📊 Daily Tracker</h2>
-            <p className="text-sm text-text-secondary mt-0.5">
+            <h2 className="text-2xl sm:text-3xl text-text font-bold">📊 Daily Tracker</h2>
+            <p className="text-xs sm:text-sm text-text-secondary mt-0.5">
               {fullDateLabel(selectedDate)}
             </p>
           </div>
@@ -479,13 +480,13 @@ export default function DailyTracker({ initialDate }: DailyTrackerProps = {}) {
             )}
             <button
               onClick={handleToday}
-              className="px-4 py-2 bg-muted hover:bg-muted/80 border border-border rounded-xl font-semibold text-text transition-all"
+              className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm bg-muted hover:bg-muted/80 border border-border rounded-xl font-semibold text-text transition-all"
             >
               Today
             </button>
             <button
               onClick={() => setGoalsModalOpen(true)}
-              className="px-4 py-2 bg-accent hover:bg-accent/80 border border-border rounded-xl font-bold text-text transition-all"
+              className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm bg-accent hover:bg-accent/80 border border-border rounded-xl font-bold text-text transition-all"
             >
               {hasAnyGoal(goals) ? "Edit Goals" : "Set Goals"}
             </button>
@@ -495,17 +496,17 @@ export default function DailyTracker({ initialDate }: DailyTrackerProps = {}) {
         {/* Week strip */}
         <nav
           aria-label="Day navigator"
-          className="flex items-center gap-1 border border-border rounded-2xl bg-muted/20 p-2"
+          className="flex items-center gap-0.5 sm:gap-1 border border-border rounded-2xl bg-muted/20 p-1 sm:p-2"
         >
           <button
             onClick={handlePrevWeek}
             aria-label="Previous week"
-            className="p-2 rounded-xl hover:bg-muted text-text"
+            className="p-1.5 sm:p-2 rounded-xl hover:bg-muted text-text shrink-0"
           >
             ◀
           </button>
 
-          <ol className="flex-1 grid grid-cols-7 gap-1">
+          <ol className="flex-1 grid grid-cols-7 gap-0.5 sm:gap-1">
             {weekDays.map((d) => {
               const isActive = d === selectedDate;
               const hasEntries = (weekLogs[d]?.entries?.length ?? 0) > 0;
@@ -514,17 +515,21 @@ export default function DailyTracker({ initialDate }: DailyTrackerProps = {}) {
                   <button
                     onClick={() => setSelectedDate(d)}
                     aria-current={isActive ? "date" : undefined}
-                    className={`w-full flex flex-col items-center gap-1 py-2 px-1 rounded-xl transition-colors ${
+                    aria-label={fullDateLabel(d)}
+                    className={`w-full flex flex-col items-center gap-0.5 sm:gap-1 py-1.5 sm:py-2 px-0.5 sm:px-1 rounded-xl transition-colors ${
                       isActive
                         ? "bg-primary text-text shadow-sm"
                         : "text-text-secondary hover:bg-muted hover:text-text"
                     }`}
                   >
-                    <span className="text-xs font-bold tracking-wide">
+                    <span className="text-[10px] sm:text-xs font-bold tracking-wide">
                       {dayOfWeekShort(d)}
                     </span>
-                    <span className="text-sm font-semibold tabular-nums">
-                      {shortMonthDay(d)}
+                    <span className="text-sm sm:text-sm font-semibold tabular-nums">
+                      <span className="sm:hidden">{dayOfMonth(d)}</span>
+                      <span className="hidden sm:inline">
+                        {shortMonthDay(d)}
+                      </span>
                     </span>
                     <span
                       className={`w-1.5 h-1.5 rounded-full ${
@@ -541,7 +546,7 @@ export default function DailyTracker({ initialDate }: DailyTrackerProps = {}) {
           <button
             onClick={handleNextWeek}
             aria-label="Next week"
-            className="p-2 rounded-xl hover:bg-muted text-text"
+            className="p-1.5 sm:p-2 rounded-xl hover:bg-muted text-text shrink-0"
           >
             ▶
           </button>
@@ -560,36 +565,37 @@ export default function DailyTracker({ initialDate }: DailyTrackerProps = {}) {
         </div>
 
         {/* Bulk actions */}
-        <div className="flex flex-wrap gap-2">
+        <div className="space-y-2">
           <button
             onClick={() => handleQuickAdd()}
-            className="px-4 py-2 bg-primary hover:bg-primary/80 border border-border rounded-xl font-bold text-text transition-all"
+            className="w-full sm:w-auto px-4 py-3 sm:py-2 bg-primary hover:bg-primary/80 border border-border rounded-xl font-bold text-text transition-all"
           >
             + Quick Add
           </button>
-          <button
-            onClick={handleCopyYesterday}
-            className="px-4 py-2 bg-surface hover:bg-muted border border-border rounded-xl font-semibold text-text transition-all"
-          >
-            Copy yesterday
-          </button>
-          <button
-            onClick={handleImportFromPlan}
-            className="px-4 py-2 bg-surface hover:bg-muted border border-border rounded-xl font-semibold text-text transition-all"
-          >
-            Import from meal plan
-          </button>
-          <button
-            onClick={handleClearDay}
-            className="px-4 py-2 bg-surface hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/40 border border-border rounded-xl font-semibold text-text-secondary transition-all ml-auto"
-          >
-            Clear day
-          </button>
-          {loading && (
-            <span className="text-xs text-text-secondary self-center ml-2">
-              Loading…
-            </span>
-          )}
+          <div className="flex flex-wrap gap-2 items-center">
+            <button
+              onClick={handleCopyYesterday}
+              className="px-3 sm:px-4 py-2 text-sm bg-surface hover:bg-muted border border-border rounded-xl font-semibold text-text transition-all"
+            >
+              Copy yesterday
+            </button>
+            <button
+              onClick={handleImportFromPlan}
+              className="px-3 sm:px-4 py-2 text-sm bg-surface hover:bg-muted border border-border rounded-xl font-semibold text-text transition-all"
+            >
+              <span className="sm:hidden">Import plan</span>
+              <span className="hidden sm:inline">Import from meal plan</span>
+            </button>
+            <button
+              onClick={handleClearDay}
+              className="px-3 sm:px-4 py-2 text-sm bg-surface hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/40 border border-border rounded-xl font-semibold text-text-secondary transition-all sm:ml-auto"
+            >
+              Clear day
+            </button>
+            {loading && (
+              <span className="text-xs text-text-secondary">Loading…</span>
+            )}
+          </div>
         </div>
 
         {/* Slot sections */}
@@ -771,18 +777,22 @@ function SlotSection({
   const totals = sumDailyLogEntries(entries);
   return (
     <section className="border border-border rounded-2xl bg-surface overflow-hidden">
-      <header className="flex items-center justify-between px-4 py-3 border-b border-border/50">
-        <div className="flex items-center gap-2">
+      <header className="flex items-center justify-between gap-2 px-3 sm:px-4 py-3 border-b border-border/50">
+        <div className="flex items-center gap-2 min-w-0">
           <span className="text-xl">{SLOT_EMOJI[slot]}</span>
           <h4 className="font-bold text-text">{SLOT_LABEL[slot]}</h4>
         </div>
-        <span className="text-sm text-text-secondary tabular-nums">
+        <span className="text-xs sm:text-sm text-text-secondary tabular-nums text-right">
           {totals.calories === 0 ? (
             "—"
           ) : (
             <>
-              <span className="font-bold text-text">{totals.calories}</span>{" "}
-              cal · {totals.protein}P · {totals.fat}F · {totals.carbs}C
+              <span className="font-bold text-text">{totals.calories}</span>
+              <span> cal</span>
+              <span className="hidden sm:inline">
+                {" "}
+                · {totals.protein}P · {totals.fat}F · {totals.carbs}C
+              </span>
             </>
           )}
         </span>
@@ -792,7 +802,7 @@ function SlotSection({
         {entries.map((e) => (
           <li
             key={e.id}
-            className="flex items-center gap-3 px-4 py-2.5 hover:bg-muted/30 group"
+            className="flex items-center gap-3 px-3 sm:px-4 py-3 hover:bg-muted/30 group"
           >
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-text truncate">
@@ -808,7 +818,7 @@ function SlotSection({
             </div>
             <button
               onClick={() => onRemove(e.id)}
-              className="p-1.5 rounded-lg hover:bg-red-500/10 text-text-secondary hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="p-2 rounded-lg hover:bg-red-500/10 text-text-secondary hover:text-red-500 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0"
               aria-label="Remove entry"
             >
               ✕
@@ -819,7 +829,7 @@ function SlotSection({
 
       <button
         onClick={onAdd}
-        className="w-full text-left px-4 py-2.5 text-sm font-semibold text-text-secondary hover:bg-muted/30 hover:text-text transition-colors"
+        className="w-full text-left px-3 sm:px-4 py-3 text-sm font-semibold text-text-secondary hover:bg-muted/30 hover:text-text transition-colors"
       >
         + Add to {SLOT_LABEL[slot].toLowerCase()}
       </button>

@@ -29,8 +29,8 @@ function TrackerPageContent() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="w-full max-w-5xl mx-auto px-4 pb-20 space-y-6">
-        <div className="flex items-center justify-between mt-10">
+      <div className="w-full max-w-5xl mx-auto px-2 sm:px-4 pb-20 space-y-4 sm:space-y-6">
+        <div className="flex items-center justify-between mt-4 sm:mt-10 px-2 sm:px-0">
           <Link
             href="/dashboard"
             className="text-sm font-semibold text-text-secondary hover:text-text"
