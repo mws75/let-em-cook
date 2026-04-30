@@ -14,6 +14,10 @@ CREATE TABLE IF NOT EXISTS ltc_users (
   profile_pic_url   VARCHAR(255)     NULL,
   plan_tier         VARCHAR(25)      NOT NULL DEFAULT 'free',
   is_deleted        TINYINT(1)       NOT NULL DEFAULT 0,
+  goal_calories     INT UNSIGNED     NULL,
+  goal_protein_g    INT UNSIGNED     NULL,
+  goal_fat_g        INT UNSIGNED     NULL,
+  goal_carbs_g      INT UNSIGNED     NULL,
   created_on        DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
   modified_on       DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (user_id),
@@ -80,6 +84,21 @@ CREATE TABLE IF NOT EXISTS ltc_macros_cache (
   PRIMARY KEY (hash_id),
   KEY ix_macros_cache_recipe (source_recipe_id),
   KEY ix_macros_cache_expires (expires_on)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ltc_DAILY_LOGS (one row per user per date — daily macro tracker)
+CREATE TABLE IF NOT EXISTS ltc_daily_logs (
+  log_id            BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id           BIGINT UNSIGNED NOT NULL,
+  log_date          DATE             NOT NULL,
+  entries_json      JSON             NOT NULL,
+  notes             VARCHAR(500)     NULL,
+  created_on        DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  modified_on       DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (log_id),
+  UNIQUE KEY ux_daily_logs_user_date (user_id, log_date),
+  KEY ix_daily_logs_user (user_id),
+  KEY ix_daily_logs_date (log_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Helpful views (optional):

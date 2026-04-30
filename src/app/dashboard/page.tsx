@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import RecipeDetailModal from "@/components/RecipeDetailModal";
 import RecipeCard from "@/components/RecipeCard";
 import { SignOutButton } from "@clerk/nextjs";
@@ -224,7 +225,7 @@ function DashboardContent() {
     }
   };
 
-  const handleSignOut = () => {};
+  const handleSignOut = () => { };
 
   const handleRecipeCheckBoxSelect = (recipe: Recipe, isChecked: boolean) => {
     if (isChecked) {
@@ -388,11 +389,32 @@ function DashboardContent() {
       />
       <div className="w-full max-w-5xl mx-auto px-4 pb-20 space-y-10">
         {/* Header Information */}
-        <div className="flex justify-center mt-10 mb-10">
+        <div className="flex justify-center mt-10 mb-6">
           <h1 className="text-2xl md:text-4xl text-text font-bold">
             🔪 Let's Get Cooking!
           </h1>
         </div>
+
+        {/* Daily Tracker CTA — prominent entry point */}
+        <Link
+          href="/dashboard/tracker"
+          className="block border border-border rounded-3xl bg-gradient-to-r from-primary/15 via-secondary/15 to-primary/15 hover:from-primary/25 hover:via-secondary/25 hover:to-primary/25 px-6 py-4 transition-colors"
+        >
+          <div className="flex items-center justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-lg sm:text-xl font-bold text-text">
+                📊 Daily Macro Tracker
+              </p>
+              <p className="text-sm text-text-secondary mt-0.5">
+                Log what you actually ate today — calories, protein, fat,
+                carbs.
+              </p>
+            </div>
+            <span className="shrink-0 text-text font-bold text-sm sm:text-base">
+              Open →
+            </span>
+          </div>
+        </Link>
 
         {/* Meal Prep Section */}
         <section className="border border-border rounded-3xl p-2 bg-surface">
@@ -525,11 +547,10 @@ function DashboardContent() {
                 return (
                   <div
                     key={itemKey}
-                    className={`flex items-center gap-3 p-3 border border-border rounded-xl transition-colors cursor-pointer ${
-                      checkedItems[itemKey]
+                    className={`flex items-center gap-3 p-3 border border-border rounded-xl transition-colors cursor-pointer ${checkedItems[itemKey]
                         ? "bg-primary/10"
                         : "bg-muted opacity-60"
-                    }`}
+                      }`}
                     onClick={() => toggleGroceryItem(itemKey)}
                   >
                     <input
@@ -539,9 +560,8 @@ function DashboardContent() {
                       className="w-5 h-5 cursor-pointer accent-primary pointer-events-none"
                     />
                     <span
-                      className={`text-text ${
-                        checkedItems[itemKey] ? "font-medium" : "line-through"
-                      }`}
+                      className={`text-text ${checkedItems[itemKey] ? "font-medium" : "line-through"
+                        }`}
                     >
                       {formatGroceryItemDisplay(item)}
                     </span>

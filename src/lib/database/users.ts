@@ -1,7 +1,7 @@
 import { executeQuery, withTransaction } from "./connection";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { currentUser } from "@clerk/nextjs/server";
-import { User } from "@/types/types";
+import { User, MacroGoals } from "@/types/types";
 
 // ============================================================================
 // Row Types
@@ -265,6 +265,79 @@ export async function updateUserPlanTier(
     console.log("User plan tier updated successfully");
   } catch (error) {
     console.error("Error in updateUserPlanTier:", error);
+    throw error;
+  }
+}
+
+// ============================================================================
+// Macro Goals (Daily Tracker)
+// ============================================================================
+
+interface MacroGoalsRow extends RowDataPacket {
+  goal_calories: number | null;
+  goal_protein_g: number | null;
+  goal_fat_g: number | null;
+  goal_carbs_g: number | null;
+}
+
+/**
+ * Gets a user's macro goals. Returns all-null goals if the user has not set any.
+ */
+export async function getUserMacroGoals(userId: number): Promise<MacroGoals> {
+  if (!userId) throw new Error("User Id is required");
+
+  try {
+    const rows = await executeQuery<MacroGoalsRow[]>(
+      `SELECT goal_calories, goal_protein_g, goal_fat_g, goal_carbs_g
+       FROM ltc_users
+       WHERE user_id = ? LIMIT 1`,
+      [userId],
+    );
+
+    if (rows.length === 0) {
+      throw new Error("User not found");
+    }
+
+    const row = rows[0];
+    return {
+      calories: row.goal_calories,
+      protein_g: row.goal_protein_g,
+      fat_g: row.goal_fat_g,
+      carbs_g: row.goal_carbs_g,
+    };
+  } catch (error) {
+    console.error("Error in getUserMacroGoals:", error);
+    throw error;
+  }
+}
+
+/**
+ * Updates a user's macro goals. Pass null for any field to clear it.
+ */
+export async function updateUserMacroGoals(
+  userId: number,
+  goals: MacroGoals,
+): Promise<void> {
+  if (!userId) throw new Error("User Id is required");
+
+  try {
+    await executeQuery<ResultSetHeader>(
+      `UPDATE ltc_users
+       SET goal_calories  = ?,
+           goal_protein_g = ?,
+           goal_fat_g     = ?,
+           goal_carbs_g   = ?
+       WHERE user_id = ?`,
+      [
+        goals.calories,
+        goals.protein_g,
+        goals.fat_g,
+        goals.carbs_g,
+        userId,
+      ],
+    );
+  } catch (error) {
+    console.error("Error in updateUserMacroGoals:", error);
     throw error;
   }
 }

@@ -24,6 +24,10 @@ Stores user account information and preferences.
 | `profile_pic_url` | `VARCHAR(255)`    | NULL                                | URL to user's profile picture               |
 | `plan_tier`       | `VARCHAR(25)`     | NOT NULL, DEFAULT 'free'            | Subscription tier (e.g., 'free', 'premium') |
 | `is_deleted`      | `TINYINT(1)`      | NOT NULL, DEFAULT 0                 | Soft delete flag (0=active, 1=deleted)      |
+| `goal_calories`   | `INT UNSIGNED`    | NULL                                | Daily calorie goal (Daily Macro Tracker)    |
+| `goal_protein_g`  | `INT UNSIGNED`    | NULL                                | Daily protein goal in grams                 |
+| `goal_fat_g`      | `INT UNSIGNED`    | NULL                                | Daily fat goal in grams                     |
+| `goal_carbs_g`    | `INT UNSIGNED`    | NULL                                | Daily carbs goal in grams                   |
 | `created_on`      | `DATETIME`        | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Account creation timestamp                  |
 | `modified_on`     | `DATETIME`        | NOT NULL, AUTO-UPDATE               | Last modification timestamp                 |
 
@@ -133,13 +137,71 @@ Core table storing recipe information with flexible JSON columns for ingredients
 
 ---
 
+### 4. `ltc_daily_logs`
+
+Daily macro tracker — one row per user per calendar date. Entries are stored as a JSON array of `DailyLogEntry` objects (see `src/types/types.ts`).
+
+| Column         | Type              | Constraints                         | Description                                                                  |
+| -------------- | ----------------- | ----------------------------------- | ---------------------------------------------------------------------------- |
+| `log_id`       | `BIGINT UNSIGNED` | PRIMARY KEY, AUTO_INCREMENT         | Unique log row identifier                                                    |
+| `user_id`      | `BIGINT UNSIGNED` | NOT NULL                            | Foreign key (logical) to `ltc_users`                                         |
+| `log_date`     | `DATE`            | NOT NULL                            | Calendar date in the user's local timezone (`YYYY-MM-DD`, not a UTC instant) |
+| `entries_json` | `JSON`            | NOT NULL                            | Array of `DailyLogEntry` objects (see JSON structure below)                  |
+| `notes`        | `VARCHAR(500)`    | NULL                                | Optional free-form note for the day                                          |
+| `created_on`   | `DATETIME`        | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Row creation timestamp                                                       |
+| `modified_on`  | `DATETIME`        | NOT NULL, AUTO-UPDATE               | Last modification timestamp                                                  |
+
+**Indexes:**
+
+- Primary Key: `log_id`
+- Unique Key: `(user_id, log_date)` (ux_daily_logs_user_date) — enables atomic per-day upsert via `INSERT ... ON DUPLICATE KEY UPDATE`
+- Index: `user_id` (ix_daily_logs_user)
+- Index: `log_date` (ix_daily_logs_date)
+
+**Relationships:**
+
+- `user_id` → `ltc_users.user_id` (one user has many daily logs)
+
+**JSON Structure:**
+
+`entries_json` array of `DailyLogEntry` objects:
+
+```json
+[
+  {
+    "id": "uuid-v4",
+    "slot": "breakfast",
+    "kind": "recipe",
+    "recipe_id": 42,
+    "name": "🍳 Eggs and toast",
+    "servings": 1.0,
+    "calories": 420,
+    "protein_g": 28,
+    "fat_g": 18,
+    "carbs_g": 30,
+    "sugar_g": 4,
+    "logged_at": "2026-04-30T08:14:00Z"
+  }
+]
+```
+
+- `slot`: one of `"breakfast" | "lunch" | "dinner" | "snack"`
+- `kind`: `"recipe"` (linked to a `ltc_recipes` row) or `"manual"` (free-form entry)
+- `recipe_id`: present only when `kind === "recipe"`
+- `servings`: multiplier applied client-side. Macros stored here are **post-multiplied**.
+- Macros are snapshotted into the entry — historical logs do not drift if the source recipe is later edited or deleted.
+- `logged_at`: ISO 8601 UTC instant; used for sorting within a slot, not for deciding which day the entry belongs to.
+
+---
+
 ## Entity Relationship Diagram
 
 ```
 ltc_users (1) ----< (M) ltc_categories
     |
-    |
     +---< (M) ltc_recipes >--- (M,1) ltc_categories
+    |
+    +---< (M) ltc_daily_logs
 ```
 
 **Legend:**

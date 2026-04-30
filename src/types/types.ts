@@ -125,10 +125,51 @@ export type QuickLogEntry = {
 
 export type MealSlotData = {
   recipeIds: number[];
-  quickLogs: QuickLogEntry[];
+  quickLogs?: QuickLogEntry[];
 };
 
 export type MealPlanData = {
   week: Record<DayKey, Record<MealKey, MealSlotData>>;
   snacks: MealSlotData;
+};
+
+// ---------- Daily Macro Tracker ----------
+
+export const DAILY_SLOTS = [
+  "breakfast",
+  "lunch",
+  "dinner",
+  "snack",
+] as const;
+
+export type DailySlot = (typeof DAILY_SLOTS)[number];
+
+export type DailyLogEntryKind = "recipe" | "manual";
+
+export type DailyLogEntry = {
+  id: string;
+  slot: DailySlot;
+  kind: DailyLogEntryKind;
+  recipe_id?: number;
+  name: string;
+  servings: number;
+  calories: number | null;
+  protein_g: number | null;
+  fat_g: number | null;
+  carbs_g: number | null;
+  sugar_g: number | null;
+  logged_at: string;
+};
+
+export type DailyLog = {
+  log_date: string;
+  entries: DailyLogEntry[];
+  notes?: string;
+};
+
+export type MacroGoals = {
+  calories: number | null;
+  protein_g: number | null;
+  fat_g: number | null;
+  carbs_g: number | null;
 };
