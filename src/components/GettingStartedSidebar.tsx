@@ -47,22 +47,29 @@ const LOG_AS_YOU_GO_STEPS = [
   },
   {
     number: 2,
-    title: "Open the Calendar",
-    desc: "Click Create Calendar to open your weekly view.",
+    title: "Open the Daily Tracker",
+    desc: "Click 📊 Daily Macro Tracker at the top of the dashboard. The week strip lets you jump to any day; today is selected by default.",
     icon: "📅",
     color: "bg-primary/20",
   },
   {
     number: 3,
-    title: "Quick Log What You Ate",
-    desc: "Click + Quick Log on any meal slot. Choose From Recipe to log a saved food with one tap, or use Manual Entry to type something new.",
+    title: "Set Your Macro Goals (optional)",
+    desc: "Hit Set Goals to enter daily targets for calories, protein, fat, and carbs. Skip it if you'd rather just log — the tracker works fine without goals, it just hides the progress bars.",
+    icon: "🎯",
+    color: "bg-accent/20",
+  },
+  {
+    number: 4,
+    title: "Quick Add What You Ate",
+    desc: "Tap + Add to breakfast/lunch/dinner/snacks. Recents puts your last meals one tap away, Recipes searches your saved foods, or use Manual for anything new. Bump the servings stepper if you ate more or less than one portion.",
     icon: "⚡",
     color: "bg-secondary/30",
   },
   {
-    number: 4,
-    title: "Track Your Week",
-    desc: "Your logged meals show up on the calendar with nutrition totals for each day. See how your week is shaping up at a glance.",
+    number: 5,
+    title: "Track Day-to-Day",
+    desc: "Day totals and progress vs your goals stay visible at the top. Use Copy Yesterday to clone a repeat day, or Import from Meal Plan to pull in what you'd planned.",
     icon: "📊",
     color: "bg-primary/20",
   },
@@ -79,9 +86,8 @@ export default function GettingStartedSidebar() {
       {/* Toggle button — always visible */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed top-4 right-4 z-50 w-10 h-10 flex items-center justify-center rounded-xl border border-border  transition-all duration-200  ${
-          isOpen ? "bg-accent/20 text-text" : "bg-surface text-text-secondary hover:bg-muted"
-        }`}
+        className={`fixed top-4 right-4 z-50 w-10 h-10 flex items-center justify-center rounded-xl border border-border  transition-all duration-200  ${isOpen ? "bg-accent/20 text-text" : "bg-surface text-text-secondary hover:bg-muted"
+          }`}
         aria-label={isOpen ? "Close guide" : "Getting started guide"}
       >
         <span className="text-lg">{isOpen ? "✕" : "?"}</span>
@@ -97,9 +103,8 @@ export default function GettingStartedSidebar() {
 
       {/* Sidebar panel */}
       <div
-        className={`fixed top-0 right-0 h-full z-40 w-[320px] sm:w-[360px] bg-surface border-l border-border  transition-transform duration-300 ease-out overflow-y-auto ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 h-full z-40 w-[320px] sm:w-[360px] bg-surface border-l border-border  transition-transform duration-300 ease-out overflow-y-auto ${isOpen ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         <div className="p-5 pt-16">
           {/* Header */}
@@ -114,23 +119,21 @@ export default function GettingStartedSidebar() {
           <div className="flex gap-1.5 p-1 bg-muted border border-border rounded-2xl mb-6">
             <button
               onClick={() => setWorkflow("mealprep")}
-              className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                workflow === "mealprep"
-                  ? "bg-surface text-text  border border-border"
-                  : "text-text-secondary hover:text-text"
-              }`}
+              className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-semibold transition-all duration-200 ${workflow === "mealprep"
+                ? "bg-surface text-text  border border-border"
+                : "text-text-secondary hover:text-text"
+                }`}
             >
               I Meal Prep
             </button>
             <button
               onClick={() => setWorkflow("logasyougo")}
-              className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                workflow === "logasyougo"
-                  ? "bg-surface text-text  border border-border"
-                  : "text-text-secondary hover:text-text"
-              }`}
+              className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-semibold transition-all duration-200 ${workflow === "logasyougo"
+                ? "bg-surface text-text  border border-border"
+                : "text-text-secondary hover:text-text"
+                }`}
             >
-              I Log As I Go
+              I Track Macros
             </button>
           </div>
 
@@ -139,7 +142,7 @@ export default function GettingStartedSidebar() {
             <p className="text-xs text-text-secondary leading-relaxed">
               {workflow === "mealprep"
                 ? "Plan your meals ahead of time. Add recipes, build a weekly calendar, and generate a grocery list before you shop."
-                : "No planning needed. Eat first, then log what you had. Save the foods you eat often so logging takes one tap next time."}
+                : "No planning needed. Eat first, then log it in the Daily Macro Tracker. Save the foods you eat often so logging takes one tap next time."}
             </p>
           </div>
 
@@ -183,7 +186,7 @@ export default function GettingStartedSidebar() {
             <p className="text-xs font-bold text-text mb-1">Pro tip</p>
             <p className="text-xs text-text-secondary leading-relaxed">
               {workflow === "mealprep"
-                ? "You can do both! Use the calendar for planned meals and Quick Log for anything you eat off-plan."
+                ? "You can do both! Use the calendar to plan the week, then open the Daily Macro Tracker to log what you actually ate (including anything off-plan)."
                 : "\"Recipes\" aren't just for cooking! Save things like \"Nature Valley Granola Bar\" or \"Chipotle Burrito Bowl\" so you can log them instantly next time."}
             </p>
           </div>
