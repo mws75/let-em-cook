@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedUser } from "@/lib/auth";
+import { getAuthenticatedUser, UnauthenticatedError } from "@/lib/auth";
 import { getRateCount, insertSupportSubmission } from "@/lib/database/contact";
 import nodemailer from "nodemailer";
 const MAX_MESSAGE_LENGTH = 2_000;
@@ -77,8 +77,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    const message = "Failed to send message";
-    console.log(`Failed to send message: ${error}`);
-    return NextResponse.json({ error: message }, { status: 500 });
+    if (error instanceof UnauthenticatedError) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
+    console.error("Failed to send contact message:", error);
+    return NextResponse.json(
+      { error: "Failed to send message" },
+      { status: 500 },
+    );
   }
 }

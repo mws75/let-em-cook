@@ -1,18 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedUserId } from "@/lib/auth";
+import { getAuthenticatedUserId, UnauthenticatedError } from "@/lib/auth";
 import { getExploreRecipes } from "@/lib/database/recipes";
 import { ExploreFilters } from "@/types/types";
 
-// TODO: Implement explore recipes API
 export async function GET(request: NextRequest) {
   try {
     const userId = await getAuthenticatedUserId();
-    if (!userId) {
-      return NextResponse.json(
-        { error: "Authentication Required" },
-        { status: 401 },
-      );
-    }
     // Get Search Params from request
     const searchParams = request.nextUrl.searchParams;
 
@@ -30,6 +23,9 @@ export async function GET(request: NextRequest) {
     // return
     return NextResponse.json({ recipes, hasMore }, { status: 200 });
   } catch (error) {
+    if (error instanceof UnauthenticatedError) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
     console.error("Error fetching recipes to explore: ", error);
     return NextResponse.json(
       { error: "Failed to fetch recipes" },

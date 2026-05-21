@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedUserId } from "@/lib/auth";
+import { getAuthenticatedUserId, UnauthenticatedError } from "@/lib/auth";
 import { getDailyLogRange } from "@/lib/database";
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
@@ -45,9 +45,13 @@ export async function GET(request: NextRequest) {
     const logs = await getDailyLogRange(userId, start, end);
     return NextResponse.json({ logs }, { status: 200 });
   } catch (error) {
+    if (error instanceof UnauthenticatedError) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
     console.error("Failed to GET daily log range", error);
-    const message =
-      error instanceof Error ? error.message : "Failed to fetch daily logs";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch daily logs" },
+      { status: 500 },
+    );
   }
 }

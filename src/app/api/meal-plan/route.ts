@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedUserId } from "@/lib/auth";
+import { getAuthenticatedUserId, UnauthenticatedError } from "@/lib/auth";
 import { getMealPlan, upsertMealPlan, deleteMealPlan } from "@/lib/database";
+
+function unauthenticated() {
+  return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,10 +21,12 @@ export async function GET(request: NextRequest) {
       { status: 200 },
     );
   } catch (error) {
+    if (error instanceof UnauthenticatedError) return unauthenticated();
     console.error("failed to GET mealPlan", error);
-    const message =
-      error instanceof Error ? error.message : "Failed to fetch meal plan";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch meal plan" },
+      { status: 500 },
+    );
   }
 }
 
@@ -39,10 +45,12 @@ export async function PUT(request: NextRequest) {
     await upsertMealPlan(userId, JSON.stringify(body.plan));
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.error("Failed to POST meal plan");
-    const message =
-      error instanceof Error ? error.message : "Failed to update meal plan";
-    return NextResponse.json({ error: message }, { status: 500 });
+    if (error instanceof UnauthenticatedError) return unauthenticated();
+    console.error("Failed to PUT meal plan", error);
+    return NextResponse.json(
+      { error: "Failed to update meal plan" },
+      { status: 500 },
+    );
   }
 }
 
@@ -52,9 +60,11 @@ export async function DELETE(request: NextRequest) {
     await deleteMealPlan(userId);
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
+    if (error instanceof UnauthenticatedError) return unauthenticated();
     console.error("Unable to delete meal plan", error);
-    const message =
-      error instanceof Error ? error.message : "Failed to delete meal plan";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to delete meal plan" },
+      { status: 500 },
+    );
   }
 }

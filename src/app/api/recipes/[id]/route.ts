@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedUserId } from "@/lib/auth";
+import { getAuthenticatedUserId, UnauthenticatedError } from "@/lib/auth";
 import { deleteRecipe, getRecipeWithOwnership } from "@/lib/database/recipes";
+
+function unauthenticated() {
+  return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+}
 
 export async function GET(
   request: NextRequest,
@@ -25,6 +29,7 @@ export async function GET(
       { status: 200 },
     );
   } catch (error) {
+    if (error instanceof UnauthenticatedError) return unauthenticated();
     console.error("API Error, failed to fetch recipe:", error);
     return NextResponse.json(
       { error: "Failed to fetch recipe" },
@@ -52,10 +57,11 @@ export async function DELETE(
     // return response
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
-    console.log("API Error, failed to delete post: ", error);
+    if (error instanceof UnauthenticatedError) return unauthenticated();
+    console.error("API Error, failed to delete recipe:", error);
     return NextResponse.json(
-      { error: "Failed to Delete Post" },
-      { status: 400 },
+      { error: "Failed to delete recipe" },
+      { status: 500 },
     );
   }
 }

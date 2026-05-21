@@ -47,3 +47,22 @@ While adding tests for the Daily Tracker we discovered several pre-existing prob
 **Still broken (worth a small follow-up):**
 1. **`src/app/api/check-valid-ingredients/route.test.ts`** and **`src/app/api/check-valid-instructions/route.test.ts`** fail because Next.js's `Request` global isn't defined in jsdom. Same fix used on the new route tests will work — add a `/** @jest-environment node */` doc comment at the top of each file.
 2. **`src/lib/openai.test.ts`** has type errors (`Argument of type '{}' is not assignable to parameter of type 'Headers'` and a `new` expression with no construct signature). The mocks aren't typed to the current `openai` SDK. Either tighten the mocks or use `as unknown as Headers` casts.
+
+## iOS reference app rebuild (`let_em_cook_ios_swift/`)
+
+The iOS *curriculum* (`let_em_cook_ios_swift_implement/`) was updated in this work to teach the new architecture (lessons 11/12/13 rewritten, README + REQUIREMENTS updated, Lesson 18 widgets touched). The **reference app** at `let_em_cook_ios_swift/` itself still contains the old architecture and needs a separate rebuild PR before the curriculum can match it again.
+
+What needs to change in the reference app:
+
+1. **Models:** delete `MealPlan.swift`'s `QuickLogEntry` paths; add `DailyLog.swift` with `DailyLog`, `DailyLogEntry`, `DailySlot`, `EntryKind`, `MacroGoals`, `DayKey` (per Lesson 11 spec).
+2. **Networking:** add `DailyLogAPI.swift` (get / range / upsert / delete) and `UserGoalsAPI.swift` (get / update). Slim `MealPlanAPI` to recipes-only.
+3. **ViewModels:**
+   - Delete `DailyLogViewModel` (the OLD one).
+   - Rebuild as `TrackerViewModel` per the lesson — `selectedDate: DayKey`, `weekLogs`, `recents`, `goals`, debounced auto-save.
+4. **Views:**
+   - Delete `Views/DailyLog/` contents (old architecture).
+   - Add `Views/Tracker/` with `TrackerView`, `WeekStrip`, `TotalsCard`, `GoalsCard`, `SlotSection`, `QuickLogSheet`, `GoalsSheet`.
+5. **Tab bar:** replace "Today" / "Daily Log" tab with the new "Tracker" tab.
+6. **Widget:** rewrite `LetEmCookWidget` to read `DailyLog`-derived totals from the App Group (not meal-plan).
+
+Recommended sequencing: do this *after* the web app's Daily Tracker has been live for a release or two, so any UX adjustments from real usage make it into the iOS rebuild rather than being shipped twice.

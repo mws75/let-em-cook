@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedUserId } from "@/lib/auth";
+import { getAuthenticatedUserId, UnauthenticatedError } from "@/lib/auth";
 import {
   getUserMacroGoals,
   updateUserMacroGoals,
@@ -15,16 +15,22 @@ function normalizeGoal(value: unknown): number | null {
   return Math.round(n);
 }
 
+function unauthenticated() {
+  return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+}
+
 export async function GET() {
   try {
     const userId = await getAuthenticatedUserId();
     const goals = await getUserMacroGoals(userId);
     return NextResponse.json({ goals }, { status: 200 });
   } catch (error) {
+    if (error instanceof UnauthenticatedError) return unauthenticated();
     console.error("Failed to GET user goals", error);
-    const message =
-      error instanceof Error ? error.message : "Failed to fetch goals";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch goals" },
+      { status: 500 },
+    );
   }
 }
 
@@ -52,9 +58,11 @@ export async function PUT(request: NextRequest) {
     await updateUserMacroGoals(userId, goals);
     return NextResponse.json({ success: true, goals }, { status: 200 });
   } catch (error) {
+    if (error instanceof UnauthenticatedError) return unauthenticated();
     console.error("Failed to PUT user goals", error);
-    const message =
-      error instanceof Error ? error.message : "Failed to update goals";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to update goals" },
+      { status: 500 },
+    );
   }
 }

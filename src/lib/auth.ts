@@ -6,6 +6,13 @@ import { User } from "@/types/types";
 import { headers } from "next/headers";
 import { createHmac } from "crypto";
 
+export class UnauthenticatedError extends Error {
+  constructor(message = "Not authenticated") {
+    super(message);
+    this.name = "UnauthenticatedError";
+  }
+}
+
 interface UserRow extends RowDataPacket {
   user_id: number;
   user_name: string;
@@ -48,7 +55,7 @@ export async function getAuthenticatedUserId(): Promise<number> {
   // Fall back to Clerk session auth
   const user = await currentUser();
   if (!user) {
-    throw new Error("Not authenticated");
+    throw new UnauthenticatedError();
   }
 
   // Fast path: ID already in metadata

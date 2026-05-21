@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedUserId } from "@/lib/auth";
+import { getAuthenticatedUserId, UnauthenticatedError } from "@/lib/auth";
 import { getRecipes } from "@/lib/database/recipes";
 
 export async function GET(request: NextRequest) {
@@ -15,9 +15,13 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ recipes }, { status: 200 });
   } catch (error) {
+    if (error instanceof UnauthenticatedError) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
     console.error("❌ Error in get-recipes API:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to fetch recipes";
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch recipes" },
+      { status: 500 },
+    );
   }
 }

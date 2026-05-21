@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAuthenticatedUser } from "@/lib/auth";
+import { getAuthenticatedUser, UnauthenticatedError } from "@/lib/auth";
 import { countUserRecipes } from "@/lib/database/users";
 import { FREE_TIER_RECIPE_LIMIT } from "@/types/types";
 
@@ -35,6 +35,9 @@ export async function GET() {
 
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
+    if (error instanceof UnauthenticatedError) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
     console.error("Error getting subscription info:", error);
     return NextResponse.json(
       { error: "Failed to get subscription info" },

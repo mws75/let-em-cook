@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedUserId } from "@/lib/auth";
+import { getAuthenticatedUserId, UnauthenticatedError } from "@/lib/auth";
 import {
   getDailyLog,
   upsertDailyLog,
@@ -11,6 +11,10 @@ const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 function badRequest(message: string) {
   return NextResponse.json({ error: message }, { status: 400 });
+}
+
+function unauthenticated() {
+  return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 }
 
 export async function GET(request: NextRequest) {
@@ -25,10 +29,12 @@ export async function GET(request: NextRequest) {
     const log = await getDailyLog(userId, date);
     return NextResponse.json({ log }, { status: 200 });
   } catch (error) {
+    if (error instanceof UnauthenticatedError) return unauthenticated();
     console.error("Failed to GET daily log", error);
-    const message =
-      error instanceof Error ? error.message : "Failed to fetch daily log";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch daily log" },
+      { status: 500 },
+    );
   }
 }
 
@@ -52,10 +58,12 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
+    if (error instanceof UnauthenticatedError) return unauthenticated();
     console.error("Failed to PUT daily log", error);
-    const message =
-      error instanceof Error ? error.message : "Failed to save daily log";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to save daily log" },
+      { status: 500 },
+    );
   }
 }
 
@@ -71,9 +79,11 @@ export async function DELETE(request: NextRequest) {
     await deleteDailyLog(userId, date);
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
+    if (error instanceof UnauthenticatedError) return unauthenticated();
     console.error("Failed to DELETE daily log", error);
-    const message =
-      error instanceof Error ? error.message : "Failed to delete daily log";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to delete daily log" },
+      { status: 500 },
+    );
   }
 }

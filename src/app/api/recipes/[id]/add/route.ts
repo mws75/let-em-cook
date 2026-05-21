@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedUserId } from "@/lib/auth";
+import { getAuthenticatedUserId, UnauthenticatedError } from "@/lib/auth";
 import { copyRecipeToUser, hasUserAddedRecipe } from "@/lib/database/recipes";
 import { countUserRecipes } from "@/lib/database/users";
 import { FREE_TIER_RECIPE_LIMIT } from "@/types/types";
@@ -17,7 +17,7 @@ export async function POST(
     if (!user) {
       return NextResponse.json(
         { error: "User not found" },
-        { status: 401 },
+        { status: 404 },
       );
     }
 
@@ -65,6 +65,9 @@ export async function POST(
       { status: 200 },
     );
   } catch (error) {
+    if (error instanceof UnauthenticatedError) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
     console.error("Error adding recipe:", error);
     return NextResponse.json(
       { error: "Failed to add recipe" },

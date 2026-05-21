@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getUserCategories } from "@/lib/database/categories";
-import { getAuthenticatedUserId } from "@/lib/auth";
+import { getAuthenticatedUserId, UnauthenticatedError } from "@/lib/auth";
 import { DEFAULT_CATEGORY_LIST } from "@/lib/categoryColors";
 
 export async function GET(request: NextRequest) {
@@ -17,9 +17,13 @@ export async function GET(request: NextRequest) {
     const categories = await getUserCategories(userId);
     return NextResponse.json({ categories }, { status: 200 });
   } catch (error) {
-    console.log(error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to Import categories";
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+    if (error instanceof UnauthenticatedError) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
+    console.error("Failed to fetch categories:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch categories" },
+      { status: 500 },
+    );
   }
 }

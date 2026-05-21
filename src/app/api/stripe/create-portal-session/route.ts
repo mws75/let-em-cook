@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
-import { getAuthenticatedUser } from "@/lib/auth";
+import { getAuthenticatedUser, UnauthenticatedError } from "@/lib/auth";
 
 export async function POST() {
   try {
@@ -38,6 +38,9 @@ export async function POST() {
 
     return NextResponse.json({ url: session.url }, { status: 200 });
   } catch (error) {
+    if (error instanceof UnauthenticatedError) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
     console.error("Error creating portal session:", error);
     return NextResponse.json(
       { error: "Failed to create portal session" },
