@@ -206,20 +206,21 @@ export async function getRecipeById(
 }
 
 /**
- * Fetches a recipe by ID - returns if user owns it OR if it's public
- * Used for viewing recipes from explore page
+ * Fetches a recipe by ID.
+ * - Signed-in caller: returns the recipe if they own it OR it's public; isOwner is true when they own it.
+ * - Anonymous caller (userId = null): returns the recipe only if it's public; isOwner is always false.
  * @returns Recipe with isOwner flag, or null if not found/not accessible
  */
 export async function getRecipeWithOwnership(
-  userId: number,
+  userId: number | null,
   recipeId: number,
 ): Promise<{ recipe: Recipe; isOwner: boolean } | null> {
-  if (!userId || !recipeId) {
-    throw new Error("Missing required parameters: userId and recipeId");
+  if (!recipeId) {
+    throw new Error("Missing required parameter: recipeId");
   }
 
   try {
-    const query = `
+    const baseSelect = `
       SELECT
         r.recipe_id,
         r.user_id,
@@ -245,17 +246,22 @@ export async function getRecipeWithOwnership(
       FROM ltc_recipes r
       LEFT JOIN ltc_users u ON r.user_id = u.user_id
       LEFT JOIN ltc_categories c ON r.category_id = c.category_id
-      WHERE r.recipe_id = ? AND (r.user_id = ? OR r.is_public = 1)
     `;
 
-    const rows = await executeQuery<RecipeRow[]>(query, [recipeId, userId]);
+    const query =
+      userId !== null
+        ? `${baseSelect} WHERE r.recipe_id = ? AND (r.user_id = ? OR r.is_public = 1)`
+        : `${baseSelect} WHERE r.recipe_id = ? AND r.is_public = 1`;
+
+    const params = userId !== null ? [recipeId, userId] : [recipeId];
+    const rows = await executeQuery<RecipeRow[]>(query, params);
 
     if (rows.length === 0) {
       return null;
     }
 
     const recipe = mapRowToRecipe(rows[0]);
-    const isOwner = rows[0].user_id === userId;
+    const isOwner = userId !== null && rows[0].user_id === userId;
 
     return { recipe, isOwner };
   } catch (error) {
@@ -265,11 +271,13 @@ export async function getRecipeWithOwnership(
 }
 
 /**
- * Fetches public recipes for the Explore page
- * Excludes current user's recipes and recipes they've already added
+ * Fetches public recipes for the Explore page.
+ * When called with a userId, excludes the user's own recipes and any they've
+ * already added. When called with null (anonymous browsing), returns the
+ * unpersonalized feed of all public, originally-created recipes.
  */
 export async function getExploreRecipes(
-  currentUserId: number,
+  currentUserId: number | null,
   filters: ExploreFilters,
 ): Promise<{ recipes: ExploreRecipe[]; hasMore: boolean }> {
   const { search, category, calorieRange, limit, offset } = filters;
@@ -278,18 +286,22 @@ export async function getExploreRecipes(
   const conditions: string[] = [
     "r.is_public = 1",
     "r.is_created_by_user = 1", // Only show originally created recipes
-    "r.user_id != ?", // Exclude current user's recipes
   ];
-  const params: (string | number)[] = [currentUserId];
+  const params: (string | number)[] = [];
 
-  // Exclude recipes user has already added (check original_recipe_id)
-  conditions.push(`
-    r.recipe_id NOT IN (
-      SELECT original_recipe_id FROM ltc_recipes
-      WHERE user_id = ? AND is_created_by_user = 0 AND original_recipe_id IS NOT NULL
-    )
-  `);
-  params.push(currentUserId);
+  // Personalization filters — only when a user is signed in
+  if (currentUserId !== null) {
+    conditions.push("r.user_id != ?");
+    params.push(currentUserId);
+
+    conditions.push(`
+      r.recipe_id NOT IN (
+        SELECT original_recipe_id FROM ltc_recipes
+        WHERE user_id = ? AND is_created_by_user = 0 AND original_recipe_id IS NOT NULL
+      )
+    `);
+    params.push(currentUserId);
+  }
 
   // Search filter
   if (search) {

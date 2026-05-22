@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedUserId, UnauthenticatedError } from "@/lib/auth";
+import {
+  getAuthenticatedUserId,
+  getOptionalAuthenticatedUserId,
+  UnauthenticatedError,
+} from "@/lib/auth";
 import { deleteRecipe, getRecipeWithOwnership } from "@/lib/database/recipes";
 
 function unauthenticated() {
   return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 }
 
+// Public endpoint: signed-in users see their own recipes plus public ones
+// (with isOwner set when applicable); anonymous users see only public recipes.
+// TODO: add IP-based rate limiting before broad announcement of the URL.
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
@@ -17,7 +24,7 @@ export async function GET(
       return NextResponse.json({ error: "Invalid recipe ID" }, { status: 400 });
     }
 
-    const userId = await getAuthenticatedUserId();
+    const userId = await getOptionalAuthenticatedUserId();
     const result = await getRecipeWithOwnership(userId, recipeId);
 
     if (!result) {
@@ -29,7 +36,6 @@ export async function GET(
       { status: 200 },
     );
   } catch (error) {
-    if (error instanceof UnauthenticatedError) return unauthenticated();
     console.error("API Error, failed to fetch recipe:", error);
     return NextResponse.json(
       { error: "Failed to fetch recipe" },

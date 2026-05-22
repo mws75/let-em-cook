@@ -69,6 +69,20 @@ export async function getAuthenticatedUserId(): Promise<number> {
 }
 
 /**
+ * Returns the authenticated userId, or null if the request is anonymous.
+ * Use this for endpoints that work for both signed-in and signed-out users
+ * (e.g. /api/explore-recipes), where auth is used only for personalization.
+ */
+export async function getOptionalAuthenticatedUserId(): Promise<number | null> {
+  try {
+    return await getAuthenticatedUserId();
+  } catch (error) {
+    if (error instanceof UnauthenticatedError) return null;
+    throw error;
+  }
+}
+
+/**
  * Get full user record with plan and Stripe info
  * Use this when you need more than just the userId
  */
