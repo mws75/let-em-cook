@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openai, handleOpenAIError } from "@/lib/openai";
 import { CALCULATE_MACROS } from "@/lib/prompts";
-import { getAuthenticatedUserId, getAuthenticatedUser } from "@/lib/auth";
+import { getAuthenticatedUserId, getAuthenticatedUser, UnauthenticatedError } from "@/lib/auth";
+import { enforceAiRateLimit, RateLimitError } from "@/lib/rateLimit";
 import { countUserRecipes } from "@/lib/database/users";
 import { insertRecipe, updateRecipe } from "@/lib/database/recipes";
 import { FREE_TIER_RECIPE_LIMIT } from "@/types/types";
@@ -12,6 +13,7 @@ export async function POST(request: NextRequest) {
   try {
     console.log("=== create-recipe-step-two API called ===");
     const userId = await getAuthenticatedUserId();
+    await enforceAiRateLimit(userId, "create-recipe-step-two");
     const { recipe, isEditMode, editingRecipeId } = await request.json();
 
     // Check recipe limit for free users (only for new recipes, not edits)
@@ -191,6 +193,15 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ data, recipe_id }, { status: 200 });
   } catch (error) {
+    if (error instanceof UnauthenticatedError) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
+    if (error instanceof RateLimitError) {
+      return NextResponse.json(
+        { error: "Too many requests. Please wait a bit and try again." },
+        { status: 429 },
+      );
+    }
     console.error("❌ API Error:", error);
     const { message, status } = handleOpenAIError(error);
     return NextResponse.json({ error: message }, { status });

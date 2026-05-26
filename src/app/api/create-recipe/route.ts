@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openai, handleOpenAIError } from "@/lib/openai";
 import { CREATE_RECIPE_PROMPT } from "@/lib/prompts";
-import { getAuthenticatedUserId } from "@/lib/auth";
+import { getAuthenticatedUserId, UnauthenticatedError } from "@/lib/auth";
+import { enforceAiRateLimit, RateLimitError } from "@/lib/rateLimit";
 const MAX_RECIPE_LENGTH = 20_000;
 
 export async function POST(request: NextRequest) {
   try {
     const userId = await getAuthenticatedUserId();
+    await enforceAiRateLimit(userId, "create-recipe");
 
     // convert request to json
     const { recipeName, category, servings, isPublic, ingredients, instructions } =
@@ -89,6 +91,15 @@ export async function POST(request: NextRequest) {
     console.log("api to create recipe json object as completed");
     return NextResponse.json({ data }, { status: 200 });
   } catch (error) {
+    if (error instanceof UnauthenticatedError) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
+    if (error instanceof RateLimitError) {
+      return NextResponse.json(
+        { error: "Too many requests. Please wait a bit and try again." },
+        { status: 429 },
+      );
+    }
     const { message, status } = handleOpenAIError(error);
     return NextResponse.json({ error: message }, { status });
   }

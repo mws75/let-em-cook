@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openai, handleOpenAIError } from "@/lib/openai";
 import { RECIPE_INGREDIENTS_CLASSIFIER_SYSTEM_PROMPT } from "@/lib/prompts";
+import { getAuthenticatedUserId, UnauthenticatedError } from "@/lib/auth";
+import { enforceAiRateLimit, RateLimitError } from "@/lib/rateLimit";
 
 export async function POST(request: NextRequest) {
   try {
+    const userId = await getAuthenticatedUserId();
+    await enforceAiRateLimit(userId, "check-valid-ingredients");
     console.log("Successfully called API");
     const { ingredients_text } = await request.json();
     //Input Validation
@@ -65,6 +69,15 @@ export async function POST(request: NextRequest) {
     console.log("api to check valid ingredients completed");
     return NextResponse.json({ isIngredients }, { status: 200 });
   } catch (error) {
+    if (error instanceof UnauthenticatedError) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
+    if (error instanceof RateLimitError) {
+      return NextResponse.json(
+        { error: "Too many requests. Please wait a bit and try again." },
+        { status: 429 },
+      );
+    }
     console.error(`unable to check-valid-ingredients ${error}`);
 
     const { message, status } = handleOpenAIError(error);

@@ -3,9 +3,13 @@ import { openai, handleOpenAIError } from "@/lib/openai";
 import { aggregateIngredients } from "@/lib/ingredientAggregator";
 import { formatQuantity, shouldHideUnitOnDisplay } from "@/lib/unitConverter";
 import { Ingredients, GroceryItem } from "@/types/types";
+import { getAuthenticatedUserId, UnauthenticatedError } from "@/lib/auth";
+import { enforceAiRateLimit, RateLimitError } from "@/lib/rateLimit";
 
 export async function POST(request: NextRequest) {
   try {
+    const userId = await getAuthenticatedUserId();
+    await enforceAiRateLimit(userId, "sort-grocery-list");
     const { ingredients } = await request.json();
 
     if (!Array.isArray(ingredients) || ingredients.length === 0) {
@@ -95,6 +99,15 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ groceryItems });
   } catch (error) {
+    if (error instanceof UnauthenticatedError) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
+    if (error instanceof RateLimitError) {
+      return NextResponse.json(
+        { error: "Too many requests. Please wait a bit and try again." },
+        { status: 429 },
+      );
+    }
     const { message, status } = handleOpenAIError(error);
     return NextResponse.json({ error: message }, { status });
   }
