@@ -34,6 +34,7 @@ export type Recipe = {
   user_name: string;
   is_public: 0 | 1;
   is_created_by_user: 0 | 1;
+  is_favorite: 0 | 1;
   category: string;
   name: string;
   servings: number;

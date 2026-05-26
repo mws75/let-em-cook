@@ -2,6 +2,7 @@
 import Link from "next/link";
 import RecipeDetailModal from "@/components/RecipeDetailModal";
 import RecipeCard from "@/components/RecipeCard";
+import FavoriteRecipes from "@/components/FavoriteRecipes";
 import { SignOutButton } from "@clerk/nextjs";
 import SelectedRecipeCard from "@/components/SelectedRecipeCard";
 import Calendar from "@/components/Calendar";
@@ -243,6 +244,17 @@ function DashboardContent() {
 
   const handleRecipeDelete = (recipe_id: number) => {
     setRecipes(recipes.filter((r) => r.recipe_id !== recipe_id));
+  };
+
+  // RecipeCard updates is_favorite optimistically and tells us the new value
+  // (or rolls back on API failure). We mirror that in local state so both the
+  // main grid and the Favorites section re-render from the same source.
+  const handleFavoriteToggle = (recipeId: number, isFavorite: 0 | 1) => {
+    setRecipes((prev) =>
+      prev.map((r) =>
+        r.recipe_id === recipeId ? { ...r, is_favorite: isFavorite } : r,
+      ),
+    );
   };
 
   const handleClearSelected = () => {
@@ -585,6 +597,20 @@ function DashboardContent() {
           </div>
         )}
 
+        {/* Favorites — quick access to the handful of recipes the user cooks
+            most often. Renders the same RecipeCard so selection still feeds
+            the grocery-list / meal-plan flow above. */}
+        {!isLoadingRecipes && (
+          <FavoriteRecipes
+            recipes={recipes}
+            selectedRecipes={selectedRecipes}
+            onSelect={handleRecipeCheckBoxSelect}
+            onDelete={handleRecipeDelete}
+            onClick={handleRecipeClick}
+            onFavoriteToggle={handleFavoriteToggle}
+          />
+        )}
+
         {/* Recipes */}
         <section className="border border-border rounded-2xl sm:rounded-3xl bg-surface p-3 sm:p-6">
           {/* Search Bar */}
@@ -648,6 +674,7 @@ function DashboardContent() {
                   onSelect={handleRecipeCheckBoxSelect}
                   onDelete={handleRecipeDelete}
                   onClick={handleRecipeClick}
+                  onFavoriteToggle={handleFavoriteToggle}
                 />
               ))
             ) : recipes.length === 0 ? (

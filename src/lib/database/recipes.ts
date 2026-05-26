@@ -11,6 +11,7 @@ interface RecipeRow extends RowDataPacket {
   user_name: string;
   is_public: number;
   is_created_by_user: number;
+  is_favorite: number;
   category: string;
   category_name: string;
   name: string;
@@ -69,6 +70,7 @@ function mapRowToRecipe(row: RecipeRow): Recipe {
     user_name: row.user_name || "Unknown",
     is_public: row.is_public as 0 | 1,
     is_created_by_user: (row.is_created_by_user ?? 1) as 0 | 1,
+    is_favorite: (row.is_favorite ?? 0) as 0 | 1,
     category: row.category || row.category_name || "Uncategorized",
     name: row.name,
     servings: Number(row.servings),
@@ -118,6 +120,7 @@ export async function getRecipes(userId: number): Promise<Recipe[]> {
         r.user_id,
         u.user_name,
         r.is_public,
+        r.is_favorite,
         c.category_name as category,
         r.name,
         r.servings,
@@ -170,6 +173,7 @@ export async function getRecipeById(
         r.user_id,
         u.user_name,
         r.is_public,
+        r.is_favorite,
         c.category_name as category,
         r.name,
         r.servings,
@@ -227,6 +231,7 @@ export async function getRecipeWithOwnership(
         u.user_name,
         r.is_public,
         r.is_created_by_user,
+        r.is_favorite,
         c.category_name as category,
         r.name,
         r.servings,
@@ -382,9 +387,12 @@ export async function getExploreRecipes(
     user_name: row.user_name,
     is_public: row.is_public as 0 | 1,
     is_created_by_user: row.is_created_by_user as 0 | 1,
+    // Explore feed shows other users' public recipes — favorite is a
+    // per-user-copy flag, so for the viewer it is always 0 here.
+    is_favorite: 0,
     category: row.category_name,
     name: row.name,
-    servings: row.servings,
+    servings: Number(row.servings),
     ingredients_json:
       typeof row.ingredients_json === "string"
         ? JSON.parse(row.ingredients_json)
@@ -393,11 +401,11 @@ export async function getExploreRecipes(
       typeof row.instructions_json === "string"
         ? JSON.parse(row.instructions_json)
         : row.instructions_json || [],
-    per_serving_calories: row.per_serving_calories,
-    per_serving_protein_g: row.per_serving_protein_g,
-    per_serving_fat_g: row.per_serving_fat_g,
-    per_serving_carbs_g: row.per_serving_carbs_g,
-    per_serving_sugar_g: row.per_serving_sugar_g,
+    per_serving_calories: Number(row.per_serving_calories),
+    per_serving_protein_g: Number(row.per_serving_protein_g),
+    per_serving_fat_g: Number(row.per_serving_fat_g),
+    per_serving_carbs_g: Number(row.per_serving_carbs_g),
+    per_serving_sugar_g: Number(row.per_serving_sugar_g),
     emoji: row.emoji || "🍽️",
     tags:
       typeof row.tags_json === "string"
@@ -409,8 +417,8 @@ export async function getExploreRecipes(
     },
     creator_name: row.creator_name,
     creator_profile_pic: row.creator_profile_pic,
-    click_count: row.click_count,
-    add_count: row.add_count,
+    click_count: Number(row.click_count),
+    add_count: Number(row.add_count),
   }));
 
   return { recipes, hasMore };
@@ -657,6 +665,38 @@ export async function deleteRecipe(
   } catch (error) {
     console.error("Error deleting recipe from database: ", error);
     throw new Error("Failed to delete recipe from database");
+  }
+}
+
+/**
+ * Toggles the favorite flag on a user-owned recipe.
+ * Returns the new is_favorite value, or null if the row was not owned by this
+ * user (so the caller can return 404 without leaking the recipe's existence).
+ */
+export async function toggleRecipeFavorite(
+  userId: number,
+  recipeId: number,
+  isFavorite: boolean,
+): Promise<{ is_favorite: 0 | 1 } | null> {
+  if (!userId || !recipeId) {
+    throw new Error("Missing required parameters: userId and recipeId");
+  }
+
+  try {
+    const result = await executeQuery<ResultSetHeader>(
+      `UPDATE ltc_recipes
+         SET is_favorite = ?
+         WHERE recipe_id = ? AND user_id = ?`,
+      [isFavorite ? 1 : 0, recipeId, userId],
+    );
+
+    if (result.affectedRows === 0) {
+      return null;
+    }
+    return { is_favorite: isFavorite ? 1 : 0 };
+  } catch (error) {
+    console.error("Error toggling recipe favorite:", error);
+    throw new Error("Failed to toggle recipe favorite");
   }
 }
 
