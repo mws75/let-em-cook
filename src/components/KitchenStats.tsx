@@ -3,6 +3,18 @@ import {
   Recipe,
   FREE_TIER_RECIPE_LIMIT,
 } from "@/types/types";
+import {
+  BarChart2,
+  BookOpen,
+  Star,
+  Utensils,
+  Flame,
+  Dumbbell,
+  Droplets,
+  Candy,
+  Wheat,
+  TrendingUp,
+} from "lucide-react";
 
 export default function KitchenState(
   subscription: SubscriptionInfo,
@@ -10,8 +22,9 @@ export default function KitchenState(
 ) {
   return (
     <section className="border border-border rounded-3xl p-6 bg-surface ">
-      <h2 className="text-3xl text-text font-bold mb-6 text-center">
-        📊 Your Kitchen Stats
+      <h2 className="text-3xl text-text font-bold mb-6 text-center flex items-center justify-center gap-2">
+        <BarChart2 size={28} />
+        Your Kitchen Stats
       </h2>
       <div className="flex flex-col md:flex-row gap-6">
         {/* Left Side - Nutrition & Stats */}
@@ -20,7 +33,7 @@ export default function KitchenState(
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
             <div className="bg-primary/20 border border-border rounded-2xl p-4 transition-transform ">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-2xl">📖</span>
+                <BookOpen size={22} className="text-text-secondary" />
                 <p className="text-sm text-text-secondary font-semibold">
                   Total Recipes
                 </p>
@@ -40,7 +53,7 @@ export default function KitchenState(
 
             <div className="bg-secondary/20 border border-border rounded-2xl p-4 transition-transform ">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-2xl">⭐</span>
+                <Star size={22} className="text-text-secondary" />
                 <p className="text-sm text-text-secondary font-semibold">
                   Favorites
                 </p>
@@ -52,13 +65,13 @@ export default function KitchenState(
           {/* Nutrition Information */}
           <div className="bg-muted border border-border rounded-2xl p-5">
             <h3 className="text-lg font-bold text-text mb-4 flex items-center gap-2">
-              <span className="text-2xl">🥗</span>
+              <Utensils size={20} className="text-text-secondary" />
               Average Nutrition
             </h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between bg-surface border border-border rounded-xl p-3 transition-shadow">
                 <div className="flex items-center gap-2">
-                  <span className="text-xl">🔥</span>
+                  <Flame size={18} className="text-orange-400" />
                   <span className="text-text font-semibold">Calories</span>
                 </div>
                 <span className="text-text font-bold">300 cal</span>
@@ -66,7 +79,7 @@ export default function KitchenState(
 
               <div className="flex items-center justify-between bg-surface border border-border rounded-xl p-3 transition-shadow">
                 <div className="flex items-center gap-2">
-                  <span className="text-xl">💪</span>
+                  <Dumbbell size={18} className="text-blue-400" />
                   <span className="text-text font-semibold">Protein</span>
                 </div>
                 <span className="text-text font-bold">10g</span>
@@ -74,7 +87,7 @@ export default function KitchenState(
 
               <div className="flex items-center justify-between bg-surface border border-border rounded-xl p-3 transition-shadow">
                 <div className="flex items-center gap-2">
-                  <span className="text-xl">🥑</span>
+                  <Droplets size={18} className="text-yellow-500" />
                   <span className="text-text font-semibold">Fat</span>
                 </div>
                 <span className="text-text font-bold">50g</span>
@@ -82,7 +95,7 @@ export default function KitchenState(
 
               <div className="flex items-center justify-between bg-surface border border-border rounded-xl p-3 transition-shadow">
                 <div className="flex items-center gap-2">
-                  <span className="text-xl">🍬</span>
+                  <Candy size={18} className="text-pink-400" />
                   <span className="text-text font-semibold">Sugar</span>
                 </div>
                 <span className="text-text font-bold">10g</span>
@@ -90,7 +103,7 @@ export default function KitchenState(
 
               <div className="flex items-center justify-between bg-surface border border-border rounded-xl p-3 transition-shadow">
                 <div className="flex items-center gap-2">
-                  <span className="text-xl">🌾</span>
+                  <Wheat size={18} className="text-amber-500" />
                   <span className="text-text font-semibold">Carbs</span>
                 </div>
                 <span className="text-text font-bold">45g</span>
@@ -104,7 +117,7 @@ export default function KitchenState(
           <div className="relative">
             <div className="bg-gradient-to-br from-primary/30 via-secondary/30 to-accent/30 border-4 border-border rounded-full w-48 h-48 md:w-72 md:h-72 flex items-center justify-center transition-transform">
               <div className="text-center">
-                <p className="text-4xl md:text-6xl mb-2">📈</p>
+                <TrendingUp size={56} className="mb-2 text-primary" />
                 <p className="text-text-secondary font-semibold">
                   Chart Coming Soon
                 </p>

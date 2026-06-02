@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Ingredients } from "@/types/types";
+import { Leaf, Hash, Ruler, Scissors, Lightbulb } from "lucide-react";
 
 type Props = {
   ingredients: Ingredients[];
@@ -81,16 +82,16 @@ export default function EditIngredient({ ingredients, onChange }: Props) {
           <thead className="bg-primary/20">
             <tr className="border-b border-border">
               <th className="px-3 py-2 sm:px-6 sm:py-4 text-left font-bold text-text">
-                🥬 Ingredient
+                <span className="flex items-center gap-1.5"><Leaf size={14} /> Ingredient</span>
               </th>
               <th className="px-3 py-2 sm:px-6 sm:py-4 text-left font-bold text-text">
-                📊 Quantity
+                <span className="flex items-center gap-1.5"><Hash size={14} /> Quantity</span>
               </th>
               <th className="px-3 py-2 sm:px-6 sm:py-4 text-left font-bold text-text">
-                📏 Unit
+                <span className="flex items-center gap-1.5"><Ruler size={14} /> Unit</span>
               </th>
               <th className="px-3 py-2 sm:px-6 sm:py-4 text-left font-bold text-text">
-                ✂️ Prep
+                <span className="flex items-center gap-1.5"><Scissors size={14} /> Prep</span>
               </th>
             </tr>
           </thead>
@@ -105,7 +106,7 @@ export default function EditIngredient({ ingredients, onChange }: Props) {
                 {/* Column 1: Read Only - Name */}
                 <td className="px-3 py-2 sm:px-6 sm:py-4">
                   <div className="flex items-center gap-2">
-                    <span className="text-lg">🌿</span>
+                    <Leaf size={16} className="text-text-secondary shrink-0" />
                     <span className="text-text font-semibold">{row.name}</span>
                   </div>
                 </td>
@@ -165,7 +166,7 @@ export default function EditIngredient({ ingredients, onChange }: Props) {
       {/* Helpful tip */}
       <div className="mt-4 p-4 bg-secondary/10 border border-border rounded-xl">
         <p className="text-sm text-text-secondary">
-          💡 <strong>Tip:</strong> Update quantities and units to match your
+          <Lightbulb size={14} className="inline mr-1 text-amber-500" /><strong>Tip:</strong> Update quantities and units to match your
           preferences. The prep field is for instructions like "diced",
           "chopped", or "minced".
         </p>

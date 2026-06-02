@@ -23,6 +23,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import toast from "react-hot-toast";
 import { DEFAULT_CATEGORY_LIST } from "@/lib/categoryColors";
+import {
+  ChefHat,
+  BarChart2,
+  AlertTriangle,
+  ShoppingCart,
+  Check,
+  UtensilsCrossed,
+  ClipboardList,
+} from "lucide-react";
 
 function DashboardContent() {
   const router = useRouter();
@@ -166,7 +175,6 @@ function DashboardContent() {
     if (upgradeStatus === "success") {
       toast.success("Welcome to Pro! You now have unlimited recipes.", {
         duration: 5000,
-        icon: "🎉",
       });
       // Clear the URL param
       router.replace("/dashboard");
@@ -403,7 +411,8 @@ function DashboardContent() {
         {/* Header Information */}
         <div className="flex justify-center mt-6 sm:mt-10 mb-2 sm:mb-6">
           <h1 className="text-2xl md:text-4xl text-text font-bold">
-            🔪 Let&apos;s Get Cooking!
+            <ChefHat className="inline-block mr-2 mb-1" size={32} />
+            Let&apos;s Get Cooking!
           </h1>
         </div>
 
@@ -414,8 +423,9 @@ function DashboardContent() {
         >
           <div className="flex items-center justify-between gap-3 sm:gap-4">
             <div className="min-w-0">
-              <p className="text-base sm:text-xl font-bold text-text">
-                📊 Daily Macro Tracker
+              <p className="text-base sm:text-xl font-bold text-text flex items-center gap-2">
+                <BarChart2 size={20} />
+                Daily Macro Tracker
               </p>
               <p className="text-xs sm:text-sm text-text-secondary mt-0.5">
                 Log what you actually ate today — calories, protein, fat,
@@ -512,7 +522,10 @@ function DashboardContent() {
         {/* Error Display */}
         {error && (
           <div className="border border-red-500 rounded-3xl p-4 bg-red-50">
-            <p className="text-red-700 font-semibold">⚠️ {error}</p>
+            <p className="text-red-700 font-semibold flex items-center gap-1.5">
+              <AlertTriangle size={16} />
+              {error}
+            </p>
           </div>
         )}
 
@@ -520,8 +533,9 @@ function DashboardContent() {
         {groceryList.length > 0 && (
           <section className="border border-border rounded-2xl sm:rounded-3xl p-3 sm:p-6 bg-surface">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-              <h2 className="text-2xl sm:text-3xl text-text font-bold">
-                🛒 Your Grocery List
+              <h2 className="text-2xl sm:text-3xl text-text font-bold flex items-center gap-2">
+                <ShoppingCart size={28} />
+                Your Grocery List
               </h2>
               <div className="flex flex-wrap gap-2">
                 <button
@@ -545,8 +559,8 @@ function DashboardContent() {
               </div>
             </div>
             <div className="mb-4 p-3 bg-secondary/10 border border-border rounded-xl">
-              <p className="text-sm text-text-secondary">
-                ✓{" "}
+              <p className="text-sm text-text-secondary flex items-center gap-1">
+                <Check size={14} className="text-primary" />
                 <strong>
                   {Object.values(checkedItems).filter(Boolean).length}
                 </strong>{" "}
@@ -658,7 +672,7 @@ function DashboardContent() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 p-2 sm:p-4">
             {isLoadingRecipes ? (
               <div className="col-span-full flex flex-col items-center justify-center py-12">
-                <div className="text-6xl mb-4">🍳</div>
+                <UtensilsCrossed size={64} className="mb-4 text-text-secondary" />
                 <p className="text-2xl text-text font-semibold">
                   Loading your recipes...
                 </p>
@@ -679,7 +693,7 @@ function DashboardContent() {
               ))
             ) : recipes.length === 0 ? (
               <div className="col-span-full flex flex-col items-center justify-center py-12">
-                <div className="text-6xl mb-4">📝</div>
+                <ClipboardList size={64} className="mb-4 text-text-secondary" />
                 <p className="text-2xl text-text font-semibold mb-2">
                   No recipes yet!
                 </p>
@@ -715,7 +729,7 @@ export default function Dashboard() {
       fallback={
         <div className="min-h-screen bg-background flex items-center justify-center">
           <div className="text-center">
-            <div className="text-6xl mb-4">🍳</div>
+            <UtensilsCrossed size={64} className="mb-4 text-text-secondary mx-auto" />
             <p className="text-2xl text-text font-semibold">Loading...</p>
           </div>
         </div>

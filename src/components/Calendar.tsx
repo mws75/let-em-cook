@@ -17,6 +17,7 @@ import {
   sumRecipeMacros,
 } from "@/lib/helpers/macros";
 import { dateForThisWeeksDay } from "@/lib/helpers/dates";
+import { Calendar as CalendarIcon, X } from "lucide-react";
 
 // Meal Plan
 type DayPlan = Record<MealKey, Recipe[]>;
@@ -231,9 +232,9 @@ export default function Calendar({
               e.stopPropagation();
               options.onRemove!();
             }}
-            className="ml-1 text-text-secondary hover:text-red-500 text-xs font-bold no-print"
+            className="ml-1 text-text-secondary hover:text-red-500 no-print"
           >
-            ✕
+            <X size={12} />
           </button>
         )}
       </div>
@@ -297,7 +298,10 @@ export default function Calendar({
       <section className="border border-border rounded-3xl p-6 bg-surface ">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-          <h2 className="text-3xl text-text font-bold">📅 Meal Plan</h2>
+          <h2 className="text-3xl text-text font-bold flex items-center gap-2">
+            <CalendarIcon size={28} />
+            Meal Plan
+          </h2>
           {saveStatus !== "idle" && (
             <span
               className={`text-xs font-medium no-print ${

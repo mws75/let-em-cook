@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Recipe, Ingredients } from "@/types/types";
 import toast from "react-hot-toast";
+import { ChefHat, Utensils, ClipboardList, Check } from "lucide-react";
+import { getCategoryIcon } from "@/lib/categoryIcon";
 
 type RecipeDetailModalProps = {
   recipeId: number;
@@ -170,7 +172,7 @@ export default function RecipeDetailModal({
               {/* Title Section */}
               <div className="px-5 pt-3 pb-2 text-center border-b border-border/50 border-dashed">
                 <div className="flex items-center justify-center gap-2">
-                  <span className="text-5xl">{recipe.emoji || "🍽️"}</span>
+                  {getCategoryIcon(recipe.category, { size: 48, className: "text-text-secondary" })}
                   <h1 className="text-4xl font-bold text-text">
                     {recipe.name}
                   </h1>
@@ -184,7 +186,7 @@ export default function RecipeDetailModal({
                   </span>
                   {recipe.time.active_min > 0 && (
                     <span className="px-2 py-0.5 bg-muted rounded-full">
-                      👩‍🍳 {recipe.time.active_min}m
+                      <ChefHat size={14} className="inline mr-0.5" />{recipe.time.active_min}m
                     </span>
                   )}
                   {recipe.time.total_time > 0 && (
@@ -248,7 +250,7 @@ export default function RecipeDetailModal({
                 {/* Ingredients Section */}
                 <div className="px-4 py-3 border-t border-r-0 sm:border-r border-border/50">
                   <div className="flex items-center gap-1.5 mb-3">
-                    <span className="text-2xl">🥗</span>
+                    <Utensils size={22} className="text-text-secondary" />
                     <h2 className="text-2xl font-bold text-text">
                       Ingredients
                     </h2>
@@ -279,9 +281,7 @@ export default function RecipeDetailModal({
                                       className={`w-5 h-5 rounded border flex-shrink-0 mt-1 flex items-center justify-center transition-colors ${isChecked ? "bg-primary border-primary" : "bg-primary/10 border-primary/40"}`}
                                     >
                                       {isChecked && (
-                                        <span className="text-white text-sm leading-none font-bold">
-                                          ✓
-                                        </span>
+                                        <Check size={12} className="text-white" />
                                       )}
                                     </span>
                                     <span
@@ -317,7 +317,7 @@ export default function RecipeDetailModal({
                 {/* Instructions Section */}
                 <div className="px-4 py-3 border-t border-border/50 bg-muted/10">
                   <div className="flex items-center gap-1.5 mb-3">
-                    <span className="text-2xl">📝</span>
+                    <ClipboardList size={22} className="text-text-secondary" />
                     <h2 className="text-2xl font-bold text-text">
                       Instructions
                     </h2>

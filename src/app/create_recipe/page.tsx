@@ -5,6 +5,7 @@ import ErrorPopUp from "@/components/ErrorPopUp";
 import CookingTips from "@/components/CookingTips";
 import toast from "react-hot-toast";
 import { Recipe, Ingredients } from "@/types/types";
+import { List, ClipboardList, Check, X } from "lucide-react";
 
 /* ---- Current Data Structure that is Returned from API ------
 {
@@ -138,7 +139,7 @@ export default function CreateRecipe() {
 
   const handleApiError = async (response: Response, toastMessage: string) => {
     // Log full response details for debugging
-    console.error("❌ API Error Details:");
+    console.error("API Error Details:");
     console.error("Status:", response.status, response.statusText);
     console.error("URL:", response.url);
 
@@ -365,7 +366,7 @@ export default function CreateRecipe() {
         </section>
         {/* Ingredient Block */}
         <section className="border border-border rounded-3xl p-2 bg-surface ">
-          <h2 className="text-text text-xl font-bold ml-10">Ingredients</h2>
+          <h2 className="text-text text-xl font-bold ml-10 flex items-center gap-2"><List size={20} />Ingredients</h2>
           <textarea
             id="ingredients_message"
             className="mx-4 sm:mx-5 block min-h-48 sm:min-h-64 w-full sm:w-9/12 rounded-lg border border-border bg-surface p-2.5 text-sm text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
@@ -376,7 +377,7 @@ export default function CreateRecipe() {
         </section>
         {/* Instructions Block */}
         <section className="border border-border rounded-3xl p-2 bg-surface ">
-          <h2 className="text-text text-xl font-bold ml-10">Instructions</h2>
+          <h2 className="text-text text-xl font-bold ml-10 flex items-center gap-2"><ClipboardList size={20} />Instructions</h2>
           <textarea
             id="instructions_message"
             className="mx-4 sm:mx-5 block min-h-48 sm:min-h-64 w-full sm:w-9/12 rounded-lg border border-border bg-surface p-2.5 text-sm text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
@@ -391,13 +392,19 @@ export default function CreateRecipe() {
             disabled={isSubmitting}
             className="w-full sm:w-1/3 px-6 py-2 bg-primary hover:bg-primary/80 border border-border rounded-xl font-bold text-text transition-all"
           >
-            {isSubmitting ? "Submitting..." : isEditMode ? "Update" : "Submit"}
+            <span className="flex items-center justify-center gap-2">
+              <Check size={18} />
+              {isSubmitting ? "Submitting..." : isEditMode ? "Update" : "Submit"}
+            </span>
           </button>
           <button
             onClick={handleCancelClick}
             className="px-6 w-full sm:w-1/3 py-2 bg-accent hover:bg-accent/80 border border-border rounded-xl font-bold text-text transition-all"
           >
-            cancel
+            <span className="flex items-center justify-center gap-2">
+              <X size={18} />
+              Cancel
+            </span>
           </button>
         </div>
       </div>

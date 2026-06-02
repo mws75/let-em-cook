@@ -24,6 +24,7 @@ import {
   todayLocal,
 } from "@/lib/helpers/dates";
 import { Macros, sumDailyLogEntries } from "@/lib/helpers/macros";
+import { BarChart2, Sunrise, Sun, Moon, Apple, X } from "lucide-react";
 
 function recipeToEntry(
   r: Recipe,
@@ -53,12 +54,15 @@ const SLOT_LABEL: Record<DailySlot, string> = {
   snack: "Snacks",
 };
 
-const SLOT_EMOJI: Record<DailySlot, string> = {
-  breakfast: "🍳",
-  lunch: "🥗",
-  dinner: "🍝",
-  snack: "🍿",
-};
+function SlotIcon({ slot }: { slot: DailySlot }) {
+  const props = { size: 20, className: "text-text-secondary" };
+  switch (slot) {
+    case "breakfast": return <Sunrise {...props} />;
+    case "lunch":     return <Sun {...props} />;
+    case "dinner":    return <Moon {...props} />;
+    case "snack":     return <Apple {...props} />;
+  }
+}
 
 // ---------- Component ----------
 
@@ -455,7 +459,10 @@ export default function DailyTracker({ initialDate }: DailyTrackerProps = {}) {
         {/* Header */}
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3">
           <div>
-            <h2 className="text-2xl sm:text-3xl text-text font-bold">📊 Daily Tracker</h2>
+            <h2 className="text-2xl sm:text-3xl text-text font-bold flex items-center gap-2">
+              <BarChart2 size={28} />
+              Daily Tracker
+            </h2>
             <p className="text-xs sm:text-sm text-text-secondary mt-0.5">
               {fullDateLabel(selectedDate)}
             </p>
@@ -779,7 +786,7 @@ function SlotSection({
     <section className="border border-border rounded-2xl bg-surface overflow-hidden">
       <header className="flex items-center justify-between gap-2 px-3 sm:px-4 py-3 border-b border-border/50">
         <div className="flex items-center gap-2 min-w-0">
-          <span className="text-xl">{SLOT_EMOJI[slot]}</span>
+          <SlotIcon slot={slot} />
           <h4 className="font-bold text-text">{SLOT_LABEL[slot]}</h4>
         </div>
         <span className="text-xs sm:text-sm text-text-secondary tabular-nums text-right">
@@ -821,7 +828,7 @@ function SlotSection({
               className="p-2 rounded-lg hover:bg-red-500/10 text-text-secondary hover:text-red-500 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0"
               aria-label="Remove entry"
             >
-              ✕
+              <X size={14} />
             </button>
           </li>
         ))}

@@ -1,6 +1,7 @@
 "use client";
 import RecipeCard from "@/components/RecipeCard";
 import type { Recipe } from "@/types/types";
+import { Star } from "lucide-react";
 
 type FavoriteRecipesProps = {
   recipes: Recipe[];
@@ -31,7 +32,7 @@ export default function FavoriteRecipes({
     return (
       <section className="border border-border rounded-2xl sm:rounded-3xl bg-surface p-3 sm:p-6">
         <h2 className="text-2xl sm:text-3xl text-text font-bold mb-3">
-          ⭐ Favorites
+          <span className="flex items-center gap-2"><Star size={22} className="text-yellow-400" />Favorites</span>
         </h2>
         <p className="text-sm text-text-secondary">
           Star a recipe below to pin it here for quick access.
@@ -44,7 +45,7 @@ export default function FavoriteRecipes({
     <section className="border border-border rounded-2xl sm:rounded-3xl bg-surface p-3 sm:p-6">
       <div className="flex items-center justify-between mb-3 sm:mb-4 px-1">
         <h2 className="text-2xl sm:text-3xl text-text font-bold">
-          ⭐ Favorites
+          <span className="flex items-center gap-2"><Star size={22} className="text-yellow-400" />Favorites</span>
         </h2>
         <span className="text-sm text-text-secondary">
           {favorites.length} {favorites.length === 1 ? "recipe" : "recipes"}

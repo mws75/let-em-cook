@@ -7,6 +7,7 @@ import ExploreRecipeCard from "@/components/ExploreRecipeCard";
 import UpgradePrompt from "@/components/UpgradePrompt";
 import toast from "react-hot-toast";
 import { DEFAULT_CATEGORY_LIST } from "@/lib/categoryColors";
+import { Search, Utensils } from "lucide-react";
 
 const CALORIE_OPTIONS = [
   { value: "", label: "All Calories" },
@@ -274,14 +275,14 @@ export default function ExploreRecipes() {
             {/* Recipe Grid */}
             {isLoading ? (
               <div className="flex flex-col items-center justify-center py-20">
-                <div className="text-6xl mb-4">🔍</div>
+                <Search size={64} className="mb-4 text-text-secondary" />
                 <p className="text-2xl text-text font-semibold">
                   Finding delicious recipes...
                 </p>
               </div>
             ) : recipes.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20">
-                <div className="text-6xl mb-4">🍽️</div>
+                <Utensils size={64} className="mb-4 text-text-secondary" />
                 <p className="text-2xl text-text font-semibold mb-2">
                   No recipes found
                 </p>

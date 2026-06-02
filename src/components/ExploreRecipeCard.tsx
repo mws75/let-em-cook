@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { ExploreRecipe } from "@/types/types";
 import { getCategoryColor } from "@/lib/categoryColors";
+import { getCategoryIcon } from "@/lib/categoryIcon";
 
 type ExploreRecipeCardProps = {
   recipe: ExploreRecipe;
@@ -20,7 +21,6 @@ export default function ExploreRecipeCard({
     recipe_id,
     category,
     name,
-    emoji,
     ingredients_json,
     per_serving_calories,
     per_serving_protein_g,
@@ -73,8 +73,9 @@ export default function ExploreRecipeCard({
           </span>
         )}
         {/* Name */}
-        <h2 className="text-xl text-text font-bold m-3 pr-16">
-          {emoji} {name}
+        <h2 className="text-xl text-text font-bold m-3 pr-16 flex items-center gap-2">
+          {getCategoryIcon(category, { size: 20, className: "shrink-0" })}
+          {name}
         </h2>
         {/* Macros */}
         <h3 className="text-base text-text font-bold ml-3 mr-1 mt-3">

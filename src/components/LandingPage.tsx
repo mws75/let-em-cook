@@ -2,6 +2,19 @@
 
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import {
+  BarChart2,
+  Calendar,
+  CheckSquare,
+  Zap,
+  Globe,
+  Smartphone,
+  Flame,
+  X,
+  Check,
+  GripVertical,
+} from "lucide-react";
+import { getCategoryIcon } from "@/lib/categoryIcon";
 
 /* ───────────────────────────────────────────
    Intersection Observer hook for scroll reveal
@@ -39,8 +52,8 @@ const DEMO_STEPS = [
     content: (
       <div className="space-y-3">
         <div className="flex items-center gap-3 bg-surface border border-border rounded-2xl p-3">
-          <div className="w-10 h-10 rounded-xl bg-primary/30 flex items-center justify-center text-lg">
-            🍝
+          <div className="w-10 h-10 rounded-xl bg-primary/30 flex items-center justify-center">
+            {getCategoryIcon("pasta", { size: 18 })}
           </div>
           <div className="flex-1">
             <p className="font-semibold text-text text-sm">
@@ -51,12 +64,12 @@ const DEMO_STEPS = [
             </p>
           </div>
           <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-            <span className="text-white text-xs">✓</span>
+            <Check size={12} className="text-white" />
           </div>
         </div>
         <div className="flex items-center gap-3 bg-surface border border-border rounded-2xl p-3">
-          <div className="w-10 h-10 rounded-xl bg-secondary/40 flex items-center justify-center text-lg">
-            🥗
+          <div className="w-10 h-10 rounded-xl bg-secondary/40 flex items-center justify-center">
+            {getCategoryIcon("salad", { size: 18 })}
           </div>
           <div className="flex-1">
             <p className="font-semibold text-text text-sm">
@@ -71,8 +84,8 @@ const DEMO_STEPS = [
           </div>
         </div>
         <div className="flex items-center gap-3 bg-surface border border-border rounded-2xl p-3 opacity-60">
-          <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center text-lg">
-            🌮
+          <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center">
+            {getCategoryIcon("fish", { size: 18 })}
           </div>
           <div className="flex-1">
             <p className="font-semibold text-text text-sm">Fish Tacos</p>
@@ -109,9 +122,7 @@ const DEMO_STEPS = [
                 }`}
               >
                 {
-                  ["🍝 Pasta", "🥗 Salad", "🌮 Tacos", "...", "..."][
-                    i
-                  ]
+                  ["Pasta", "Salad", "Tacos", "...", "..."][i]
                 }
               </span>
               <span
@@ -122,13 +133,7 @@ const DEMO_STEPS = [
                 }`}
               >
                 {
-                  [
-                    "🥑 Avocado Toast",
-                    "🍲 Soup",
-                    "...",
-                    "...",
-                    "...",
-                  ][i]
+                  ["Avocado Toast", "Soup", "...", "...", "..."][i]
                 }
               </span>
             </div>
@@ -172,7 +177,6 @@ const DEMO_STEPS = [
 type DemoRecipe = {
   id: number;
   name: string;
-  emoji: string;
   cal: number;
   protein: number;
   category: string;
@@ -180,12 +184,12 @@ type DemoRecipe = {
 };
 
 const DEMO_RECIPES: DemoRecipe[] = [
-  { id: 1, name: "Garlic Butter Pasta",    emoji: "🍝", cal: 420, protein: 12, category: "pasta",   color: "#FFEBC2" },
-  { id: 2, name: "Chicken Caesar Salad",   emoji: "🥗", cal: 380, protein: 32, category: "salad",   color: "#DDEBD3" },
-  { id: 3, name: "Beef Tacos",             emoji: "🌮", cal: 510, protein: 28, category: "beef",    color: "#F2D2D2" },
-  { id: 4, name: "Salmon & Rice Bowl",     emoji: "🐟", cal: 480, protein: 35, category: "fish",    color: "#D2E8EB" },
-  { id: 5, name: "Veggie Stir Fry",        emoji: "🥦", cal: 290, protein: 14, category: "vegetarian", color: "#E2EAD0" },
-  { id: 6, name: "BBQ Chicken Wrap",       emoji: "🌯", cal: 450, protein: 30, category: "chicken", color: "#FFE7C2" },
+  { id: 1, name: "Garlic Butter Pasta",  cal: 420, protein: 12, category: "pasta",      color: "#FFEBC2" },
+  { id: 2, name: "Chicken Caesar Salad", cal: 380, protein: 32, category: "salad",      color: "#DDEBD3" },
+  { id: 3, name: "Beef Tacos",           cal: 510, protein: 28, category: "beef",       color: "#F2D2D2" },
+  { id: 4, name: "Salmon & Rice Bowl",   cal: 480, protein: 35, category: "fish",       color: "#D2E8EB" },
+  { id: 5, name: "Veggie Stir Fry",      cal: 290, protein: 14, category: "vegetarian", color: "#E2EAD0" },
+  { id: 6, name: "BBQ Chicken Wrap",     cal: 450, protein: 30, category: "chicken",    color: "#FFE7C2" },
 ];
 
 const DEMO_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -195,37 +199,37 @@ const DEMO_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
    ─────────────────────────────────────────── */
 const FEATURES = [
   {
-    icon: "📊",
+    icon: <BarChart2 size={24} />,
     title: "Nutrition Tracking",
     desc: "Calories, protein, carbs, and fat — all calculated automatically from your recipes.",
     color: "bg-primary/15",
   },
   {
-    icon: "📅",
+    icon: <Calendar size={24} />,
     title: "Calendar Meal Planner",
     desc: "Drag recipes into your week. See your whole plan at a glance.",
     color: "bg-secondary/20",
   },
   {
-    icon: "☑️",
+    icon: <CheckSquare size={24} />,
     title: "Grocery Lists",
     desc: "One click generates a smart, consolidated grocery list from your meal plan.",
     color: "bg-accent/15",
   },
   {
-    icon: "⚡",
+    icon: <Zap size={24} />,
     title: "Quick Log",
     desc: "Ate something off-plan? Log it in seconds without creating a full recipe.",
     color: "bg-primary/15",
   },
   {
-    icon: "🌎",
+    icon: <Globe size={24} />,
     title: "Explore Recipes",
     desc: "Browse recipes shared by the community. Save the ones you love.",
     color: "bg-secondary/20",
   },
   {
-    icon: "📱",
+    icon: <Smartphone size={24} />,
     title: "Mobile Friendly",
     desc: "Plan meals and check your grocery list right from your phone.",
     color: "bg-accent/15",
@@ -416,7 +420,7 @@ export default function LandingPage() {
           <div
             className={`inline-flex items-center gap-2 bg-surface border border-border rounded-full px-4 py-1.5 mb-8  reveal ${hero.visible ? "show stagger-1" : ""}`}
           >
-            <span className="text-sm">🔥</span>
+            <Flame size={14} className="text-orange-400" />
             <span className="text-xs font-semibold text-text-secondary tracking-wide uppercase">
               Meal planning, simplified
             </span>
@@ -515,7 +519,7 @@ export default function LandingPage() {
                     style={{ backgroundColor: recipe.color }}
                   >
                     <div className="flex items-center gap-2.5">
-                      <span className="text-xl">{recipe.emoji}</span>
+                      <div className="shrink-0">{getCategoryIcon(recipe.category, { size: 18 })}</div>
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-text text-sm truncate">
                           {recipe.name}
@@ -597,15 +601,15 @@ export default function LandingPage() {
                               className="group/chip border border-border rounded-xl px-2 py-1.5 flex items-center gap-1.5"
                               style={{ backgroundColor: recipe.color }}
                             >
-                              <span className="text-sm sm:text-base">{recipe.emoji}</span>
+                              {getCategoryIcon(recipe.category, { size: 13, className: "shrink-0" })}
                               <span className="text-[10px] sm:text-xs font-medium text-text truncate flex-1">
                                 {recipe.name.split(" ").slice(0, 2).join(" ")}
                               </span>
                               <button
                                 onClick={() => handleRemoveFromSlot(slotKey, recipe.id)}
-                                className="text-text-secondary hover:text-accent text-xs opacity-0 group-hover/chip:opacity-100 transition-opacity"
+                                className="text-text-secondary hover:text-accent opacity-0 group-hover/chip:opacity-100 transition-opacity"
                               >
-                                ✕
+                                <X size={10} />
                               </button>
                             </div>
                           ))}
@@ -658,8 +662,9 @@ export default function LandingPage() {
               {/* Feedback message */}
               <div className="mt-4 text-center min-h-[2rem]">
                 {totalPlanned === 0 && (
-                  <p className="text-sm text-text-secondary">
-                    👆 Drag a recipe into any day to get started
+                  <p className="text-sm text-text-secondary flex items-center justify-center gap-1.5">
+                    <GripVertical size={14} />
+                    Drag a recipe into any day to get started
                   </p>
                 )}
                 {totalPlanned > 0 && totalPlanned < 5 && (
@@ -670,7 +675,7 @@ export default function LandingPage() {
                 )}
                 {totalPlanned >= 5 && (
                   <p className="text-sm text-text">
-                    🔥 {totalPlanned} meals planned! Imagine generating a
+                    <Flame size={14} className="inline mr-1 text-orange-400" />{totalPlanned} meals planned! Imagine generating a
                     grocery list from this in one click.
                   </p>
                 )}
@@ -875,8 +880,8 @@ export default function LandingPage() {
       {/* ── Footer ── */}
       <footer className="border-t border-border px-5 py-8 text-center">
         <p className="text-text-secondary text-sm">
-          © {new Date().getFullYear()} Let Em Cook. Made with 🔥 for home cooks
-          everywhere.
+          © {new Date().getFullYear()} Let Em Cook. Made with{" "}
+          <Flame size={13} className="inline text-orange-400" /> for home cooks everywhere.
         </p>
       </footer>
     </div>

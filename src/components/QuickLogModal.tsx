@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { QuickLogEntry, Recipe } from "@/types/types";
 import { parseNum } from "@/lib/helpers/utils";
+import { Check } from "lucide-react";
 
 type QuickLogModalProps = {
   isOpen: boolean;
@@ -185,7 +186,7 @@ export default function QuickLogEntryModal({
                         </p>
                       </div>
                       {selectedRecipeId === recipe.recipe_id && (
-                        <span className="text-primary text-sm">✓</span>
+                        <Check size={16} className="text-primary" />
                       )}
                     </button>
                   ))

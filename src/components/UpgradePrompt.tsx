@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { PRO_TIER_PRICE, FREE_TIER_RECIPE_LIMIT } from "@/types/types";
+import { ChefHat } from "lucide-react";
 
 interface UpgradePromptProps {
   isOpen: boolean;
@@ -43,10 +44,8 @@ export default function UpgradePrompt({
     <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
       <div className="bg-surface border border-border p-8 rounded-3xl max-w-md mx-4">
         <div className="text-center">
-          <div className="text-6xl mb-4">
-            <span role="img" aria-label="chef">
-              👨‍🍳
-            </span>
+          <div className="flex justify-center mb-4">
+            <ChefHat size={64} className="text-primary" />
           </div>
 
           <h2 className="text-2xl font-bold text-text mb-2">

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import type { Recipe, Ingredients } from "@/types/types";
 import toast from "react-hot-toast";
+import { ChefHat, Clock, Utensils, ClipboardList } from "lucide-react";
+import { getCategoryIcon } from "@/lib/categoryIcon";
 
 export default function RecipeDetailPage() {
   const params = useParams();
@@ -120,7 +122,7 @@ export default function RecipeDetailPage() {
           {/* Title Section */}
           <div className="px-5 pt-3 pb-2 text-center border-b border-border/50 border-dashed">
             <div className="flex items-center justify-center gap-2">
-              <span className="text-5xl">{recipe.emoji || "🍽️"}</span>
+              {getCategoryIcon(recipe.category, { size: 48, className: "text-text-secondary" })}
               <h1 className="text-4xl font-bold text-text">{recipe.name}</h1>
             </div>
             <div className="flex items-center justify-center gap-3 mt-1 text-text-secondary text-base">
@@ -132,12 +134,12 @@ export default function RecipeDetailPage() {
               </span>
               {recipe.time.active_min > 0 && (
                 <span className="px-2 py-0.5 bg-muted rounded-full">
-                  👩‍🍳 {recipe.time.active_min}m
+                  <ChefHat size={14} className="inline mr-0.5" />{recipe.time.active_min}m
                 </span>
               )}
               {recipe.time.total_time > 0 && (
                 <span className="px-2 py-0.5 bg-muted rounded-full">
-                  ⏱️ {recipe.time.total_time}m
+                  <Clock size={14} className="inline mr-0.5" />{recipe.time.total_time}m
                 </span>
               )}
             </div>
@@ -192,7 +194,7 @@ export default function RecipeDetailPage() {
             {/* Ingredients Section */}
             <div className="px-4 py-3 border-t border-r-0 sm:border-r print:border-r border-border/50">
               <div className="flex items-center gap-1.5 mb-3">
-                <span className="text-2xl">🥗</span>
+                <Utensils size={22} className="text-text-secondary" />
                 <h2 className="text-2xl font-bold text-text">Ingredients</h2>
               </div>
               <div className="space-y-5">
@@ -240,7 +242,7 @@ export default function RecipeDetailPage() {
             {/* Instructions Section */}
             <div className="px-4 py-3 border-t border-border/50 bg-muted/10">
               <div className="flex items-center gap-1.5 mb-3">
-                <span className="text-2xl">📝</span>
+                <ClipboardList size={22} className="text-text-secondary" />
                 <h2 className="text-2xl font-bold text-text">Instructions</h2>
               </div>
               <ol className="space-y-2">

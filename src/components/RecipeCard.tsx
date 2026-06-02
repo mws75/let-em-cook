@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import type { Recipe } from "@/types/types";
 import { getCategoryColor } from "@/lib/categoryColors";
 import toast from "react-hot-toast";
+import { Star, Trash2 } from "lucide-react";
 // See https://www.byte-size-tech.com/post/221 for Example of CheckBoxs
 type RecipeCardProps = {
   recipe: Recipe;
@@ -135,38 +136,19 @@ export default function RecipeCard({
           }
           aria-pressed={is_favorite === 1}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            className="w-5 h-5"
+          <Star
+            size={20}
             fill={is_favorite === 1 ? "#facc15" : "none"}
             stroke={is_favorite === 1 ? "#ca8a04" : "currentColor"}
-            strokeWidth="1.75"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-          </svg>
+            strokeWidth={1.75}
+          />
         </button>
         <button
           onClick={handleDeleteClick}
           className="p-1.5 rounded-full text-text-secondary hover:text-text hover:bg-black/5 transition-colors"
           aria-label="Delete recipe"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.75"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M3 6h18" />
-            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-            <path d="M19 6 18 20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-          </svg>
+          <Trash2 size={16} strokeWidth={1.75} />
         </button>
       </div>
     </div>

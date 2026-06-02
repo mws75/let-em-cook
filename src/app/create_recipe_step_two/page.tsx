@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import CookingTips from "@/components/CookingTips";
 import EditIngredient from "@/components/EditIngredient";
 import { Recipe, Ingredients } from "@/types/types";
+import { UtensilsCrossed, Carrot, ShoppingCart } from "lucide-react";
 
 export default function CreateRecipeStepTwo() {
   const [recipe, setRecipe] = useState<Recipe | null>(null);
@@ -104,7 +105,7 @@ export default function CreateRecipeStepTwo() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="border border-border rounded-3xl p-8 bg-surface ">
           <p className="text-2xl text-text font-bold">
-            Loading your recipe... 🍳
+            <UtensilsCrossed size={20} className="inline mr-2 text-text-secondary" />Loading your recipe...
           </p>
         </div>
       </div>
@@ -122,7 +123,7 @@ export default function CreateRecipeStepTwo() {
         {/* Header */}
         <div className="flex justify-center mt-10 mb-10">
           <h1 className="text-2xl md:text-4xl text-text font-bold">
-            🥕 {isEditMode ? "Review Changes" : "Clean Up Ingredients"}
+            <Carrot size={28} className="inline mr-2 text-orange-400" />{isEditMode ? "Review Changes" : "Clean Up Ingredients"}
           </h1>
         </div>
 
@@ -143,7 +144,7 @@ export default function CreateRecipeStepTwo() {
         {/* Ingredients Editor Section */}
         <section className="border border-border rounded-3xl p-6 bg-surface ">
           <h2 className="text-2xl text-text font-bold mb-6 flex items-center gap-2">
-            <span>🛒</span>
+            <ShoppingCart size={22} className="text-text-secondary" />
             Review & Edit Ingredients
           </h2>
           <EditIngredient

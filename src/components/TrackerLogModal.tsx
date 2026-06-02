@@ -7,6 +7,7 @@ import {
   Recipe,
 } from "@/types/types";
 import { parseNum } from "@/lib/helpers/utils";
+import { Check } from "lucide-react";
 
 type Mode = "recents" | "recipe" | "manual";
 
@@ -321,7 +322,7 @@ export default function TrackerLogModal({
                         </p>
                       </div>
                       {selectedRecipe?.recipe_id === recipe.recipe_id && (
-                        <span className="text-primary text-sm">✓</span>
+                        <Check size={16} className="text-primary" />
                       )}
                     </button>
                   ))
