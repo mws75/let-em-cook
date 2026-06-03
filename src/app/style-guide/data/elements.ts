@@ -30,6 +30,58 @@ export interface StyleElement {
   previewBodyStyle?: string;
 }
 
+export interface ColorToken {
+  name: string;
+  cssVar: string;
+  hex: string;
+  group: "brand" | "semantic" | "neutral";
+}
+
+export interface CategoryColorToken {
+  name: string;
+  hex: string;
+}
+
+export const BRAND_COLORS: ColorToken[] = [
+  { name: "Primary",        cssVar: "--color-primary",        hex: "#a8d5ba", group: "brand" },
+  { name: "Secondary",      cssVar: "--color-secondary",      hex: "#ffe5b4", group: "brand" },
+  { name: "Accent",         cssVar: "--color-accent",         hex: "#ffb5b5", group: "brand" },
+  { name: "Background",     cssVar: "--color-background",     hex: "#fdfbf7", group: "neutral" },
+  { name: "Surface",        cssVar: "--color-surface",        hex: "#ffffff",  group: "neutral" },
+  { name: "Muted",          cssVar: "--color-muted",          hex: "#f7fafc", group: "neutral" },
+  { name: "Text",           cssVar: "--color-text",           hex: "#4a5568", group: "neutral" },
+  { name: "Text Secondary", cssVar: "--color-text-secondary", hex: "#718096", group: "neutral" },
+  { name: "Border",         cssVar: "--color-border",         hex: "#e2e8f0", group: "neutral" },
+  { name: "Shadow",         cssVar: "--color-shadow",         hex: "#cbd5e0", group: "neutral" },
+  { name: "Foreground",     cssVar: "--color-foreground",     hex: "#4a5568", group: "neutral" },
+  { name: "Success",        cssVar: "--color-success",        hex: "#81c784", group: "semantic" },
+  { name: "Warning",        cssVar: "--color-warning",        hex: "#ffd54f", group: "semantic" },
+  { name: "Error",          cssVar: "--color-error",          hex: "#e57373", group: "semantic" },
+];
+
+export const CATEGORY_COLORS: CategoryColorToken[] = [
+  { name: "Breakfast",   hex: "#FFE5B4" },
+  { name: "Lunch",       hex: "#D5EAF7" },
+  { name: "Dinner",      hex: "#E2D1EA" },
+  { name: "Snack",       hex: "#D5E8D6" },
+  { name: "Dessert",     hex: "#F4D4DF" },
+  { name: "Chicken",     hex: "#FFE7C2" },
+  { name: "Beef",        hex: "#F2D2D2" },
+  { name: "Pork",        hex: "#FADAD0" },
+  { name: "Fish",        hex: "#D2E8EB" },
+  { name: "Seafood",     hex: "#D3E2DD" },
+  { name: "Soup",        hex: "#FFF3C4" },
+  { name: "Pasta",       hex: "#FFEBC2" },
+  { name: "Salad",       hex: "#DDEBD3" },
+  { name: "Vegetarian",  hex: "#E2EAD0" },
+  { name: "Vegan",       hex: "#D2EDD9" },
+  { name: "Gluten Free", hex: "#DCE2E6" },
+  { name: "Dairy Free",  hex: "#DCEEF7" },
+  { name: "Keto",        hex: "#F2DCDD" },
+  { name: "Low Carb",    hex: "#E8E1DF" },
+  { name: "Meal Prep",   hex: "#D2DEEE" },
+];
+
 export const ROOT_CSS = `
 *,*::before,*::after{box-sizing:border-box;}
 :root{
@@ -92,8 +144,8 @@ export const ELEMENTS: StyleElement[] = [
     id: "color-palette",
     name: "Brand Color Palette",
     category: "Foundations",
-    description: "Core palette: sage green (primary), peach (secondary), coral (accent), and neutral surface colors.",
-    previewHeight: 200,
+    description: "Core palette: sage green (primary), peach (secondary), coral (accent), neutral surface colors, and all 20 per-category tints.",
+    previewHeight: 430,
     previewBodyStyle: "padding:1.5rem;background:var(--color-background);align-items:flex-start;",
     html: `<div style="display:flex;flex-direction:column;gap:1.25rem;">
   <div style="display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;">
@@ -144,6 +196,31 @@ export const ELEMENTS: StyleElement[] = [
       <span style="font-size:.7rem;color:var(--color-text-secondary);font-weight:600;">Error</span>
     </div>
   </div>
+  <div style="border-top:1px solid var(--color-border);padding-top:1rem;">
+    <p style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-secondary);margin:0 0 .75rem;">Category Colors</p>
+    <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
+      <span class="cat-chip" style="background:#FFE5B4;">Breakfast</span>
+      <span class="cat-chip" style="background:#D5EAF7;">Lunch</span>
+      <span class="cat-chip" style="background:#E2D1EA;">Dinner</span>
+      <span class="cat-chip" style="background:#D5E8D6;">Snack</span>
+      <span class="cat-chip" style="background:#F4D4DF;">Dessert</span>
+      <span class="cat-chip" style="background:#FFE7C2;">Chicken</span>
+      <span class="cat-chip" style="background:#F2D2D2;">Beef</span>
+      <span class="cat-chip" style="background:#FADAD0;">Pork</span>
+      <span class="cat-chip" style="background:#D2E8EB;">Fish</span>
+      <span class="cat-chip" style="background:#D3E2DD;">Seafood</span>
+      <span class="cat-chip" style="background:#FFF3C4;">Soup</span>
+      <span class="cat-chip" style="background:#FFEBC2;">Pasta</span>
+      <span class="cat-chip" style="background:#DDEBD3;">Salad</span>
+      <span class="cat-chip" style="background:#E2EAD0;">Vegetarian</span>
+      <span class="cat-chip" style="background:#D2EDD9;">Vegan</span>
+      <span class="cat-chip" style="background:#DCE2E6;">Gluten Free</span>
+      <span class="cat-chip" style="background:#DCEEF7;">Dairy Free</span>
+      <span class="cat-chip" style="background:#F2DCDD;">Keto</span>
+      <span class="cat-chip" style="background:#E8E1DF;">Low Carb</span>
+      <span class="cat-chip" style="background:#D2DEEE;">Meal Prep</span>
+    </div>
+  </div>
 </div>`,
     css: `.swatch {
   width: 3rem;
@@ -151,6 +228,15 @@ export const ELEMENTS: StyleElement[] = [
   border-radius: var(--radius-md);
   border: 1px solid rgba(0,0,0,.08);
   display: inline-block;
+}
+.cat-chip {
+  display: inline-block;
+  padding: .3rem .75rem;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(0,0,0,.08);
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--color-text);
 }`,
   },
 
