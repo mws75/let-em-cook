@@ -29,7 +29,7 @@ const BATCH_SIZE = 18;
 
 export default function ExploreRecipes() {
   const router = useRouter();
-  const { user, isLoaded } = useUser();
+  const { user } = useUser();
   const [recipes, setRecipes] = useState<ExploreRecipe[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -50,13 +50,6 @@ export default function ExploreRecipes() {
 
   // Infinite scroll observer
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
-
-  // Redirect if not logged in
-  useEffect(() => {
-    if (isLoaded && !user) {
-      router.push("/signin");
-    }
-  }, [isLoaded, user, router]);
 
   const fetchRecipes = useCallback(
     async (offset: number, append: boolean = false) => {
@@ -104,14 +97,11 @@ export default function ExploreRecipes() {
 
   // Initial load and filter changes (except search - that's debounced)
   useEffect(() => {
-    if (isLoaded && user) {
-      fetchRecipes(0, false);
-    }
-  }, [isLoaded, user, selectedCategory, selectedCalories]);
+    fetchRecipes(0, false);
+  }, [selectedCategory, selectedCalories]);
 
   // Debounced search
   useEffect(() => {
-    if (!isLoaded || !user) return;
 
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
@@ -162,6 +152,11 @@ export default function ExploreRecipes() {
   };
 
   const handleAddRecipe = async (recipeId: number) => {
+    if (!user) {
+      router.push("/signin");
+      return;
+    }
+
     const response = await fetch(`/api/recipes/${recipeId}/add`, {
       method: "POST",
     });
@@ -188,16 +183,6 @@ export default function ExploreRecipes() {
     setSelectedCategory("");
     setSelectedCalories("");
   };
-
-  if (!isLoaded) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-2xl text-text-secondary animate-pulse">
-          Loading...
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div>
