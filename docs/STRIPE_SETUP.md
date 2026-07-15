@@ -4,7 +4,7 @@ This guide walks you through setting up Stripe subscriptions for the Let Em Cook
 
 ## Overview
 
-- **Free Tier**: 10 recipes maximum
+- **Free Tier**: 20 recipes maximum (new accounts start with 3 seeded starter recipes)
 - **Pro Tier**: $4.99/month, unlimited recipes
 
 ## Prerequisites
@@ -134,9 +134,9 @@ Use any future expiration date, any 3-digit CVC, and any postal code.
 
 ### Test Flow
 
-1. Create a new account (will be free tier with 0/10 recipes)
-2. Create 10 recipes (count should update correctly)
-3. Try to create an 11th recipe (upgrade modal should appear)
+1. Create a new account (will be free tier with 3/20 recipes — the seeded starters)
+2. Create recipes until the count reaches 20 (count should update correctly)
+3. Try to create a 21st recipe (upgrade modal should appear)
 4. Click "Upgrade Now" (should redirect to Stripe Checkout)
 5. Complete payment using test card `4242 4242 4242 4242`
 6. Should redirect to dashboard with success toast

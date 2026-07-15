@@ -28,7 +28,8 @@ Endpoints that require auth return `401 {"error":"Not authenticated"}` when the 
 
 The OpenAI-backed endpoints (`check-valid-ingredients`, `check-valid-instructions`, `sort-grocery-list`, `create-recipe`, `create-recipe-step-two`) **require auth** — they call OpenAI, so they reject unauthenticated callers with `401` before spending money. They are also **rate-limited to 60 requests per minute, per user, per endpoint** (sliding window); exceeding this returns `429`. Tune the limit in `src/lib/rateLimit.ts`.
 
-> Free tier is limited to **10 recipes** (`FREE_TIER_RECIPE_LIMIT`). Pro tier is unlimited.
+> Free tier is limited to **20 recipes** (`FREE_TIER_RECIPE_LIMIT`). Pro tier is unlimited.
+> New accounts are seeded with the 3 starter recipes in `STARTER_RECIPE_IDS`, which count toward that limit.
 
 ---
 

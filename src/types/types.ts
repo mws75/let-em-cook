@@ -11,8 +11,11 @@ export type User = {
 };
 
 // Subscription constants
-export const FREE_TIER_RECIPE_LIMIT = 10;
+export const FREE_TIER_RECIPE_LIMIT = 20;
 export const PRO_TIER_PRICE = 7.99;
+
+// Recipes copied into every new account so the dashboard isn't empty on first load
+export const STARTER_RECIPE_IDS = [13, 51, 123];
 
 export type SubscriptionInfo = {
   planTier: string;

@@ -1,4 +1,9 @@
-import { Recipe, ExploreRecipe, ExploreFilters } from "@/types/types";
+import {
+  Recipe,
+  ExploreRecipe,
+  ExploreFilters,
+  STARTER_RECIPE_IDS,
+} from "@/types/types";
 import { executeQuery, withTransaction } from "./connection";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { CATEGORY_COLORS } from "../categoryColors";
@@ -761,4 +766,65 @@ export async function copyRecipeToUser(
 
     return { newRecipeId };
   });
+}
+
+/**
+ * Copies the STARTER_RECIPE_IDS into a brand-new user's collection so their
+ * dashboard isn't empty on first load.
+ *
+ * Unlike copyRecipeToUser this nulls category_id — categories are per-user, and
+ * carrying the source recipe's category over would point the new user's tiles at
+ * another user's ltc_categories row. It also doesn't touch ltc_recipe_engagement:
+ * seeding isn't a user choosing to add a recipe, so it shouldn't inflate add_count.
+ *
+ * Never throws — a missing or deleted starter recipe must not block signup.
+ * @returns the recipe_ids actually created
+ */
+export async function seedStarterRecipes(
+  newUserId: number,
+): Promise<number[]> {
+  try {
+    return await withTransaction(async (connection) => {
+      const newRecipeIds: number[] = [];
+
+      for (const recipeId of STARTER_RECIPE_IDS) {
+        const [insertResult] = await connection.execute<ResultSetHeader>(
+          `
+          INSERT INTO ltc_recipes (
+            user_id, category_id, name, servings, ingredients_json, instructions_json,
+            is_public, is_created_by_user, original_recipe_id, per_serving_calories, per_serving_protein_g,
+            per_serving_fat_g, per_serving_carbs_g, per_serving_sugar_g,
+            emoji, tags_json, active_time_min, total_time_min
+          )
+          SELECT
+            ?, NULL, name, servings, ingredients_json, instructions_json,
+            0, 0, ?, per_serving_calories, per_serving_protein_g,
+            per_serving_fat_g, per_serving_carbs_g, per_serving_sugar_g,
+            emoji, tags_json, active_time_min, total_time_min
+          FROM ltc_recipes
+          WHERE recipe_id = ?
+          `,
+          [newUserId, recipeId, recipeId],
+        );
+
+        // affectedRows === 0 means the source recipe no longer exists
+        if (insertResult.affectedRows === 0) {
+          console.warn(
+            `⚠️ Starter recipe ${recipeId} not found — skipped for user ${newUserId}`,
+          );
+          continue;
+        }
+
+        newRecipeIds.push(insertResult.insertId);
+      }
+
+      return newRecipeIds;
+    });
+  } catch (error) {
+    console.error(
+      `❌ Failed to seed starter recipes for user ${newUserId}:`,
+      error,
+    );
+    return [];
+  }
 }

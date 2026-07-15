@@ -2,7 +2,8 @@ import { currentUser, clerkClient } from "@clerk/nextjs/server";
 import { User as ClerkUser } from "@clerk/nextjs/server";
 import { executeQuery, withTransaction } from "./database/connection";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
-import { User } from "@/types/types";
+import { seedStarterRecipes } from "./database/recipes";
+import { User, STARTER_RECIPE_IDS } from "@/types/types";
 import { headers } from "next/headers";
 import { createHmac } from "crypto";
 
@@ -137,11 +138,15 @@ async function createUserAndSyncMetadata(
   }
 
   // Use INSERT IGNORE to handle race conditions - if user already exists, it's a no-op
-  await executeQuery<ResultSetHeader>(
+  const insertResult = await executeQuery<ResultSetHeader>(
     `INSERT IGNORE INTO ltc_users (user_name, email, plan_tier, profile_pic_url)
      VALUES (?, ?, ?, ?)`,
     [userName, email, "free", profilePicUrl],
   );
+
+  // affectedRows === 1 means we just created the row; 0 means it already existed.
+  // This is what keeps starter recipes a one-time, first-signup-only event.
+  const isNewUser = insertResult.affectedRows === 1;
 
   // Update profile pic if user already exists (in case they changed it in Clerk)
   if (profilePicUrl) {
@@ -162,6 +167,13 @@ async function createUserAndSyncMetadata(
   }
 
   const userId = users[0].user_id;
+
+  if (isNewUser) {
+    const seeded = await seedStarterRecipes(userId);
+    console.log(
+      `✅ Seeded ${seeded.length}/${STARTER_RECIPE_IDS.length} starter recipes for user ${userId}`,
+    );
+  }
 
   // Store in Clerk metadata for future requests (no DB query needed next time)
   const client = await clerkClient();

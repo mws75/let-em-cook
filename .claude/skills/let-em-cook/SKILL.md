@@ -5,7 +5,7 @@ description: Project context for Let 'Em Cook (letemcook.io) — a Next.js 16 re
 
 # Let 'Em Cook — Project Context
 
-A **public-facing recipe & meal-planning SaaS** (letemcook.io), built and marketed solo (TikTok/ManyChat content funnel — see the dated worklog in `docs/AA - Summary - AA.md`). Core loop: input a recipe → AI validates/structures it and calculates macros → save as a tile → drag up to 10 recipes into the weekly workspace → generate an **aggregated grocery list** + weekly **nutrition macros**. Also: a public Explore feed, a calendar with meal-plan persistence, a daily macro tracker with QuickLog, and Stripe-billed tiers (**free = 10 recipes** via `FREE_TIER_RECIPE_LIMIT`, pro = unlimited).
+A **public-facing recipe & meal-planning SaaS** (letemcook.io), built and marketed solo (TikTok/ManyChat content funnel — see the dated worklog in `docs/AA - Summary - AA.md`). Core loop: input a recipe → AI validates/structures it and calculates macros → save as a tile → drag up to 10 recipes into the weekly workspace → generate an **aggregated grocery list** + weekly **nutrition macros**. Also: a public Explore feed, a calendar with meal-plan persistence, a daily macro tracker with QuickLog, and Stripe-billed tiers (**free = 20 recipes** via `FREE_TIER_RECIPE_LIMIT`, pro = unlimited). New accounts are seeded with 3 starter recipes (`STARTER_RECIPE_IDS` → `seedStarterRecipes()` in `src/lib/database/recipes.ts`, called from `createUserAndSyncMetadata` in `src/lib/auth.ts`).
 
 ## Stack
 
