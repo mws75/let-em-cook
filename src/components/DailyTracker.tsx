@@ -73,9 +73,11 @@ function computeRecents(logs: DailyLog[], limit: number): DailyLogEntry[] {
   const out: DailyLogEntry[] = [];
   for (const e of all) {
     const key =
-      e.recipe_id != null
-        ? `r:${e.recipe_id}`
-        : `n:${e.name.trim().toLowerCase()}`;
+      e.kind === "food" && e.food_external_id != null
+        ? `f:${e.food_source}:${e.food_external_id}`
+        : e.recipe_id != null
+          ? `r:${e.recipe_id}`
+          : `n:${e.name.trim().toLowerCase()}`;
     if (seen.has(key)) continue;
     seen.add(key);
     out.push(e);
