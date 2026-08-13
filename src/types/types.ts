@@ -148,13 +148,21 @@ export const DAILY_SLOTS = [
 
 export type DailySlot = (typeof DAILY_SLOTS)[number];
 
-export type DailyLogEntryKind = "recipe" | "manual";
+export type DailyLogEntryKind = "recipe" | "manual" | "food";
+
+// Which external food database an entry's macros came from (kind === "food").
+// Single source today; widened when another provider is added.
+export type FoodSource = "usda";
 
 export type DailyLogEntry = {
   id: string;
   slot: DailySlot;
   kind: DailyLogEntryKind;
   recipe_id?: number;
+  // Set when kind === "food": lets Recents de-dupe on stable food identity and
+  // powers a future "re-use the database value" shortcut.
+  food_source?: FoodSource;
+  food_external_id?: string;
   name: string;
   servings: number;
   calories: number | null;

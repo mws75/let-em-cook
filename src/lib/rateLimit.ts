@@ -20,20 +20,51 @@ export class RateLimitError extends Error {
 const AI_WINDOW_SECONDS = 60; // 1 minute
 const AI_REQUESTS_PER_WINDOW = 60;
 
+// Food-lookup search hits an external nutrition API on cache misses. Debounced
+// at 300ms client-side, so this is just a backstop against a runaway loop.
+const FOOD_WINDOW_SECONDS = 60;
+const FOOD_REQUESTS_PER_WINDOW = 120;
+
 /**
- * Enforces a per-user, per-endpoint sliding-window rate limit for the
- * OpenAI-backed endpoints. Throws {@link RateLimitError} when the user is over
- * the limit; otherwise records the call and returns.
- *
- * Call this AFTER authenticating the user and BEFORE making the OpenAI request.
+ * Generic per-user, per-endpoint sliding-window rate limit. Throws
+ * {@link RateLimitError} when the user is over the limit; otherwise records the
+ * call and returns. Call AFTER authenticating and BEFORE the protected work.
  */
+export async function enforceRateLimit(
+  userId: number,
+  endpoint: string,
+  limit: number,
+  windowSeconds: number,
+): Promise<void> {
+  const count = await getApiUsageCount(userId, endpoint, windowSeconds);
+  if (count >= limit) {
+    throw new RateLimitError(limit, windowSeconds);
+  }
+  await recordApiUsage(userId, endpoint);
+}
+
+/** Sliding-window limit for the OpenAI-backed endpoints. */
 export async function enforceAiRateLimit(
   userId: number,
   endpoint: string,
 ): Promise<void> {
-  const count = await getApiUsageCount(userId, endpoint, AI_WINDOW_SECONDS);
-  if (count >= AI_REQUESTS_PER_WINDOW) {
-    throw new RateLimitError(AI_REQUESTS_PER_WINDOW, AI_WINDOW_SECONDS);
-  }
-  await recordApiUsage(userId, endpoint);
+  return enforceRateLimit(
+    userId,
+    endpoint,
+    AI_REQUESTS_PER_WINDOW,
+    AI_WINDOW_SECONDS,
+  );
+}
+
+/** Sliding-window limit for the food-lookup endpoints. */
+export async function enforceFoodRateLimit(
+  userId: number,
+  endpoint: string,
+): Promise<void> {
+  return enforceRateLimit(
+    userId,
+    endpoint,
+    FOOD_REQUESTS_PER_WINDOW,
+    FOOD_WINDOW_SECONDS,
+  );
 }

@@ -1,8 +1,20 @@
-# Feat — Food Database Lookup (Nutritionix + USDA fallback)
+# Feat — Food Database Lookup (USDA + homegrown NLP parser)
 
-**Status:** Planning — for review before implementation
+**Status:** Built (MVP) — pending USDA API key + migration; see §13
 **Author / driver:** Michael
-**Last updated:** 2026-05-01
+**Last updated:** 2026-06-20 (reviewed against current code; see §12 for the deltas since the 2026-05-01 draft, and §13 for the provider pivot + what shipped)
+
+---
+
+> ## ⚠️ Provider pivot (2026-06-20) — read §13 first
+>
+> The Nutritionix-primary design throughout §§2–8 is **superseded**. Nutritionix
+> retired its free/hobby tier and now starts at ~$500–1,850/mo, which is not
+> viable for this project. **We shipped USDA-only with a homegrown
+> natural-language parser instead.** The architecture (provider abstraction,
+> `ltc_food_cache`, snapshot-into-entry, Foods tab, serving UX) is unchanged —
+> only the provider behind the seam differs. §§2–8 are kept for historical
+> context; **§13 is the source of truth for what was actually built.**
 
 ---
 
@@ -140,13 +152,15 @@ CREATE TABLE IF NOT EXISTS ltc_food_cache (
 
 ### 3.2 Extending `DailyLogEntry`
 
-The existing entry shape (defined in `src/types/types.ts`) currently has `kind: "recipe" | "manual"`. We add a third:
+The existing entry shape (defined in `src/types/types.ts`) currently has a **named** kind alias — `export type DailyLogEntryKind = "recipe" | "manual"` — referenced by `DailyLogEntry.kind`. Update the alias itself, not just an inline union:
 
 ```ts
+export type DailyLogEntryKind = "recipe" | "manual" | "food";   // ← add "food" here
+
 export type DailyLogEntry = {
   id: string;
   slot: DailySlot;
-  kind: "recipe" | "manual" | "food";   // ← new "food"
+  kind: DailyLogEntryKind;
   recipe_id?: number;
   food_source?: FoodSource;             // ← new, set when kind === "food"
   food_external_id?: string;            // ← new, set when kind === "food"
@@ -189,6 +203,7 @@ New routes under `src/app/api/foods/`:
 
 Both routes:
 - Run server-side only (API keys never reach the browser).
+- **Authenticate like every other data route:** call `getAuthenticatedUserId()` (from `src/lib/auth.ts`) and catch `UnauthenticatedError → 401`. This gives us mobile Bearer-token + Clerk session support for free and provides the `userId` the per-user rate limiter needs. Match the shape in `src/app/api/daily-log/route.ts`.
 - Check `ltc_food_cache` first; on hit, skip the provider call entirely.
 - On miss, fetch → write through to cache → return.
 
@@ -219,10 +234,13 @@ All three are server-only. Document in `README` or wherever app env is described
 
 ### 4.2 Rate-limit guardrails
 
-Even with 3 users, build the brakes once and forget about them:
-- **Per-user debounce** at the UI layer: 300ms after last keystroke before firing search.
-- **Server-side dedupe:** in-memory LRU keyed by query string, 60-second TTL. Identical search within a minute returns the prior response.
-- **Daily quota tracking:** simple counter row (or KV) so we know when we're approaching 500/day. When we cross 80%, flip a server flag that forces USDA-first for the rest of the day.
+> **Updated 2026-06-20.** The original draft (2026-05-01) predates the rate-limit infrastructure that shipped in migration `003_api_rate_limits.sql` (2026-05-26). **Reuse it — do not build a parallel mechanism.** And note the serverless caveat: on Vercel each request can hit a fresh/independent lambda instance, so **in-memory** LRU caches and **in-memory** quota flags do not hold across invocations. Anything that must persist goes in the DB.
+
+Build the brakes once and forget about them:
+- **Per-user debounce** at the UI layer: 300ms after last keystroke before firing search (purely client-side; unchanged).
+- **Per-user, per-endpoint sliding window (server):** reuse the existing limiter in `src/lib/rateLimit.ts` / `ltc_api_usage`. `enforceAiRateLimit()` is currently hardcoded to the AI window (60 req/min); generalize it to `enforceRateLimit(userId, endpoint, limit, windowSeconds)` (keep `enforceAiRateLimit` as a thin wrapper) and call it from `/api/foods/search` with a food-specific endpoint key. This caps how hard one user can hammer the external provider.
+- **Request de-dupe is the cache, not an LRU.** `ltc_food_cache` (DB, §3.1) is the durable de-dupe layer — a hit skips the provider entirely. Skip the in-memory LRU; it would be best-effort at best on serverless and the DB cache already covers the real case (two users logging the same food).
+- **Daily provider-quota tracking (DB-backed):** to know when we approach Nutritionix's 500/day, count provider calls via the same `ltc_api_usage` table (a distinct endpoint key, e.g. `foods:nutritionix`, over a 24h window) rather than an in-memory counter. When we cross 80%, force USDA-first for the rest of the day by checking that count at the top of the orchestrator. (Deferred past the MVP — see §12.)
 
 ---
 
@@ -316,6 +334,17 @@ When a user logs a food, it lands in their daily log with `kind: "food"` plus `f
 
 A small badge on Recents rows (`🍎` for foods, `📖` for recipes, `✏️` for manual) helps distinguish them at a glance.
 
+**One required change to `computeRecents` (in `DailyTracker.tsx`).** Today the de-dupe key is `r:${recipe_id}` for recipes and `n:${name}` for everything else. Food entries have no `recipe_id`, so they'd fall back to the name key — which would (a) collapse a logged food named "Apple" with a manual "apple", and (b) merge two genuinely different database foods that share a display name. Extend the key so food entries dedupe on their stable identity:
+
+```ts
+const key =
+  e.kind === "food" && e.food_external_id != null
+    ? `f:${e.food_source}:${e.food_external_id}`
+    : e.recipe_id != null
+      ? `r:${e.recipe_id}`
+      : `n:${e.name.trim().toLowerCase()}`;
+```
+
 ---
 
 ## 6. Implementation plan (step-by-step)
@@ -330,7 +359,7 @@ In dependency order so each step ships something runnable.
 
 2. **Cache table & DB layer**
    - Add `ltc_food_cache` to `src/db/schema.sql`.
-   - Write `migrations/003_food_cache.sql`.
+   - Write `migrations/005_food_cache.sql` (003 = rate limits, 004 = favorites already exist).
    - Create `src/lib/database/foodCache.ts` — `getFoodCacheEntry`, `upsertFoodCacheEntry`.
    - Wire cache reads/writes into the provider orchestrator (cache before fetch, write-through after fetch).
 
@@ -347,6 +376,8 @@ In dependency order so each step ships something runnable.
    - Search input with 300ms debounce + min-length 2.
    - Result list grouped by Common / Branded (Nutritionix shape) or flat list (USDA shape).
    - Tap → resolve macros → prefill the existing macro fields.
+   - **Reuse the existing macro form + servings stepper — don't rebuild it.** Add an `applyFood(food, servings)` that mirrors the current `applyRecipe(recipe, servings)`: store `selectedFood` + a per-serving baseline in state, write the baseline × servings into the existing `calories/protein/fat/carbs/sugar` state. The existing `handleServingsChange` then recomputes for foods just as it does for recipes (today it only calls `applyRecipe`; branch to `applyFood` when a food is selected).
+   - On submit, set `kind: "food"` and carry `food_source` + `food_external_id` whenever `selectedFood` is set — **keep them even after the user hand-edits a macro field**, exactly as the recipe flow keeps `recipe_id` after edits. (This is what powers the Recents "use the database value again" shortcut.)
    - Serving dropdown that re-calls `/api/foods/resolve`.
    - Attribution chip at the bottom of the panel when results came from Nutritionix.
 
@@ -376,7 +407,7 @@ In dependency order so each step ships something runnable.
 ## 7. Migration file (draft)
 
 ```sql
--- migrations/003_food_cache.sql
+-- migrations/005_food_cache.sql
 
 USE `one-offs-v2`;
 
@@ -402,7 +433,7 @@ No `ltc_daily_logs` or `ltc_users` changes. The new fields on `DailyLogEntry` ar
 
 ---
 
-## 8. Decisions (locked 2026-05-01)
+## 8. Decisions (locked 2026-05-01; provider strategy re-confirmed 2026-06-20)
 
 | # | Question | Decision |
 |---|---|---|
@@ -449,3 +480,190 @@ Safe to apply.
 - [api.data.gov rate limits](https://api.data.gov/docs/rate-limits/) — applies to USDA endpoints.
 - [Open Food Facts API](https://openfoodfacts.github.io/openfoodfacts-server/api/) — kept here for the future barcode follow-up.
 - [MyFitnessPal — UX Case Study (Tradecraft)](https://medium.com/tradecraft-traction/myfitnesspal-a-ux-case-study-f377ff66a504) — same source as the Daily Tracker doc; informed the search UX choices.
+
+---
+
+## 12. Review adjustments (2026-06-20) + recommended MVP slice
+
+The 2026-05-01 draft was reviewed against the current code. The body above has been edited inline; this section records *why* and defines the first shippable slice.
+
+### 12.1 Deltas since the draft
+
+| # | Change | Reason |
+|---|--------|--------|
+| 1 | Migration is **`005_food_cache.sql`**, not `003`. | `003_api_rate_limits.sql` and `004_recipe_favorites.sql` already exist. |
+| 2 | **Reuse the existing rate limiter** (`src/lib/rateLimit.ts` + `ltc_api_usage`); drop the bespoke in-memory LRU and in-memory quota flag. | The draft predates migration 003. In-memory state is unreliable on Vercel's serverless lambdas; the DB cache + DB usage table are the durable equivalents. (§4.2) |
+| 3 | New routes **authenticate via `getAuthenticatedUserId()`** and 401 on `UnauthenticatedError`. | The draft never specified auth; this matches every data route and yields the `userId` the limiter needs. (§4) |
+| 4 | Update the **named `DailyLogEntryKind` alias**, not an inline union. | The real type in `types.ts` is a named alias. (§3.2) |
+| 5 | **`computeRecents` de-dupe key** must special-case food entries (`f:source:external_id`). | Food entries have no `recipe_id`; the name fallback would wrongly merge distinct foods and collide with manual entries. (§5.6) |
+| 6 | Foods tab **reuses the existing macro form + servings stepper** via an `applyFood()` mirroring `applyRecipe()`; `kind`/`food_external_id` persist through manual edits. | Smallest change that hits the goal; consistent with the recipe flow. (§6 step 5) |
+
+Everything else in the draft (provider abstraction, `ltc_food_cache` shape, snapshot-macros-into-entry, two-control serving UX, PlanetScale notes) was confirmed against the code and stands.
+
+### 12.2 Recommended MVP slice (the actual next step)
+
+**Provider strategy: LOCKED 2026-06-20 — Nutritionix primary + USDA fallback** (confirms §8 decisions #1/#2). Two prerequisites this gates, to line up before/early in the build:
+- Register a Nutritionix account → obtain `NUTRITIONIX_APP_ID` + `NUTRITIONIX_APP_KEY` (free tier). Register a USDA FoodData Central key at api.data.gov → `USDA_API_KEY`. Add all three to `.env.local` and Vercel.
+- The free Nutritionix tier requires the visible "Powered by Nutritionix" badge — it stays in the MVP (§12.2 step 5), not deferred.
+
+> **Superseded by §13.** The slice below was the pre-build plan; what actually
+> shipped is USDA-only with a homegrown parser and **no cache/resolve/migration**
+> and **no Nutritionix**. Read §13 for the as-built state; the steps here are
+> kept only to show the original sequencing intent.
+
+Goal: **a non-recipe quick-log entry gets correct macros, MyFitnessPal-style.** That does not need all 10 steps at once. Ship this vertical slice first:
+
+1. Provider layer + types (§6 step 1) — **but Nutritionix only.** Build the `FoodProvider` interface so USDA drops in later; stub `searchFoods.ts` to call just Nutritionix for now.
+2. `ltc_food_cache` table + `foodCache.ts` DB layer (§6 step 2, migration **005**).
+3. `/api/foods/search` + `/api/foods/resolve` (§6 step 3) — authed, cache-first, per-user rate-limited via the existing limiter.
+4. `DailyLogEntry` type extension (§6 step 4) + the `computeRecents` key fix (§5.6).
+5. Foods tab in `TrackerLogModal` reusing the existing form (§6 step 5), incl. the **"Powered by Nutritionix" badge** — required by the free-tier ToS, so it is in the MVP, not deferred.
+
+**Fast-follow (post-MVP), in priority order:**
+- USDA fallback provider + the orchestrator's empty/error fallthrough (§2.1).
+- DB-backed daily provider-quota tracking + USDA-first flip at 80% (§4.2).
+- Recents row badges (§6 step 6).
+- Tests, mobile pass, README env-var docs (§6 steps 8–10).
+
+This gets "log an apple → real macros" in front of users on the fewest moving parts, while keeping the provider seam that makes USDA and barcode (Open Food Facts, §9) clean additions later.
+
+---
+
+## 13. What actually shipped (2026-06-20) — source of truth
+
+### 13.1 Why the pivot
+
+Nutritionix retired its free/hobby developer tier and is now enterprise-priced
+(~$500–1,850/mo, billed annually). Verified free alternatives at build time:
+USDA FoodData Central (free, no attribution, ~1,000 req/hr, no NLP), Edamam
+(free 1,000/day, includes NLP), FatSecret Basic (free 5,000/day, NLP is a paid
+add-on, US-only). Decision: **USDA only**, and recover the natural-language feel
+with a small deterministic parser we own. The user's core examples (apples,
+cheese) are whole foods that USDA covers excellently, and USDA ships portion→gram
+data (`foodPortions`) so we don't need a paid service for serving conversions.
+
+### 13.2 The homegrown NLP parser
+
+`src/lib/foods/parseQuery.ts` — deterministic, no LLM (runs on every keystroke;
+also dodges the LLM-arithmetic pitfall from `RCA/Inconsistent_Macro_Calculations.md`).
+
+- `parseFoodQuery(input)` → `{ qty, unit, grams, foodName }`. Handles integers,
+  decimals, simple + unicode fractions, mixed numbers, articles ("a"/"an"),
+  weight units (g/kg/oz/lb → grams), and descriptive units (large/cup/slice/…).
+  Words that are both unit and food (e.g. "eggs") stay as the food when nothing
+  follows them.
+- `matchServing(parsed, servings)` → picks the USDA portion matching the parsed
+  unit/size word; weight units prefer a gram serving. Falls back to the food's
+  default serving when nothing matches.
+
+### 13.3 Files (built)
+
+| File | Role |
+|---|---|
+| `src/lib/foods/provider.ts` | `FoodProvider` interface (`search` + `isConfigured`) + types; `FoodSource = "usda"`; scaling helpers (`scaleFrom100g`, `scaleMacros`, rounders). |
+| `src/lib/foods/parseQuery.ts` | The NL parser + `matchServing` (§13.2). |
+| `src/lib/foods/usda.ts` | USDA provider — `search` runs two parallel `/v1/foods/search` queries (whole-food + Branded, §13.5.1), merged whole-foods-first; normalises per-100g, exposes `per_100g` + `available_servings`. Plus `getServings(fdcId)` (`/v1/food/{fdcId}`) for real portions — see §13.4.1. |
+| `src/lib/foods/searchFoods.ts` | Orchestrator: parse → provider search; returns results + parsed query + `status` (`ok`/`empty`/`error`). Also `getFoodServings(source, id)` dispatching the per-food portion lookup. |
+| `src/app/api/foods/search/route.ts` | `GET ?q=` — authed, `enforceFoodRateLimit`, returns results + parsed query + status. |
+| `src/app/api/foods/servings/route.ts` | `GET ?source=&id=` — authed, `enforceFoodRateLimit`; returns real serving options for one food (§13.4.1). |
+| `src/lib/rateLimit.ts` | Generalised to `enforceRateLimit(...)`; added `enforceFoodRateLimit` (120/min/user). |
+| `src/types/types.ts` | `DailyLogEntryKind` += `"food"`; added `FoodSource`, `food_source`, `food_external_id`. |
+| `src/components/TrackerLogModal.tsx` | New **Foods** tab (default on first open), debounced search, `applyFood` mirroring `applyRecipe`, serving dropdown, reuses the existing macro form. |
+| `src/components/DailyTracker.tsx` | `computeRecents` de-dup key now special-cases food entries. |
+
+### 13.4 No cache, no resolve round-trip (post-review decision)
+
+The original plan had a `ltc_food_cache` table + `/api/foods/resolve` endpoint.
+Review showed the cache was never exercised: the modal computes every serving
+change locally from the search result's `per_100g` + `available_servings`, so
+`/api/foods/resolve` was never called and the cache was never written. We
+**removed** the cache table, migration, DB layer, the resolve route, and the
+provider `resolve()` method. USDA's 1,000 req/hr easily covers our scale, and a
+search returns everything the client needs in one shot. (This also eliminated a
+latent bug: the resolve path parsed the detail endpoint's nutrient shape
+incorrectly.) If a per-query search cache is ever warranted, it can be added at
+the `searchFoods` layer without touching the UI.
+
+### 13.4.1 Serving-size round-trip reintroduced (2026-07-18) — narrow scope
+
+The "search returns everything the client needs in one shot" claim in §13.4 held
+for **macros** but not for **serving sizes**. USDA's `/foods/search` endpoint
+**omits `foodPortions` entirely** (verified against live API — it returns them as
+an empty `foodMeasures` array even with `format=full`). Real household servings
+("1 medium = 182 g", "1 cup, sliced = 109 g") live **only** on the detail
+endpoint `/food/{fdcId}`. Because search never carried them, every food fell back
+to the synthetic "100 g" serving, and `matchServing` ("2 large eggs") had nothing
+to match — the natural-language serving feature was effectively dead.
+
+Fix (scoped deliberately narrow to avoid resurrecting the §13.4 problems):
+- `UsdaProvider.getServings(fdcId)` fetches `/food/{fdcId}` and maps
+  `foodPortions` → `ServingOption[]` (handles the `modifier` /
+  `portionDescription` shapes; ignores numeric FNDDS measure codes).
+- `GET /api/foods/servings?source=&id=` — authed + rate-limited, one request
+  **per food selection** (not per keystroke, not per serving change).
+- The modal enriches a tapped result with the fetched portions, then runs the
+  existing `matchServing`/default-serving logic. **Macros still scale locally
+  from `per_100g`** — this fetch returns *portions only*, so it does not
+  re-introduce the buggy resolve-nutrient parsing §13.4 removed.
+- No cache, no DB, no migration. USDA's 1,000 req/hr trivially covers one extra
+  call per selection.
+
+### 13.5 Deltas vs the original plan
+
+- No Nutritionix provider, no `/v2/natural/nutrients`, no "Powered by Nutritionix"
+  badge (USDA needs no attribution; a small "Data: USDA FoodData Central" credit
+  is shown instead).
+- No daily provider-quota flip, no cache, no resolve endpoint (§13.4).
+- ~~**Branded foods excluded**~~ **Branded foods included (2026-07-18)** — see
+  §13.5.1. The original exclusion rationale ("branded items report nutrition
+  per-serving via `labelNutrients`, which would break per-100g scaling") was
+  **verified false** against the live API: branded items also carry a per-100g
+  `foodNutrients` array, so they scale exactly like whole foods.
+- `searchFoods` returns the parsed query (so the modal pre-fills the servings
+  multiplier and pre-selects a matching serving) and a `status` so the UI can
+  tell "no matches" apart from "database unreachable".
+- Weight-quantity queries ("100g", "8 oz") are logged against a gram serving
+  with the multiplier carrying the amount — fixed a double-count found in review.
+
+### 13.5.1 Branded foods (2026-07-18)
+
+Users kept hitting coverage gaps for packaged/prepared items (Cup Noodles,
+marshmallows, branded cheddar) because we queried whole-food datasets only. USDA
+does carry these — the Branded dataset (~2M products, GS1/label data) — so we
+re-enabled it. Key points:
+
+- **Branded scales like whole foods.** Branded items expose the same per-100g
+  `foodNutrients` array (energy under #208) *in addition to* `labelNutrients`
+  (per serving). Verified: Cup Noodles = 453 kcal/100g × 0.64 (64 g container) =
+  the 290 kcal on the label. The original per-serving-only exclusion was wrong.
+- **Two parallel queries, merged whole-foods-first.** A single mixed relevance
+  query buries the raw ingredient — "Cheese, cheddar" sits at result #30 behind
+  branded near-duplicates. So `search()` fetches `Foundation,SR Legacy` and
+  `Branded` separately (`Promise.allSettled`, resilient if one fails) and
+  concatenates whole foods ahead of branded.
+- **Label serving synthesis.** Branded foods have no `foodPortions`; instead we
+  build a serving from `servingSize` + `householdServingFullText`
+  ("1 CONTAINER (64 g)"). The per-food `getServings` enrichment is skipped for
+  them (they already carry a real serving).
+- **De-duplication.** Branded results repeat the same product across many
+  UPCs/pack sizes; we collapse by brand + name, keeping the most relevant.
+- **Parser fix (found in live verification).** "cup noodles" was being parsed as
+  "1 **cup** of noodles" — the unit word was stripped and USDA searched for just
+  "noodles", so the Nissin product never matched. `parseFoodQuery` now only treats
+  a leading measurement word as a unit when an **explicit quantity** precedes it
+  ("1 cup noodles" → unit "cup"; "cup noodles" → search "cup noodles"). Confirmed
+  live: "cup noodles" now surfaces Nissin "NOODLE CUP" at ~320 cal.
+- Still no cache, no attribution needed (USDA is public domain, branded included).
+
+### 13.6 Remaining to go live
+
+1. **You:** add `USDA_API_KEY` to `.env.local` + Vercel. **No DB migration** —
+   food entries ride inside the existing `ltc_daily_logs.entries_json`. (See
+   `Food Lookup - Your Setup Checklist.md`.)
+2. Verify end-to-end with a real food once the key is in.
+
+### 13.7 Deferred (unchanged from §9, still valid)
+
+Edamam/FatSecret as an optional NLP-rich provider behind the same interface;
+barcode via Open Food Facts; personal overrides; Recents row badges; broader
+test coverage (incl. a Foods-tab interaction test for the weight-serving math).
