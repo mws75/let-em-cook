@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedUserId, UnauthenticatedError } from "@/lib/auth";
 import { copyRecipeToUser, hasUserAddedRecipe } from "@/lib/database/recipes";
+import { syncRecipeToRag } from "@/lib/rag/sync";
 import { countUserRecipes } from "@/lib/database/users";
 import { FREE_TIER_RECIPE_LIMIT } from "@/types/types";
 import { getUserById } from "@/lib/auth";
@@ -55,6 +56,11 @@ export async function POST(
     }
 
     const { newRecipeId } = await copyRecipeToUser(recipeId, userId);
+
+    // Sync the newly-copied recipe into the RAG knowledge base (fire-and-forget).
+    syncRecipeToRag(userId, newRecipeId).catch((e) =>
+      console.error("[rag] sync failed after add", e),
+    );
 
     return NextResponse.json(
       {

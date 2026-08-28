@@ -9,6 +9,7 @@ import {
   keyFromUrl,
   getCdnBase,
 } from "./helpers/recipeImage";
+import { recipeDocumentKey } from "./rag/recipeDocument";
 
 /**
  * DigitalOcean Spaces storage (S3-compatible).
@@ -114,5 +115,50 @@ export async function deleteObjectByUrl(url: string | null): Promise<void> {
   } catch (error) {
     // Cleanup is best-effort; an orphaned object must never fail the request.
     console.error("Failed to delete Spaces object:", key, error);
+  }
+}
+
+/**
+ * Uploads a recipe's RAG document (Markdown) for the DigitalOcean GenAI
+ * knowledge base. Stored PRIVATE (no public-read ACL) under
+ * `rag/recipes/{userId}/{recipeId}.md` — only the KB reads these, never the
+ * browser. See docs/RAG_Recipe_Assistant_Implementation_Guide.md §5.2.
+ */
+export async function putRecipeDocument(
+  userId: number,
+  recipeId: number,
+  body: string,
+): Promise<void> {
+  await getSpaces().send(
+    new PutObjectCommand({
+      Bucket: getBucket(),
+      Key: recipeDocumentKey(userId, recipeId),
+      Body: body,
+      ContentType: "text/markdown; charset=utf-8",
+    }),
+  );
+}
+
+/**
+ * Best-effort delete of a recipe's RAG document. Never throws — mirrors
+ * deleteObjectByUrl so a missing doc can't fail the request.
+ */
+export async function deleteRecipeDocument(
+  userId: number,
+  recipeId: number,
+): Promise<void> {
+  try {
+    await getSpaces().send(
+      new DeleteObjectCommand({
+        Bucket: getBucket(),
+        Key: recipeDocumentKey(userId, recipeId),
+      }),
+    );
+  } catch (error) {
+    console.error(
+      "Failed to delete RAG document:",
+      recipeDocumentKey(userId, recipeId),
+      error,
+    );
   }
 }

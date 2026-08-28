@@ -5,6 +5,7 @@ import { getAuthenticatedUserId, getAuthenticatedUser, UnauthenticatedError } fr
 import { enforceAiRateLimit, RateLimitError } from "@/lib/rateLimit";
 import { countUserRecipes } from "@/lib/database/users";
 import { insertRecipe, updateRecipe } from "@/lib/database/recipes";
+import { syncRecipeToRag } from "@/lib/rag/sync";
 import { FREE_TIER_RECIPE_LIMIT } from "@/types/types";
 
 const MAX_JSON_CHARACTERS = 20_000;
@@ -190,6 +191,12 @@ export async function POST(request: NextRequest) {
       recipe_id = result.recipe_id;
       console.log("✅ Recipe inserted successfully with ID:", recipe_id);
     }
+
+    // Keep the RAG knowledge-base document in sync (fire-and-forget — a sync
+    // failure must never break saving the recipe).
+    syncRecipeToRag(userId, recipe_id).catch((e) =>
+      console.error("[rag] sync failed after save", e),
+    );
 
     return NextResponse.json({ data, recipe_id }, { status: 200 });
   } catch (error) {

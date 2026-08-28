@@ -3,6 +3,7 @@ import { User as ClerkUser } from "@clerk/nextjs/server";
 import { executeQuery, withTransaction } from "./database/connection";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { seedStarterRecipes } from "./database/recipes";
+import { syncRecipesToRag } from "./rag/sync";
 import { User, STARTER_RECIPE_IDS } from "@/types/types";
 import { headers } from "next/headers";
 import { createHmac } from "crypto";
@@ -172,6 +173,11 @@ async function createUserAndSyncMetadata(
     const seeded = await seedStarterRecipes(userId);
     console.log(
       `✅ Seeded ${seeded.length}/${STARTER_RECIPE_IDS.length} starter recipes for user ${userId}`,
+    );
+    // Sync seeded recipes into the RAG knowledge base (fire-and-forget — must
+    // never block signup).
+    void syncRecipesToRag(userId, seeded).catch((e) =>
+      console.error("[rag] sync failed after seeding starter recipes", e),
     );
   }
 

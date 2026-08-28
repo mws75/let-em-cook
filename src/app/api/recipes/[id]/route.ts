@@ -5,6 +5,7 @@ import {
   UnauthenticatedError,
 } from "@/lib/auth";
 import { deleteRecipe, getRecipeWithOwnership } from "@/lib/database/recipes";
+import { removeRecipeFromRag } from "@/lib/rag/sync";
 
 function unauthenticated() {
   return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
@@ -59,6 +60,11 @@ export async function DELETE(
     const userId = await getAuthenticatedUserId();
     // make API Request
     const result = await deleteRecipe(userId, recipeId);
+
+    // Remove the RAG knowledge-base document (fire-and-forget).
+    removeRecipeFromRag(userId, recipeId).catch((e) =>
+      console.error("[rag] remove failed after delete", e),
+    );
 
     // return response
     return NextResponse.json(result, { status: 200 });
