@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Recipe Card (Modal) — Photo Design</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  /* Reuse the detail-page look, adapted for the modal (RecipeDetailModal.tsx) */
+  .backdrop {
+    background: rgba(0,0,0,0.5);
+    border-radius: var(--radius);
+    padding: 32px;
+    display: flex; justify-content: center;
+  }
+  .modal {
+    background: var(--color-background);
+    border-radius: var(--radius);
+    width: 100%; max-width: 860px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  }
+  .sheet { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; }
+  .accent-bar { height: 8px; background: linear-gradient(to right, rgba(168,213,186,0.5), rgba(255,229,180,0.5), rgba(168,213,186,0.5)); }
+
+  /* --- Side-by-side header (Detail Option B) --- */
+  .headerB { display: grid; grid-template-columns: 300px 1fr; border-bottom: 1px dashed var(--color-border); }
+  @media (max-width: 640px) { .headerB { grid-template-columns: 1fr; } }
+  .photo-wrap { position: relative; }
+  .headerB .photo { height: 100%; min-height: 220px; background-size: cover; background-position: center; background-color: #e9e4d8; }
+  .photo-wrap .controls { position: absolute; bottom: 12px; right: 12px; display: flex; gap: 8px; }
+  .headerB .htext { padding: 20px; display: flex; flex-direction: column; justify-content: center; }
+  .headerB .htext h1 { font-size: 28px; margin: 6px 0 10px; font-weight: 800; }
+  .pillrow { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pill { font-size: 13px; padding: 2px 10px; border-radius: 999px; background: var(--color-muted); color: var(--color-text-secondary); }
+  .macro-inline { display: flex; gap: 12px; flex-wrap: wrap; font-size: 14px; margin-top: 12px; }
+  .macro-inline .sep { color: var(--color-border); }
+  .c1 { color: #e57373; font-weight: 700; } .c2 { color: #6bbf8a; font-weight: 700; } .c3 { color: #e0a53a; font-weight: 700; }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 640px) { .cols { grid-template-columns: 1fr; } }
+  .cols .c { padding: 14px 18px; }
+  .cols .c.left { border-right: 1px solid var(--color-border); }
+  .cols h2 { font-size: 20px; margin: 0 0 10px; display: flex; align-items: center; gap: 6px; }
+  .ing { display: flex; gap: 8px; align-items: flex-start; padding: 3px 0; font-size: 15px; }
+  .box { width: 18px; height: 18px; border-radius: 5px; border: 1px solid rgba(168,213,186,0.5); background: rgba(168,213,186,0.12); flex: 0 0 18px; margin-top: 2px; }
+  .step { display: flex; gap: 8px; padding: 4px 0; font-size: 15px; }
+  .num { width: 26px; height: 26px; border-radius: 999px; background: rgba(255,229,180,0.4); border: 1px solid rgba(255,229,180,0.7); flex: 0 0 26px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; }
+
+  .modal-actions { display: flex; gap: 12px; justify-content: center; padding: 16px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+  <div class="crumbs"><a href="index.html">← All prototypes</a> &nbsp;/&nbsp; Recipe Card (Modal)</div>
+  <div class="page-head">
+    <h1>Recipe Card — photo design</h1>
+    <p>The pop-up recipe card (<code>RecipeDetailModal.tsx</code>). As we cleared up, this is the full recipe view — so it uses the <strong>same side-by-side header as Detail Option B</strong> for consistency: photo beside the title, macros and meta, then the existing two-column ingredients &amp; instructions and the modal's Close / Edit / View / Delete row. Owner gets <em>Change</em> / <em>Remove</em> controls on the photo; visitors just see it.</p>
+  </div>
+
+  <!-- WITH PHOTO -->
+  <div class="option">
+    <div class="option-head"><span class="option-badge">✓</span><h2>Selected design — Detail B header, in the modal</h2></div>
+    <p class="option-note">Shown inside the dark modal backdrop it lives in. The header photo is <strong>restrained (portrait, ~300px)</strong> so recipe info stays front-and-center — matching the detail page one-to-one.</p>
+  </div>
+  <div class="backdrop">
+    <div class="modal">
+      <div class="sheet">
+        <div class="accent-bar"></div>
+        <div class="headerB">
+          <div class="photo-wrap">
+            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=600&q=78')"></div>
+            <div class="controls">
+              <button class="img-ctrl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Change</button>
+              <button class="img-ctrl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6 18 20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+            </div>
+          </div>
+          <div class="htext">
+            <div class="pillrow"><span class="pill">Dinner</span></div>
+            <h1>🍛 Red Lentil Coconut Curry</h1>
+            <div class="pillrow"><span class="pill">4 servings</span><span class="pill">👩‍🍳 10m</span><span class="pill">⏱️ 35m</span></div>
+            <div class="macro-inline">
+              <span><span class="c1">390</span> cal</span><span class="sep">|</span>
+              <span><span class="c2">18g</span> protein</span><span class="sep">|</span>
+              <span><span class="c3">48g</span> carbs</span><span class="sep">|</span>
+              <span><span class="c2">14g</span> fat</span>
+            </div>
+          </div>
+        </div>
+        <div class="cols">
+          <div class="c left">
+            <h2>🥗 Ingredients</h2>
+            <div class="ing"><span class="box"></span><span><b>1 cup</b> red lentils</span></div>
+            <div class="ing"><span class="box"></span><span><b>1 can</b> coconut milk</span></div>
+            <div class="ing"><span class="box"></span><span><b>2 tbsp</b> curry paste</span></div>
+            <div class="ing"><span class="box"></span><span><b>1</b> onion, diced</span></div>
+            <div class="ing"><span class="box"></span><span><b>2 cups</b> spinach</span></div>
+          </div>
+          <div class="c">
+            <h2>📝 Instructions</h2>
+            <div class="step"><span class="num">1</span><span>Sauté onion and curry paste until fragrant.</span></div>
+            <div class="step"><span class="num">2</span><span>Add lentils, coconut milk and 2 cups water.</span></div>
+            <div class="step"><span class="num">3</span><span>Simmer 20 min until lentils are soft.</span></div>
+            <div class="step"><span class="num">4</span><span>Stir in spinach; season and serve.</span></div>
+          </div>
+        </div>
+        <div class="accent-bar"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn">Close</button>
+        <button class="btn btn-primary">Edit</button>
+        <button class="btn btn-accent">View</button>
+        <button class="btn" title="Delete">🗑</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div class="option">
+    <div class="option-head"><span class="option-badge">∅</span><h2>Empty state (owner, no photo yet)</h2></div>
+    <p class="option-note">The photo slot becomes a dashed drop-zone. Non-owners with no photo simply see the header collapse to full-width text (no empty box).</p>
+  </div>
+  <div class="backdrop">
+    <div class="modal">
+      <div class="sheet">
+        <div class="accent-bar"></div>
+        <div class="headerB">
+          <div class="photo-wrap" style="display:flex">
+            <div class="dropzone" style="flex:1;border-radius:0;border-top:0;border-bottom:0;border-left:0;min-height:220px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span class="dz-title">Add a photo</span>
+              <span class="dz-sub">click to upload · JPG / PNG</span>
+            </div>
+          </div>
+          <div class="htext">
+            <div class="pillrow"><span class="pill">Dinner</span></div>
+            <h1>🍛 Red Lentil Coconut Curry</h1>
+            <div class="pillrow"><span class="pill">4 servings</span><span class="pill">👩‍🍳 10m</span><span class="pill">⏱️ 35m</span></div>
+            <div class="macro-inline">
+              <span><span class="c1">390</span> cal</span><span class="sep">|</span>
+              <span><span class="c2">18g</span> protein</span><span class="sep">|</span>
+              <span><span class="c3">48g</span> carbs</span><span class="sep">|</span>
+              <span><span class="c2">14g</span> fat</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn">Close</button>
+        <button class="btn btn-primary">Edit</button>
+        <button class="btn btn-accent">View</button>
+        <button class="btn" title="Delete">🗑</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

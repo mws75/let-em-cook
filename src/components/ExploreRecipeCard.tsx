@@ -21,7 +21,7 @@ export default function ExploreRecipeCard({
     category,
     name,
     emoji,
-    ingredients_json,
+    image_url,
     per_serving_calories,
     per_serving_protein_g,
     per_serving_fat_g,
@@ -30,9 +30,6 @@ export default function ExploreRecipeCard({
   } = recipe;
 
   const categoryColor = getCategoryColor(category || "");
-
-  // First 3 ingredients for preview
-  const ingredientPreview = ingredients_json.slice(0, 3);
 
   const handleAddClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -47,22 +44,37 @@ export default function ExploreRecipeCard({
   return (
     <div
       onClick={() => onClick(recipe_id)}
-      className="relative w-full h-auto min-h-[14rem] border border-border rounded-2xl mb-4 transition-[filter] hover:brightness-[0.97] cursor-pointer overflow-visible"
+      className="relative w-full h-auto border border-border rounded-2xl mb-4 transition-[filter] hover:brightness-[0.97] cursor-pointer overflow-visible"
       style={{ backgroundColor: categoryColor }}
     >
-      {/* User Profile - top right */}
-      <div className="absolute top-3 right-3">
-        {creator_profile_pic ? (
+      {/* Hero photo — or emoji on a subtle tint as a fallback */}
+      <div className="relative aspect-[16/10] w-full overflow-hidden rounded-t-2xl">
+        {image_url ? (
           <img
-            src={creator_profile_pic}
-            alt={creator_name}
-            className="w-12 h-12 rounded-full border border-border object-cover"
+            src={image_url}
+            alt={name}
+            className="h-full w-full object-cover"
           />
         ) : (
-          <div className="w-12 h-12 rounded-full bg-yellow-200 border border-border flex items-center justify-center text-sm font-bold text-text">
-            {creator_name?.charAt(0).toUpperCase() || "?"}
+          <div className="flex h-full w-full items-center justify-center bg-black/5 text-6xl">
+            {emoji || "🍽️"}
           </div>
         )}
+
+        {/* User Profile - top right, over the photo */}
+        <div className="absolute top-3 right-3">
+          {creator_profile_pic ? (
+            <img
+              src={creator_profile_pic}
+              alt={creator_name}
+              className="w-12 h-12 rounded-full border border-border object-cover shadow-sm"
+            />
+          ) : (
+            <div className="w-12 h-12 rounded-full bg-yellow-200 border border-border flex items-center justify-center text-sm font-bold text-text shadow-sm">
+              {creator_name?.charAt(0).toUpperCase() || "?"}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Content */}
@@ -73,9 +85,7 @@ export default function ExploreRecipeCard({
           </span>
         )}
         {/* Name */}
-        <h2 className="text-xl text-text font-bold m-3 pr-16">
-          {emoji} {name}
-        </h2>
+        <h2 className="text-xl text-text font-bold m-3">{name}</h2>
         {/* Macros */}
         <h3 className="text-base text-text font-bold ml-3 mr-1 mt-3">
           Macros per Serving

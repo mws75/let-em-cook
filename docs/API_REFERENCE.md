@@ -56,6 +56,8 @@ The OpenAI-backed endpoints (`check-valid-ingredients`, `check-valid-instruction
 | GET | `/api/recipes/[id]` | Optional | Get a single recipe (with ownership flag) |
 | DELETE | `/api/recipes/[id]` | Required | Delete a recipe |
 | POST | `/api/recipes/[id]/add` | Required | Copy a public recipe into your collection |
+| POST | `/api/recipes/[id]/image` | Required | Upload/replace the recipe photo (multipart `file`) |
+| DELETE | `/api/recipes/[id]/image` | Required | Remove the recipe photo |
 | POST | `/api/sort-grocery-list` | Required | Aggregate + sort ingredients into a grocery list (AI) |
 | POST | `/api/stripe/create-checkout-session` | Required | Start Pro subscription checkout |
 | POST | `/api/stripe/create-portal-session` | Required | Open Stripe billing portal |
@@ -113,6 +115,40 @@ Copy a public recipe into the authenticated user's collection.
 
 ```bash
 curl -X POST http://localhost:3000/api/recipes/12/add \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+### `POST /api/recipes/[id]/image`
+Upload or replace the photo on one of the authenticated user's recipes. Body is
+`multipart/form-data` with a `file` field (JPEG/PNG/WebP, ≤ 4 MB — kept under
+Vercel's 4.5 MB serverless request-body limit). The image is
+stored in DigitalOcean Spaces and its public CDN URL saved to `image_url`; a
+replaced photo's object is deleted (best-effort).
+
+**Response 200**
+```json
+{ "image_url": "https://letemcook-media.nyc3.cdn.digitaloceanspaces.com/recipes/12/<uuid>.jpg" }
+```
+**Errors:** `400` invalid id / missing file · `404` not your recipe · `413` too large (> 4 MB) · `415` unsupported type
+
+```bash
+curl -X POST http://localhost:3000/api/recipes/12/image \
+  -H "Authorization: Bearer $TOKEN" \
+  -F "file=@dinner.jpg"
+```
+
+### `DELETE /api/recipes/[id]/image`
+Remove the photo from one of the authenticated user's recipes (nulls `image_url`
+and deletes the Spaces object, best-effort).
+
+**Response 200**
+```json
+{ "ok": true }
+```
+**Errors:** `400` invalid id · `404` not your recipe
+
+```bash
+curl -X DELETE http://localhost:3000/api/recipes/12/image \
   -H "Authorization: Bearer $TOKEN"
 ```
 

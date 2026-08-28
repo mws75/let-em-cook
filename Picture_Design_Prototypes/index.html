@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Recipe Pictures — Design Prototypes</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="page-wrap">
+  <div class="page-head">
+    <h1>🍳 Recipe Pictures — Design Prototypes</h1>
+    <p>Design-only mockups for adding photos to Let 'Em Cook. Palette, radii, and type mirror the live app (cream <code>#fdfbf7</code>, sage, peach, coral). Photos are Unsplash placeholders — if you're offline they fall back to a warm neutral block. <strong>Selections are now locked in</strong> (✓ below).</p>
+  </div>
+
+  <div style="margin-top:18px;background:rgba(168,213,186,0.18);border:1px solid var(--color-primary);border-radius:var(--radius);padding:16px 20px;font-size:14px">
+    <strong>Chosen designs:</strong>
+    Dashboard Tile → <strong>Option B</strong> (side thumbnail) ·
+    Explorer Card → <strong>Option A</strong> (hero top) ·
+    Recipe Card modal → <strong>Detail B header</strong> ·
+    Detail Page → <strong>Option B</strong> (side-by-side header).
+  </div>
+
+  <div class="index-grid">
+    <a class="index-card" href="01-recipe-tiles.html">
+      <span class="emoji-badge">🔲</span>
+      <h3>Dashboard Tile — ✓ B</h3>
+      <p>The compact tile in the dashboard grid. Photo displays only — <strong>no</strong> add/remove controls.</p>
+      <div class="maps">Maps to <code>RecipeCard.tsx</code></div>
+    </a>
+    <a class="index-card" href="02-recipe-cards.html">
+      <span class="emoji-badge">🧭</span>
+      <h3>Explorer Card — ✓ A</h3>
+      <p>The larger explore-feed card. Has <strong>Add / Change / Remove photo</strong> controls (owner only) + empty state.</p>
+      <div class="maps">Maps to <code>ExploreRecipeCard.tsx</code></div>
+    </a>
+    <a class="index-card" href="04-recipe-card-modal.html">
+      <span class="emoji-badge">🗂️</span>
+      <h3>Recipe Card (modal) — ✓ Detail B</h3>
+      <p>The pop-up full-recipe card. Uses the same side-by-side header as the detail page, in its modal frame.</p>
+      <div class="maps">Maps to <code>RecipeDetailModal.tsx</code></div>
+    </a>
+    <a class="index-card" href="03-recipe-detail-page.html">
+      <span class="emoji-badge">📄</span>
+      <h3>Recipe Detail Page — ✓ B</h3>
+      <p>The full recipe page. Side-by-side header photo + <strong>Change / Remove</strong> controls (owner only) + empty state.</p>
+      <div class="maps">Maps to <code>recipe/[id]/page.tsx</code></div>
+    </a>
+  </div>
+
+  <div style="margin-top:40px;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius);padding:22px 24px">
+    <h3 style="margin:0 0 10px;font-size:16px">Notes for review</h3>
+    <ul style="margin:0;padding-left:20px;color:var(--color-text-secondary);font-size:14px;line-height:1.7">
+      <li>Every option keeps a <strong>graceful no-photo fallback</strong> (emoji on category color) so mixed grids never look broken.</li>
+      <li>Image controls are <strong>owner-only</strong>; visitors just see the photo.</li>
+      <li>Storage will be your <strong>DigitalOcean Spaces</strong> bucket — the design doesn't assume any particular URL shape.</li>
+      <li>Detail page keeps <strong>print</strong> clean (photo hidden on print) to match today's behavior.</li>
+    </ul>
+    <p style="margin:14px 0 0;font-size:13px;color:var(--color-text-secondary)">Selections are locked; see <code>README.md</code> for the mapping and next implementation steps.</p>
+  </div>
+</div>
+</body>
+</html>

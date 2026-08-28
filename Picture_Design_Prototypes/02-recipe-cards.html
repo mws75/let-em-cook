@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Recipe Card — Picture Design Options</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  .card {
+    position: relative;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    overflow: hidden;
+    max-width: 380px;
+    box-shadow: var(--shadow-sm);
+  }
+  .card .avatar {
+    width: 40px; height: 40px; border-radius: 999px;
+    background: var(--color-secondary); border: 1px solid var(--color-border);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; color: var(--color-text); font-size: 15px;
+  }
+  .card .cat { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-text-secondary); }
+  .card .title { font-size: 20px; font-weight: 800; margin: 4px 0 12px; color: var(--color-text); }
+  .card .macros-label { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .card .macros-list { font-size: 13px; color: var(--color-text); line-height: 1.7; }
+  .card-body { padding: 16px 18px 18px; }
+
+  /* image controls anchored to a photo */
+  .photo-wrap { position: relative; }
+  .photo-wrap .controls { position: absolute; bottom: 10px; right: 10px; display: flex; gap: 8px; }
+
+  /* Option A — hero top */
+  .cardA .photo { aspect-ratio: 16 / 10; }
+  .cardA .avatar { position: absolute; top: 12px; right: 12px; box-shadow: var(--shadow-sm); }
+  .cardA .add-row { display: flex; justify-content: flex-end; margin-top: 14px; }
+
+  /* Option B — split */
+  .cardB { display: flex; max-width: 560px; }
+  .cardB .photo-wrap { flex: 0 0 44%; }
+  .cardB .photo { height: 100%; min-height: 230px; }
+  .cardB .card-body { flex: 1; display: flex; flex-direction: column; }
+  .cardB .add-row { margin-top: auto; padding-top: 14px; display: flex; justify-content: flex-end; }
+  .cardB .avatar { position: absolute; top: 12px; right: 12px; }
+
+  /* Option C — floating panel */
+  .cardC { max-width: 380px; }
+  .cardC .photo { aspect-ratio: 4 / 3; }
+  .cardC .avatar { position: absolute; top: 12px; right: 12px; box-shadow: var(--shadow-sm); }
+  .cardC .panel {
+    position: relative; margin: -46px 16px 0; padding: 16px 18px;
+    background: var(--color-surface); border: 1px solid var(--color-border);
+    border-radius: var(--radius); box-shadow: var(--shadow-md);
+  }
+  .cardC .card-body { padding: 12px 0 4px; }
+  .cardC .add-row { display: flex; justify-content: flex-end; margin-top: 12px; }
+  .cardC-outer { padding-bottom: 18px; }
+
+  .legend { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 14px; font-size: 12px; color: var(--color-text-secondary); }
+  .legend b { color: var(--color-text); }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+  <div class="crumbs"><a href="index.html">← All prototypes</a> &nbsp;/&nbsp; Recipe Card</div>
+  <div class="page-head">
+    <h1>Recipe Card — photo layout options</h1>
+    <p>The larger feed card (<code>ExploreRecipeCard.tsx</code>). This one <strong>does</strong> get image controls: a <em>Change&nbsp;photo</em> / <em>Remove</em> pill over the photo when one exists, and an <em>Add&nbsp;photo</em> dropzone when it's empty (shown for the owner only). Left column = with photo · right column = empty state. The green <em>Add</em> button (adds the recipe to your collection) stays where it is today.</p>
+  </div>
+
+  <!-- OPTION A -->
+  <div class="option">
+    <div class="option-head"><span class="option-badge">A</span><h2>Hero photo on top</h2></div>
+    <p class="option-note">A <strong>wide hero photo</strong> caps the card; creator avatar floats on it, content and the <em>Add</em> button sit below. Familiar and photo-forward. Image controls tuck into the bottom-right of the hero so they never compete with the title.</p>
+  </div>
+  <div class="stage">
+    <div class="two-up">
+      <div>
+        <div class="col-label">With photo</div>
+        <div class="card cardA">
+          <div class="photo-wrap">
+            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=700&q=75')"></div>
+            <div class="avatar">M</div>
+            <div class="controls">
+              <button class="img-ctrl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Change</button>
+              <button class="img-ctrl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6 18 20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Remove</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="cat">Dinner</div>
+            <div class="title">🍣 Miso-Glazed Salmon Bowl</div>
+            <div class="macros-label">Macros per serving</div>
+            <div class="macros-list">Calories: 520 cal<br/>Protein: 34 g<br/>Fat: 18 g</div>
+            <div class="add-row"><button class="btn btn-primary">Add</button></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="col-label">Empty state (owner)</div>
+        <div class="card cardA">
+          <div class="photo-wrap">
+            <div class="dropzone" style="aspect-ratio:16/10;border-radius:0;border-left:0;border-right:0;border-top:0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span class="dz-title">Add a photo</span>
+              <span class="dz-sub">JPG or PNG · drag &amp; drop or click</span>
+            </div>
+            <div class="avatar">M</div>
+          </div>
+          <div class="card-body">
+            <div class="cat">Dinner</div>
+            <div class="title">🍣 Miso-Glazed Salmon Bowl</div>
+            <div class="macros-label">Macros per serving</div>
+            <div class="macros-list">Calories: 520 cal<br/>Protein: 34 g<br/>Fat: 18 g</div>
+            <div class="add-row"><button class="btn btn-primary">Add</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTION B -->
+  <div class="option">
+    <div class="option-head"><span class="option-badge">B</span><h2>Split — photo beside content</h2></div>
+    <p class="option-note">Photo on the <strong>left half</strong>, content on the right — a horizontal card that reads like a recipe-blog list item. Great in a single-column feed; the taller photo shows food beautifully. Image controls sit on the photo's bottom-right.</p>
+  </div>
+  <div class="stage">
+    <div style="display:flex;flex-direction:column;gap:24px">
+      <div>
+        <div class="col-label">With photo</div>
+        <div class="card cardB">
+          <div class="photo-wrap">
+            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=500&q=75')"></div>
+            <div class="controls">
+              <button class="img-ctrl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Change</button>
+              <button class="img-ctrl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6 18 20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="avatar">M</div>
+            <div class="cat">Dinner</div>
+            <div class="title">🍛 Red Lentil Coconut Curry</div>
+            <div class="macros-label">Macros per serving</div>
+            <div class="macros-list">Calories: 390 cal · Protein: 18 g · Fat: 14 g</div>
+            <div class="add-row"><button class="btn btn-primary">Add</button></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="col-label">Empty state (owner)</div>
+        <div class="card cardB">
+          <div class="photo-wrap" style="display:flex">
+            <div class="dropzone" style="flex:1;border-radius:0;border-top:0;border-bottom:0;border-left:0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span class="dz-title">Add a photo</span>
+              <span class="dz-sub">click to upload</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="avatar">M</div>
+            <div class="cat">Dinner</div>
+            <div class="title">🍛 Red Lentil Coconut Curry</div>
+            <div class="macros-label">Macros per serving</div>
+            <div class="macros-list">Calories: 390 cal · Protein: 18 g · Fat: 14 g</div>
+            <div class="add-row"><button class="btn btn-primary">Add</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTION C -->
+  <div class="option">
+    <div class="option-head"><span class="option-badge">C</span><h2>Photo backdrop + floating panel</h2></div>
+    <p class="option-note">A <strong>4:3 photo</strong> fills the top; a white content panel <strong>floats up</strong> over its lower edge for depth. The most premium, editorial feel. Image controls sit high on the photo so the panel never covers them.</p>
+  </div>
+  <div class="stage">
+    <div class="two-up">
+      <div>
+        <div class="col-label">With photo</div>
+        <div class="card cardC cardC-outer">
+          <div class="photo-wrap">
+            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=700&q=75')"></div>
+            <div class="avatar">M</div>
+            <div class="controls" style="bottom:auto;top:12px;left:12px;right:auto">
+              <button class="img-ctrl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Change</button>
+              <button class="img-ctrl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6 18 20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="card-body">
+              <div class="cat">Dinner</div>
+              <div class="title">🍝 Rustic Tomato Rigatoni</div>
+              <div class="macros-label">Macros per serving</div>
+              <div class="macros-list">Calories: 540 cal<br/>Protein: 22 g<br/>Fat: 17 g</div>
+              <div class="add-row"><button class="btn btn-primary">Add</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="col-label">Empty state (owner)</div>
+        <div class="card cardC cardC-outer">
+          <div class="photo-wrap">
+            <div class="dropzone" style="aspect-ratio:4/3;border-radius:0;border-left:0;border-right:0;border-top:0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span class="dz-title">Add a photo</span>
+              <span class="dz-sub">JPG or PNG · up to 5 MB</span>
+            </div>
+            <div class="avatar">M</div>
+          </div>
+          <div class="panel">
+            <div class="card-body">
+              <div class="cat">Dinner</div>
+              <div class="title">🍝 Rustic Tomato Rigatoni</div>
+              <div class="macros-label">Macros per serving</div>
+              <div class="macros-list">Calories: 540 cal<br/>Protein: 22 g<br/>Fat: 17 g</div>
+              <div class="add-row"><button class="btn btn-primary">Add</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><b>Change</b> pill — replace the current photo</span>
+    <span><b>Remove</b> (trash) — clear back to emoji fallback</span>
+    <span><b>Add a photo</b> dropzone — empty-state upload</span>
+    <span>All three are owner-only; non-owners just see the photo</span>
+  </div>
+</div>
+</body>
+</html>

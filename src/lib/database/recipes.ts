@@ -29,6 +29,7 @@ interface RecipeRow extends RowDataPacket {
   per_serving_carbs_g: number;
   per_serving_sugar_g: number;
   emoji: string;
+  image_url: string | null;
   tags: string;
   tags_json: string;
   active_time_min: number;
@@ -54,6 +55,7 @@ interface ExploreRecipeRow extends RowDataPacket {
   per_serving_carbs_g: number;
   per_serving_sugar_g: number;
   emoji: string;
+  image_url: string | null;
   tags_json: string;
   active_time_min: number;
   total_time_min: number;
@@ -93,6 +95,7 @@ function mapRowToRecipe(row: RecipeRow): Recipe {
         ? JSON.parse(row.instructions_json)
         : row.instructions_json,
     emoji: row.emoji || "🍽️",
+    image_url: row.image_url ?? null,
     tags:
       typeof (row.tags || row.tags_json) === "string"
         ? JSON.parse(row.tags || row.tags_json || "[]")
@@ -137,6 +140,7 @@ export async function getRecipes(userId: number): Promise<Recipe[]> {
         r.per_serving_carbs_g,
         r.per_serving_sugar_g,
         r.emoji,
+        r.image_url,
         r.tags_json as tags,
         r.active_time_min,
         r.total_time_min,
@@ -190,6 +194,7 @@ export async function getRecipeById(
         r.per_serving_carbs_g,
         r.per_serving_sugar_g,
         r.emoji,
+        r.image_url,
         r.tags_json as tags,
         r.active_time_min,
         r.total_time_min,
@@ -248,6 +253,7 @@ export async function getRecipeWithOwnership(
         r.per_serving_carbs_g,
         r.per_serving_sugar_g,
         r.emoji,
+        r.image_url,
         r.tags_json as tags,
         r.active_time_min,
         r.total_time_min,
@@ -364,6 +370,7 @@ export async function getExploreRecipes(
       r.per_serving_carbs_g,
       r.per_serving_sugar_g,
       r.emoji,
+      r.image_url,
       r.tags_json,
       r.active_time_min,
       r.total_time_min,
@@ -412,6 +419,7 @@ export async function getExploreRecipes(
     per_serving_carbs_g: Number(row.per_serving_carbs_g),
     per_serving_sugar_g: Number(row.per_serving_sugar_g),
     emoji: row.emoji || "🍽️",
+    image_url: row.image_url ?? null,
     tags:
       typeof row.tags_json === "string"
         ? JSON.parse(row.tags_json)
@@ -706,6 +714,72 @@ export async function toggleRecipeFavorite(
 }
 
 /**
+ * Sets the photo URL on a user-owned recipe.
+ * Returns the new url plus the previous one (so the caller can delete the
+ * replaced Spaces object), or null if the row was not owned by this user
+ * (so the caller can 404 and clean up the just-uploaded object).
+ */
+export async function updateRecipeImage(
+  userId: number,
+  recipeId: number,
+  imageUrl: string,
+): Promise<{ image_url: string; previousUrl: string | null } | null> {
+  if (!userId || !recipeId) {
+    throw new Error("Missing required parameters: userId and recipeId");
+  }
+
+  return await withTransaction(async (connection) => {
+    const [rows] = await connection.execute<RowDataPacket[]>(
+      "SELECT image_url FROM ltc_recipes WHERE recipe_id = ? AND user_id = ?",
+      [recipeId, userId],
+    );
+    if (rows.length === 0) {
+      return null;
+    }
+    const previousUrl = (rows[0].image_url as string | null) ?? null;
+
+    await connection.execute<ResultSetHeader>(
+      "UPDATE ltc_recipes SET image_url = ? WHERE recipe_id = ? AND user_id = ?",
+      [imageUrl, recipeId, userId],
+    );
+
+    return { image_url: imageUrl, previousUrl };
+  });
+}
+
+/**
+ * Clears the photo on a user-owned recipe.
+ * Returns the previous url (so the caller can delete the Spaces object), or
+ * null if the row was not owned by this user.
+ */
+export async function clearRecipeImage(
+  userId: number,
+  recipeId: number,
+): Promise<{ previousUrl: string | null } | null> {
+  if (!userId || !recipeId) {
+    throw new Error("Missing required parameters: userId and recipeId");
+  }
+
+  return await withTransaction(async (connection) => {
+    const [rows] = await connection.execute<RowDataPacket[]>(
+      "SELECT image_url FROM ltc_recipes WHERE recipe_id = ? AND user_id = ?",
+      [recipeId, userId],
+    );
+    if (rows.length === 0) {
+      return null;
+    }
+    const previousUrl = (rows[0].image_url as string | null) ?? null;
+
+    await connection.execute<ResultSetHeader>(
+      "UPDATE ltc_recipes SET image_url = NULL WHERE recipe_id = ? AND user_id = ?",
+      [recipeId, userId],
+    );
+
+    return { previousUrl };
+  });
+}
+
+/**
  * Checks if a user has already added a specific recipe
  */
 export async function hasUserAddedRecipe(
@@ -737,13 +811,13 @@ export async function copyRecipeToUser(
         user_id, category_id, name, servings, ingredients_json, instructions_json,
         is_public, is_created_by_user, original_recipe_id, per_serving_calories, per_serving_protein_g,
         per_serving_fat_g, per_serving_carbs_g, per_serving_sugar_g,
-        emoji, tags_json, active_time_min, total_time_min
+        emoji, image_url, tags_json, active_time_min, total_time_min
       )
       SELECT
         ?, category_id, name, servings, ingredients_json, instructions_json,
         0, 0, ?, per_serving_calories, per_serving_protein_g,
         per_serving_fat_g, per_serving_carbs_g, per_serving_sugar_g,
-        emoji, tags_json, active_time_min, total_time_min
+        emoji, image_url, tags_json, active_time_min, total_time_min
       FROM ltc_recipes
       WHERE recipe_id = ?
       `,
@@ -794,13 +868,13 @@ export async function seedStarterRecipes(
             user_id, category_id, name, servings, ingredients_json, instructions_json,
             is_public, is_created_by_user, original_recipe_id, per_serving_calories, per_serving_protein_g,
             per_serving_fat_g, per_serving_carbs_g, per_serving_sugar_g,
-            emoji, tags_json, active_time_min, total_time_min
+            emoji, image_url, tags_json, active_time_min, total_time_min
           )
           SELECT
             ?, NULL, name, servings, ingredients_json, instructions_json,
             0, 0, ?, per_serving_calories, per_serving_protein_g,
             per_serving_fat_g, per_serving_carbs_g, per_serving_sugar_g,
-            emoji, tags_json, active_time_min, total_time_min
+            emoji, image_url, tags_json, active_time_min, total_time_min
           FROM ltc_recipes
           WHERE recipe_id = ?
           `,

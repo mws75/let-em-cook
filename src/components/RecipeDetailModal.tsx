@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Recipe, Ingredients } from "@/types/types";
 import toast from "react-hot-toast";
+import RecipePhoto from "@/components/RecipePhoto";
 
 type RecipeDetailModalProps = {
   recipeId: number;
@@ -167,80 +168,103 @@ export default function RecipeDetailModal({
               {/* Header with decorative top border */}
               <div className="bg-gradient-to-r from-primary/20 via-secondary/20 to-primary/20 h-2" />
 
-              {/* Title Section */}
-              <div className="px-5 pt-3 pb-2 text-center border-b border-border/50 border-dashed">
-                <div className="flex items-center justify-center gap-2">
-                  <span className="text-5xl">{recipe.emoji || "🍽️"}</span>
-                  <h1 className="text-4xl font-bold text-text">
-                    {recipe.name}
-                  </h1>
-                </div>
-                <div className="flex items-center justify-center gap-3 mt-1 text-text-secondary text-base">
-                  <span className="px-2 py-0.5 bg-muted rounded-full">
-                    {recipe.category}
-                  </span>
-                  <span className="px-2 py-0.5 bg-muted rounded-full">
-                    {recipe.servings} servings
-                  </span>
-                  {recipe.time.active_min > 0 && (
-                    <span className="px-2 py-0.5 bg-muted rounded-full">
-                      👩‍🍳 {recipe.time.active_min}m
-                    </span>
-                  )}
-                  {recipe.time.total_time > 0 && (
-                    <span className="px-2 py-0.5 bg-muted rounded-full">
-                      ⏱️ {recipe.time.total_time}m
-                    </span>
-                  )}
-                </div>
-                {/* Show creator info if viewing someone else's recipe */}
-                {!isOwner && (
-                  <p className="text-base text-text-secondary mt-2">
-                    Created by {recipe.user_name}
-                  </p>
+              {/* Side-by-side header: photo | title, meta & macros */}
+              <div
+                className={`border-b border-border/50 border-dashed ${
+                  recipe.image_url || isOwner
+                    ? "sm:grid sm:grid-cols-[300px_1fr]"
+                    : ""
+                }`}
+              >
+                {/* Photo column — only when a photo exists or the owner can add one */}
+                {(recipe.image_url || isOwner) && (
+                  <div className="border-b sm:border-b-0 sm:border-r border-border/50">
+                    <RecipePhoto
+                      recipeId={recipe.recipe_id}
+                      imageUrl={recipe.image_url}
+                      name={recipe.name}
+                      isOwner={isOwner}
+                      onChange={(url) =>
+                        setRecipe((r) => (r ? { ...r, image_url: url } : r))
+                      }
+                    />
+                  </div>
                 )}
-              </div>
 
-              {/* Macros Section - Inline */}
-              <div className="px-5 py-2 bg-muted/30 flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-base">
-                <span className="font-medium text-text">
-                  <span className="text-accent">
-                    {recipe.per_serving_calories}
-                  </span>{" "}
-                  cal
-                </span>
-                <span className="text-border">|</span>
-                <span className="font-medium text-text">
-                  <span className="text-primary">
-                    {recipe.per_serving_protein_g}g
-                  </span>{" "}
-                  protein
-                </span>
-                <span className="text-border">|</span>
-                <span className="font-medium text-text">
-                  <span className="text-secondary">
-                    {recipe.per_serving_carbs_g}g
-                  </span>{" "}
-                  carbs
-                </span>
-                <span className="text-border">|</span>
-                <span className="font-medium text-text">
-                  <span className="text-primary">
-                    {recipe.per_serving_fat_g}g
-                  </span>{" "}
-                  fat
-                </span>
-                {recipe.per_serving_sugar_g > 0 && (
-                  <>
-                    <span className="text-border">|</span>
+                {/* Text column */}
+                <div className="px-5 py-4 flex flex-col justify-center">
+                  <div className="flex items-center gap-2">
+                    <span className="text-4xl">{recipe.emoji || "🍽️"}</span>
+                    <h1 className="text-3xl font-bold text-text">
+                      {recipe.name}
+                    </h1>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 mt-2 text-text-secondary text-sm">
+                    <span className="px-2 py-0.5 bg-muted rounded-full">
+                      {recipe.category}
+                    </span>
+                    <span className="px-2 py-0.5 bg-muted rounded-full">
+                      {recipe.servings} servings
+                    </span>
+                    {recipe.time.active_min > 0 && (
+                      <span className="px-2 py-0.5 bg-muted rounded-full">
+                        👩‍🍳 {recipe.time.active_min}m
+                      </span>
+                    )}
+                    {recipe.time.total_time > 0 && (
+                      <span className="px-2 py-0.5 bg-muted rounded-full">
+                        ⏱️ {recipe.time.total_time}m
+                      </span>
+                    )}
+                  </div>
+                  {/* Show creator info if viewing someone else's recipe */}
+                  {!isOwner && (
+                    <p className="text-sm text-text-secondary mt-2">
+                      Created by {recipe.user_name}
+                    </p>
+                  )}
+                  {/* Macros */}
+                  <div className="flex flex-wrap items-center gap-3 mt-3 text-base">
                     <span className="font-medium text-text">
                       <span className="text-accent">
-                        {recipe.per_serving_sugar_g}g
+                        {recipe.per_serving_calories}
                       </span>{" "}
-                      sugar
+                      cal
                     </span>
-                  </>
-                )}
+                    <span className="text-border">|</span>
+                    <span className="font-medium text-text">
+                      <span className="text-primary">
+                        {recipe.per_serving_protein_g}g
+                      </span>{" "}
+                      protein
+                    </span>
+                    <span className="text-border">|</span>
+                    <span className="font-medium text-text">
+                      <span className="text-secondary">
+                        {recipe.per_serving_carbs_g}g
+                      </span>{" "}
+                      carbs
+                    </span>
+                    <span className="text-border">|</span>
+                    <span className="font-medium text-text">
+                      <span className="text-primary">
+                        {recipe.per_serving_fat_g}g
+                      </span>{" "}
+                      fat
+                    </span>
+                    {recipe.per_serving_sugar_g > 0 && (
+                      <>
+                        <span className="text-border">|</span>
+                        <span className="font-medium text-text">
+                          <span className="text-accent">
+                            {recipe.per_serving_sugar_g}g
+                          </span>{" "}
+                          sugar
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
 
               {/* Two Column Layout for Ingredients & Instructions */}

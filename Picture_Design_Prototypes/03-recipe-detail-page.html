@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Recipe Detail Page — Picture Design Options</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  .sheet {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .accent-bar { height: 8px; background: linear-gradient(to right, rgba(168,213,186,0.5), rgba(255,229,180,0.5), rgba(168,213,186,0.5)); }
+
+  .title-block { padding: 16px 20px; text-align: center; border-bottom: 1px dashed var(--color-border); }
+  .title-block .emoji-title { display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .title-block h1 { font-size: 30px; margin: 0; font-weight: 800; }
+  .title-block .emoji { font-size: 34px; }
+  .pillrow { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
+  .pill { font-size: 13px; padding: 2px 10px; border-radius: 999px; background: var(--color-muted); color: var(--color-text-secondary); }
+
+  .macro-bar { padding: 10px; background: rgba(247,250,252,0.6); display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; font-size: 14px; }
+  .macro-bar .sep { color: var(--color-border); }
+  .macro-bar .c1 { color: #e57373; font-weight: 700; }
+  .macro-bar .c2 { color: #6bbf8a; font-weight: 700; }
+  .macro-bar .c3 { color: #e0a53a; font-weight: 700; }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 640px) { .cols { grid-template-columns: 1fr; } }
+  .cols .c { padding: 14px 18px; border-top: 1px solid var(--color-border); }
+  .cols .c.left { border-right: 1px solid var(--color-border); }
+  .cols h2 { font-size: 20px; margin: 0 0 10px; display: flex; align-items: center; gap: 6px; }
+  .ing { display: flex; gap: 8px; align-items: flex-start; padding: 3px 0; font-size: 15px; }
+  .box { width: 18px; height: 18px; border-radius: 5px; border: 1px solid rgba(168,213,186,0.5); background: rgba(168,213,186,0.12); flex: 0 0 18px; margin-top: 2px; }
+  .step { display: flex; gap: 8px; padding: 4px 0; font-size: 15px; }
+  .num { width: 26px; height: 26px; border-radius: 999px; background: rgba(255,229,180,0.4); border: 1px solid rgba(255,229,180,0.7); flex: 0 0 26px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; }
+
+  .page-actions { display: flex; gap: 14px; justify-content: center; margin-top: 18px; }
+
+  .photo-wrap { position: relative; }
+  .photo-wrap .controls { position: absolute; bottom: 12px; right: 12px; display: flex; gap: 8px; }
+
+  /* Option A — hero banner */
+  .heroA { aspect-ratio: 21 / 8; }
+
+  /* Option B — side header */
+  .headerB { display: grid; grid-template-columns: 300px 1fr; gap: 0; border-bottom: 1px dashed var(--color-border); }
+  @media (max-width: 640px) { .headerB { grid-template-columns: 1fr; } }
+  .headerB .photo-wrap .photo { height: 100%; min-height: 210px; }
+  .headerB .htext { padding: 20px; display: flex; flex-direction: column; justify-content: center; }
+  .headerB .htext h1 { font-size: 30px; margin: 6px 0 10px; font-weight: 800; }
+
+  /* Option C — framed inset */
+  .frameC { display: flex; justify-content: center; padding: 18px 0 6px; }
+  .frameC .frame {
+    background: #fff; padding: 8px 8px 12px; border: 1px solid var(--color-border);
+    border-radius: 6px; box-shadow: var(--shadow-md); transform: rotate(-1.2deg);
+    position: relative;
+  }
+  .frameC .frame .photo { width: 300px; aspect-ratio: 4/3; border-radius: 3px; }
+  .frameC .frame .cap { text-align: center; font-size: 12px; color: var(--color-text-secondary); margin-top: 8px; font-style: italic; }
+  .frameC .controls { position: absolute; bottom: 34px; right: 14px; display: flex; gap: 8px; }
+
+  .state-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-secondary); font-weight: 700; margin: 26px 0 10px; }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+  <div class="crumbs"><a href="index.html">← All prototypes</a> &nbsp;/&nbsp; Recipe Detail Page</div>
+  <div class="page-head">
+    <h1>Recipe Detail Page — photo layout options</h1>
+    <p>The full page (<code>recipe/[id]/page.tsx</code>). Also gets image controls (owner only): a <em>Change photo</em> / <em>Remove</em> pill over the photo. Body below the header — the two-column ingredients &amp; instructions — is unchanged; only the header region differs between options. Print stays photo-free.</p>
+  </div>
+
+  <!-- ============ OPTION A ============ -->
+  <div class="option">
+    <div class="option-head"><span class="option-badge">A</span><h2>Hero banner</h2></div>
+    <p class="option-note">A <strong>full-width cinematic banner</strong> replaces the thin decorative top bar; the title block and macros sit beneath it, then the existing two columns. Boldest and most blog-like. Change / Remove controls sit in the banner's corner.</p>
+  </div>
+  <div class="stage">
+    <div class="sheet">
+      <div class="photo-wrap">
+        <div class="photo heroA" style="background-image:url('https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=1200&q=78')"></div>
+        <div class="controls">
+          <button class="img-ctrl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Change photo</button>
+          <button class="img-ctrl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6 18 20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Remove</button>
+        </div>
+      </div>
+      <div class="title-block">
+        <div class="emoji-title"><span class="emoji">🍣</span><h1>Miso-Glazed Salmon Bowl</h1></div>
+        <div class="pillrow"><span class="pill">Dinner</span><span class="pill">2 servings</span><span class="pill">👩‍🍳 15m</span><span class="pill">⏱️ 30m</span></div>
+      </div>
+      <div class="macro-bar">
+        <span><span class="c1">520</span> cal</span><span class="sep">|</span>
+        <span><span class="c2">34g</span> protein</span><span class="sep">|</span>
+        <span><span class="c3">41g</span> carbs</span><span class="sep">|</span>
+        <span><span class="c2">18g</span> fat</span>
+      </div>
+      <div class="cols">
+        <div class="c left">
+          <h2>🥗 Ingredients</h2>
+          <div class="ing"><span class="box"></span><span><b>2 fillets</b> salmon</span></div>
+          <div class="ing"><span class="box"></span><span><b>2 tbsp</b> white miso</span></div>
+          <div class="ing"><span class="box"></span><span><b>1 cup</b> jasmine rice</span></div>
+          <div class="ing"><span class="box"></span><span><b>1</b> avocado, sliced</span></div>
+          <div class="ing"><span class="box"></span><span><b>2 cups</b> baby spinach</span></div>
+        </div>
+        <div class="c">
+          <h2>📝 Instructions</h2>
+          <div class="step"><span class="num">1</span><span>Whisk miso with mirin and brush over salmon.</span></div>
+          <div class="step"><span class="num">2</span><span>Broil 8–10 min until caramelized and flaky.</span></div>
+          <div class="step"><span class="num">3</span><span>Cook rice; fluff and divide into bowls.</span></div>
+          <div class="step"><span class="num">4</span><span>Top with salmon, avocado, spinach, sesame.</span></div>
+        </div>
+      </div>
+      <div class="accent-bar"></div>
+    </div>
+    <div class="page-actions">
+      <button class="btn">Back</button>
+      <button class="btn btn-primary">Edit</button>
+    </div>
+  </div>
+
+  <!-- ============ OPTION B ============ -->
+  <div class="option">
+    <div class="option-head"><span class="option-badge">B</span><h2>Side-by-side header</h2></div>
+    <p class="option-note">A <strong>portrait photo beside the title, macros and meta</strong> — the calm, magazine intro. Photo is present but restrained; the recipe info stays front-and-center. Nice balance of appetite and readability.</p>
+  </div>
+  <div class="stage">
+    <div class="sheet">
+      <div class="accent-bar"></div>
+      <div class="headerB">
+        <div class="photo-wrap">
+          <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=600&q=78')"></div>
+          <div class="controls">
+            <button class="img-ctrl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Change</button>
+            <button class="img-ctrl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6 18 20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+          </div>
+        </div>
+        <div class="htext">
+          <div class="pillrow" style="justify-content:flex-start"><span class="pill">Dinner</span></div>
+          <h1>🍛 Red Lentil Coconut Curry</h1>
+          <div class="pillrow" style="justify-content:flex-start"><span class="pill">4 servings</span><span class="pill">👩‍🍳 10m</span><span class="pill">⏱️ 35m</span></div>
+          <div class="macro-bar" style="justify-content:flex-start;background:none;padding:12px 0 0">
+            <span><span class="c1">390</span> cal</span><span class="sep">|</span>
+            <span><span class="c2">18g</span> protein</span><span class="sep">|</span>
+            <span><span class="c3">48g</span> carbs</span><span class="sep">|</span>
+            <span><span class="c2">14g</span> fat</span>
+          </div>
+        </div>
+      </div>
+      <div class="cols">
+        <div class="c left">
+          <h2>🥗 Ingredients</h2>
+          <div class="ing"><span class="box"></span><span><b>1 cup</b> red lentils</span></div>
+          <div class="ing"><span class="box"></span><span><b>1 can</b> coconut milk</span></div>
+          <div class="ing"><span class="box"></span><span><b>2 tbsp</b> curry paste</span></div>
+          <div class="ing"><span class="box"></span><span><b>1</b> onion, diced</span></div>
+        </div>
+        <div class="c">
+          <h2>📝 Instructions</h2>
+          <div class="step"><span class="num">1</span><span>Sauté onion and curry paste until fragrant.</span></div>
+          <div class="step"><span class="num">2</span><span>Add lentils, coconut milk and 2 cups water.</span></div>
+          <div class="step"><span class="num">3</span><span>Simmer 20 min until lentils are soft.</span></div>
+        </div>
+      </div>
+      <div class="accent-bar"></div>
+    </div>
+    <div class="page-actions">
+      <button class="btn">Back</button>
+      <button class="btn btn-primary">Edit</button>
+    </div>
+  </div>
+
+  <!-- ============ OPTION C ============ -->
+  <div class="option">
+    <div class="option-head"><span class="option-badge">C</span><h2>Framed inset photo</h2></div>
+    <p class="option-note">The current centered header stays; a small <strong>framed “polaroid” photo</strong> sits just under the title — a warm, hand-made touch that never overwhelms the page. The lightest-touch option and closest to today's layout.</p>
+  </div>
+  <div class="stage">
+    <div class="sheet">
+      <div class="accent-bar"></div>
+      <div class="title-block" style="border-bottom:0;padding-bottom:4px">
+        <div class="emoji-title"><span class="emoji">🍝</span><h1>Rustic Tomato Rigatoni</h1></div>
+        <div class="pillrow"><span class="pill">Dinner</span><span class="pill">3 servings</span><span class="pill">👩‍🍳 12m</span><span class="pill">⏱️ 25m</span></div>
+      </div>
+      <div class="frameC">
+        <div class="frame photo-wrap">
+          <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=600&q=78')"></div>
+          <div class="cap">Rustic Tomato Rigatoni</div>
+          <div class="controls">
+            <button class="img-ctrl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
+            <button class="img-ctrl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6 18 20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div class="macro-bar">
+        <span><span class="c1">540</span> cal</span><span class="sep">|</span>
+        <span><span class="c2">22g</span> protein</span><span class="sep">|</span>
+        <span><span class="c3">68g</span> carbs</span><span class="sep">|</span>
+        <span><span class="c2">17g</span> fat</span>
+      </div>
+      <div class="cols">
+        <div class="c left">
+          <h2>🥗 Ingredients</h2>
+          <div class="ing"><span class="box"></span><span><b>12 oz</b> rigatoni</span></div>
+          <div class="ing"><span class="box"></span><span><b>1 can</b> San Marzano tomatoes</span></div>
+          <div class="ing"><span class="box"></span><span><b>3</b> garlic cloves</span></div>
+          <div class="ing"><span class="box"></span><span><b>¼ cup</b> basil</span></div>
+        </div>
+        <div class="c">
+          <h2>📝 Instructions</h2>
+          <div class="step"><span class="num">1</span><span>Simmer garlic and tomatoes 15 min.</span></div>
+          <div class="step"><span class="num">2</span><span>Boil rigatoni to al dente; reserve pasta water.</span></div>
+          <div class="step"><span class="num">3</span><span>Toss pasta in sauce, finish with basil.</span></div>
+        </div>
+      </div>
+      <div class="accent-bar"></div>
+    </div>
+    <div class="page-actions">
+      <button class="btn">Back</button>
+      <button class="btn btn-primary">Edit</button>
+    </div>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <hr class="hr" />
+  <div class="state-label">Empty state — no photo yet (owner view, applies to whichever option is chosen)</div>
+  <div class="stage">
+    <div class="sheet" style="max-width:680px;margin:0 auto">
+      <div class="photo-wrap">
+        <div class="dropzone" style="aspect-ratio:21/8;border-radius:0;border-left:0;border-right:0;border-top:0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <span class="dz-title">Add a photo of this dish</span>
+          <span class="dz-sub">Drag &amp; drop or click to upload · JPG / PNG up to 5 MB</span>
+        </div>
+      </div>
+      <div class="title-block">
+        <div class="emoji-title"><span class="emoji">🍣</span><h1>Miso-Glazed Salmon Bowl</h1></div>
+        <div class="pillrow"><span class="pill">Dinner</span><span class="pill">2 servings</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

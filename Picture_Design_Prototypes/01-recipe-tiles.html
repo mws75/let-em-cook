@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Recipe Tile — Picture Design Options</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  /* ---- Tile shared ---- */
+  .tile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 720px) { .tile-grid { grid-template-columns: 1fr; } }
+
+  .tile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--color-surface);
+    transition: box-shadow .15s, filter .15s;
+  }
+  .tile:hover { box-shadow: var(--shadow-md); }
+  .tile .body { padding: 14px 14px 12px; }
+  .tile .cat { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-text-secondary); }
+  .tile .title { font-size: 15px; font-weight: 700; margin: 3px 0 8px; color: var(--color-text); }
+  .tile .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+  .icon-btn { background: none; border: none; cursor: pointer; color: var(--color-text-secondary); padding: 4px; border-radius: 999px; }
+  .icon-btn:hover { background: rgba(0,0,0,0.05); }
+  .icon-btn svg { width: 18px; height: 18px; display: block; }
+  .star { fill: #facc15; stroke: #ca8a04; }
+
+  /* Option A — image on top */
+  .tileA .photo { aspect-ratio: 4 / 3; position: relative; }
+  .tileA .photo .chip-solid { position: absolute; top: 10px; left: 10px; }
+
+  /* Option B — side thumbnail */
+  .tileB { display: flex; align-items: stretch; }
+  .tileB .photo { width: 96px; flex: 0 0 96px; }
+  .tileB .body { flex: 1; padding: 12px 14px; display: flex; flex-direction: column; }
+  .tileB .foot { margin-top: auto; }
+
+  /* Option C — full bleed with overlay */
+  .tileC { position: relative; aspect-ratio: 1 / 1; color: #fff; }
+  .tileC .photo { position: absolute; inset: 0; }
+  .tileC .scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(30,32,36,0.82) 0%, rgba(30,32,36,0.25) 42%, rgba(30,32,36,0) 68%); }
+  .tileC .chip-solid { position: absolute; top: 10px; left: 10px; }
+  .tileC .overlay { position: absolute; left: 0; right: 0; bottom: 0; padding: 14px; }
+  .tileC .title { color: #fff; margin: 0 0 6px; font-size: 16px; }
+  .tileC .macros { color: rgba(255,255,255,0.85); }
+  .tileC .macros b { color: #fff; }
+  .tileC .fav { position: absolute; top: 8px; right: 8px; }
+  .tileC .icon-btn { color: rgba(255,255,255,0.9); }
+  .tileC .icon-btn:hover { background: rgba(255,255,255,0.15); }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+  <div class="crumbs"><a href="index.html">← All prototypes</a> &nbsp;/&nbsp; Recipe Tile</div>
+  <div class="page-head">
+    <h1>Recipe Tile — photo layout options</h1>
+    <p>The compact tile in the dashboard grid (<code>RecipeCard.tsx</code>). No image add/remove controls here — the photo just displays. Keeps the current category chip, name, per-serving macros, and the favorite / delete actions. Category color becomes a subtle accent since the photo now carries the visual weight.</p>
+  </div>
+
+  <!-- OPTION A -->
+  <div class="option">
+    <div class="option-head"><span class="option-badge">A</span><h2>Photo on top</h2></div>
+    <p class="option-note">The classic food-blog card: a <strong>4:3 photo</strong> caps the tile, text sits calmly below on white. Reads instantly, scales well in a dense grid, and is the safest, most familiar choice.</p>
+  </div>
+  <div class="stage">
+    <div class="tile-grid">
+      <!-- tile 1 -->
+      <div class="tile tileA">
+        <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=600&q=70')">
+          <span class="chip-solid">Dinner</span>
+        </div>
+        <div class="body">
+          <div class="title">Miso-Glazed Salmon Bowl</div>
+          <div class="macros"><span><b>520</b> cal</span><span><b>34</b>g P</span><span><b>18</b>g F</span><span><b>41</b>g C</span></div>
+          <div class="foot">
+            <button class="icon-btn" title="Favorite"><svg class="star" viewBox="0 0 24 24" stroke-width="1.75" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
+            <button class="icon-btn" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6 18 20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <!-- tile 2 -->
+      <div class="tile tileA">
+        <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=70')">
+          <span class="chip-solid">Lunch</span>
+        </div>
+        <div class="body">
+          <div class="title">Crunchy Chickpea Salad</div>
+          <div class="macros"><span><b>340</b> cal</span><span><b>15</b>g P</span><span><b>12</b>g F</span><span><b>44</b>g C</span></div>
+          <div class="foot">
+            <button class="icon-btn" title="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
+            <button class="icon-btn" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6 18 20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <!-- tile 3: empty photo fallback (keeps emoji) -->
+      <div class="tile tileA">
+        <div class="photo" style="display:flex;align-items:center;justify-content:center;aspect-ratio:4/3;background:var(--color-secondary)">
+          <span style="font-size:44px">🥞</span>
+          <span class="chip-solid" style="position:absolute;top:10px;left:10px">Breakfast</span>
+        </div>
+        <div class="body">
+          <div class="title">Fluffy Protein Pancakes</div>
+          <div class="macros"><span><b>410</b> cal</span><span><b>28</b>g P</span><span><b>9</b>g F</span><span><b>52</b>g C</span></div>
+          <div class="foot">
+            <button class="icon-btn" title="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
+            <button class="icon-btn" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6 18 20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p style="margin:16px 0 0;font-size:12px;color:var(--color-text-secondary)">↑ Third tile shows the <strong>no-photo fallback</strong>: the emoji sits on the category color, so a mixed grid still looks intentional.</p>
+  </div>
+
+  <!-- OPTION B -->
+  <div class="option">
+    <div class="option-head"><span class="option-badge">B</span><h2>Side thumbnail</h2></div>
+    <p class="option-note">A <strong>square thumbnail</strong> on the left, text on the right — a tidy, list-like row. The most compact option: fits more recipes per screen and keeps titles + macros on one readable line. Best if the dashboard leans toward scanning many recipes quickly.</p>
+  </div>
+  <div class="stage">
+    <div class="tile-grid">
+      <div class="tile tileB">
+        <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=300&q=70')"></div>
+        <div class="body">
+          <div class="cat">Dinner</div>
+          <div class="title">Sheet-Pan Chicken Tacos</div>
+          <div class="macros"><span><b>480</b> cal</span><span><b>32</b>g P</span><span><b>16</b>g F</span></div>
+          <div class="foot">
+            <button class="icon-btn" title="Favorite"><svg class="star" viewBox="0 0 24 24" stroke-width="1.75" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
+            <button class="icon-btn" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6 18 20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div class="tile tileB">
+        <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=300&q=70')"></div>
+        <div class="body">
+          <div class="cat">Dinner</div>
+          <div class="title">Red Lentil Coconut Curry</div>
+          <div class="macros"><span><b>390</b> cal</span><span><b>18</b>g P</span><span><b>14</b>g F</span></div>
+          <div class="foot">
+            <button class="icon-btn" title="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
+            <button class="icon-btn" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6 18 20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div class="tile tileB">
+        <div class="photo" style="display:flex;align-items:center;justify-content:center;background:var(--color-primary)"><span style="font-size:34px">🍝</span></div>
+        <div class="body">
+          <div class="cat">Dinner</div>
+          <div class="title">Lemon Garlic Pasta</div>
+          <div class="macros"><span><b>560</b> cal</span><span><b>19</b>g P</span><span><b>21</b>g F</span></div>
+          <div class="foot">
+            <button class="icon-btn" title="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
+            <button class="icon-btn" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6 18 20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTION C -->
+  <div class="option">
+    <div class="option-head"><span class="option-badge">C</span><h2>Full-bleed with overlay</h2></div>
+    <p class="option-note">The photo fills the whole <strong>square tile</strong> with a soft gradient scrim; title and macros sit in white over the bottom. The most magazine-like and appetizing — bold on the grid. Trade-off: leans on good photos, and the delete/favorite icons must live over the image (shown top-right).</p>
+  </div>
+  <div class="stage">
+    <div class="tile-grid">
+      <div class="tile tileC">
+        <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=600&q=70')"></div>
+        <div class="scrim"></div>
+        <span class="chip-solid">Dinner</span>
+        <div class="fav"><button class="icon-btn" title="Favorite"><svg class="star" viewBox="0 0 24 24" stroke-width="1.75" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div>
+        <div class="overlay">
+          <div class="title">Rustic Tomato Rigatoni</div>
+          <div class="macros"><span><b>540</b> cal</span><span><b>22</b>g P</span><span><b>17</b>g F</span></div>
+        </div>
+      </div>
+      <div class="tile tileC">
+        <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=70')"></div>
+        <div class="scrim"></div>
+        <span class="chip-solid">Lunch</span>
+        <div class="fav"><button class="icon-btn" title="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div>
+        <div class="overlay">
+          <div class="title">Crunchy Chickpea Salad</div>
+          <div class="macros"><span><b>340</b> cal</span><span><b>15</b>g P</span><span><b>12</b>g F</span></div>
+        </div>
+      </div>
+      <div class="tile tileC">
+        <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=600&q=70')"></div>
+        <div class="scrim"></div>
+        <span class="chip-solid">Dinner</span>
+        <div class="fav"><button class="icon-btn" title="Favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div>
+        <div class="overlay">
+          <div class="title">Miso-Glazed Salmon Bowl</div>
+          <div class="macros"><span><b>520</b> cal</span><span><b>34</b>g P</span><span><b>18</b>g F</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

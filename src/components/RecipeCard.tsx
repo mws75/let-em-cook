@@ -30,6 +30,8 @@ export default function RecipeCard({
     per_serving_fat_g,
     per_serving_carbs_g,
     is_favorite,
+    emoji,
+    image_url,
   } = recipe;
 
   const categoryColor = getCategoryColor(category || "");
@@ -96,36 +98,58 @@ export default function RecipeCard({
   };
 
   return (
-    <div
-      className="group relative rounded-2xl border border-border p-4 transition duration-150 hover:brightness-[0.97] hover:shadow-sm"
-      style={{ backgroundColor: categoryColor }}
-    >
+    <div className="group relative flex rounded-2xl border border-border bg-surface overflow-hidden transition duration-150 hover:shadow-md">
       <input
         type="checkbox"
         checked={isSelected || false}
-        className="absolute top-3 right-3 w-5 h-5 cursor-pointer accent-primary z-10"
+        className="absolute top-2 right-2 w-5 h-5 cursor-pointer accent-primary z-10"
         onChange={handleRecipeCheckBoxChange}
         onClick={(e) => e.stopPropagation()}
       />
+
+      {/* Thumbnail — photo, or emoji on the category color as a fallback */}
       <div
-        className="block cursor-pointer pr-7"
+        className="w-24 flex-none cursor-pointer self-stretch"
         onClick={() => onClick?.(recipe_id)}
       >
-        {category && (
-          <span className="inline-block mb-2 text-[11px] uppercase tracking-wider text-text-secondary">
-            {category}
-          </span>
+        {image_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={image_url}
+            alt={name}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <div
+            className="flex h-full w-full items-center justify-center text-3xl"
+            style={{ backgroundColor: categoryColor }}
+          >
+            {emoji || "🍽️"}
+          </div>
         )}
-        <h2 className="text-base text-text font-semibold truncate">{name}</h2>
-        <div className="flex gap-3 mt-2 text-xs text-text-secondary">
-          <span>{per_serving_calories} cal</span>
-          <span>{per_serving_protein_g}g P</span>
-          <span>{per_serving_fat_g}g F</span>
-          <span>{per_serving_carbs_g}g C</span>
-        </div>
       </div>
 
-      <div className="flex justify-between items-center mt-3">
+      {/* Content */}
+      <div className="flex flex-1 min-w-0 flex-col p-3">
+        <div
+          className="block cursor-pointer pr-6"
+          onClick={() => onClick?.(recipe_id)}
+        >
+          {category && (
+            <span className="inline-block mb-1 text-[11px] uppercase tracking-wider text-text-secondary">
+              {category}
+            </span>
+          )}
+          <h2 className="text-base text-text font-semibold truncate">{name}</h2>
+          <div className="flex gap-3 mt-1.5 text-xs text-text-secondary">
+            <span>{per_serving_calories} cal</span>
+            <span>{per_serving_protein_g}g P</span>
+            <span>{per_serving_fat_g}g F</span>
+            <span>{per_serving_carbs_g}g C</span>
+          </div>
+        </div>
+
+        <div className="flex justify-between items-center mt-auto pt-2">
         <button
           onClick={handleFavoriteClick}
           disabled={isTogglingFavorite}
@@ -168,6 +192,7 @@ export default function RecipeCard({
             <path d="M19 6 18 20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
           </svg>
         </button>
+        </div>
       </div>
     </div>
   );

@@ -65,7 +65,7 @@ Canonical reference: **`docs/DATABASE_SCHEMA.md`**; DDL in `src/db/schema.sql`; 
 
 ## Env vars
 
-`DATABASE_HOST/USERNAME/PASSWORD/NAME` · `CLERK_SECRET_KEY` (+ Clerk publishable key) · `OPENAI` · `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` / `STRIPE_PRICE_ID` · `ZOHO_SMTP_HOST/PORT/USER/PASSWORD` · `NEXT_PUBLIC_APP_URL`.
+`DATABASE_HOST/USERNAME/PASSWORD/NAME` · `CLERK_SECRET_KEY` (+ Clerk publishable key) · `OPENAI` · `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` / `STRIPE_PRICE_ID` · `ZOHO_SMTP_HOST/PORT/USER/PASSWORD` · `NEXT_PUBLIC_APP_URL` · `DO_SPACES_ENDPOINT/REGION/BUCKET/KEY/SECRET/CDN_BASE` (recipe photos → DigitalOcean Spaces; `src/lib/storage.ts`).
 
 ## docs/ — how it's organized
 

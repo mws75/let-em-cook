@@ -82,6 +82,7 @@ Core table storing recipe information with flexible JSON columns for ingredients
 | `per_serving_carbs_g`   | `DECIMAL(10,3)`   | NULL                                | Carbohydrates in grams per serving                          |
 | `per_serving_sugar_g`   | `DECIMAL(10,3)`   | NULL                                | Sugar in grams per serving                                  |
 | `emoji`                 | `VARCHAR(10)`     | NULL                                | Emoji Unicode character (e.g., 🍕)                          |
+| `image_url`             | `VARCHAR(512)`    | NULL                                | Public Spaces CDN URL of the recipe photo; NULL = emoji fallback (migration 005) |
 | `tags_json`             | `JSON`            | NULL                                | Array of tag strings (see JSON structure below)             |
 | `active_time_min`       | `INT`             | NULL                                | Active cooking time in minutes                              |
 | `total_time_min`        | `INT`             | NULL                                | Total time including prep in minutes                        |

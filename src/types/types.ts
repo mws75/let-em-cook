@@ -49,6 +49,7 @@ export type Recipe = {
   ingredients_json: Ingredients[];
   instructions_json: Instructions[];
   emoji: string;
+  image_url: string | null;
   tags: string[];
   time: CookTime;
 };
