@@ -30,7 +30,6 @@ export default function RecipeCard({
     per_serving_fat_g,
     per_serving_carbs_g,
     is_favorite,
-    emoji,
     image_url,
   } = recipe;
 
@@ -107,30 +106,26 @@ export default function RecipeCard({
         onClick={(e) => e.stopPropagation()}
       />
 
-      {/* Thumbnail — photo, or emoji on the category color as a fallback */}
+      {/* Thumbnail — photo, or a blank placeholder when there's none */}
       <div
-        className="w-24 flex-none cursor-pointer self-stretch"
+        className="w-24 flex-none cursor-pointer self-stretch bg-muted"
         onClick={() => onClick?.(recipe_id)}
       >
-        {image_url ? (
+        {image_url && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={image_url}
             alt={name}
             className="h-full w-full object-cover"
           />
-        ) : (
-          <div
-            className="flex h-full w-full items-center justify-center text-3xl"
-            style={{ backgroundColor: categoryColor }}
-          >
-            {emoji || "🍽️"}
-          </div>
         )}
       </div>
 
-      {/* Content */}
-      <div className="flex flex-1 min-w-0 flex-col p-3">
+      {/* Content — carries the category color */}
+      <div
+        className="flex flex-1 min-w-0 flex-col p-3"
+        style={{ backgroundColor: categoryColor }}
+      >
         <div
           className="block cursor-pointer pr-6"
           onClick={() => onClick?.(recipe_id)}
