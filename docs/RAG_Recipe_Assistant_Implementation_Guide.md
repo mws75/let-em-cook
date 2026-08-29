@@ -1,6 +1,39 @@
-# RAG Recipe Assistant — Implementation Guide
+# Recipe Assistant — Implementation Guide
 
-> **Status:** Phase 1 (ingestion) built & tested, gated off behind `RAG_SYNC_ENABLED`. Phases 2–4 (retrieval, chat, UI, hardening) not started.
+> **Status:** Pivoted away from RAG to **full-context** (2026-08-28). Assistant chat route + context builder + DO-inference client built & tested. Remaining: Pro UI (Phase 3) and cleanup of the abandoned RAG ingestion path.
+
+---
+
+## 0. ARCHITECTURE PIVOT (2026-08-28): full-context, not RAG
+
+**We abandoned vector RAG (the DO Knowledge Base) for this feature.** Testing the KB in the RAG Playground exposed the classic RAG failure: "which soups have chicken" returned the **union** (all soups OR all chicken recipes), because vector retrieval ranks by semantic *similarity*, not boolean logic — it cannot do "soup AND chicken," exclusions, or macro targets. That's most of this feature's use cases.
+
+**Why full-context is the right fit here:**
+- A user's recipe library is **small and structured** (~13 recipes/user today; even large libraries are a few thousand tokens). We can put **every** recipe in the model's context — no retrieval needed.
+- The app **already has structured querying** (search bar + category filters). The assistant's real value is the **fuzzy, multi-constraint, reasoning** questions those can't do — the motivating example: _"I've had too much chicken and I'm tired of it — what recipes hit similar macros but have no chicken?"_ Full-context + a reasoning model handles negation, "similar macros," and "tired of X" directly.
+
+**What this changes:**
+- ❌ Retired: DO Knowledge Base, its OpenSearch cluster (delete it — it bills monthly), vector retrieval, the Spaces `rag/recipes/` docs, and the Phase 1 ingestion pipeline (`RAG_SYNC_ENABLED` → set **false**). See §14 for cleanup.
+- ✅ Kept: **DO serverless inference** for generation. Now the app reads recipes straight from MySQL (`getRecipes(userId)`), builds a compact JSON context (`src/lib/assistant/recipeContext.ts`), and sends it to DO inference (`src/app/api/assistant/chat/route.ts`). Pro-gated, rate-limited.
+- The sections below (§§3–8, 13) describe the **old RAG design** and are retained only for history — they are **superseded** by this section and §5-new below.
+
+### Current architecture (as built)
+```
+user question → POST /api/assistant/chat
+  → auth + Pro-gate (plan_tier === "pro") + enforceAiRateLimit
+  → getRecipes(userId)                              (all the user's recipes, one query)
+  → buildRecipeContext(recipes)                     (compact JSON, token-budgeted)
+  → DO inference chat.completions (ASSISTANT_SYSTEM_PROMPT + context + history + question)
+  → { answer }
+```
+- **Files (new):** `src/lib/assistant/recipeContext.ts` (+ test), `src/lib/doInference.ts`, `ASSISTANT_SYSTEM_PROMPT` in `src/lib/prompts.ts`, `src/app/api/assistant/chat/route.ts`.
+- **Env needed:** `DO_INFERENCE_BASE_URL` (`https://inference.do-ai.run/v1`), `DO_INFERENCE_API_KEY`, `DO_INFERENCE_MODEL`. (No KB/retrieve vars.)
+- **Cost/scale:** typical user ≈ a few thousand context tokens/message (fractions of a cent, Pro-gated). `buildRecipeContext` caps at ~60k tokens and drops oldest recipes for rare huge libraries; a SQL pre-filter is the future fallback if that ever bites.
+- **Gotcha:** paid tier is `plan_tier === "pro"` (NOT "premium" — the SKILL.md/CLAUDE.md context is wrong; the Stripe webhook writes "pro"/"free").
+
+---
+
+> **Historical (pre-pivot) status:** Phase 1 RAG ingestion was built & tested behind `RAG_SYNC_ENABLED`; it is now superseded — see §14 cleanup.
 > **Author:** Michael (drafted with Claude)
 > **Last updated:** 2026-08-28
 > **Feature:** A per-user chat assistant that answers questions grounded in the user's *own* saved recipes — e.g. _"I have chicken and lemon, what can I make?"_ or _"Help me pick recipes to hit 120g protein this week using chicken and fish."_
@@ -457,3 +490,30 @@ Open the KB → **RAG Playground**, type _"what can I make with chicken and lemo
 - `.env` / env docs — `RAG_SYNC_ENABLED` (now) + DO GenAI/inference vars (Phase 2)
 - `docs/API_REFERENCE.md` — document the new endpoints
 - _(optional)_ `migrations/00X_rag_sync.sql` + `docs/DATABASE_SCHEMA.md` — `rag_synced_on`
+
+---
+
+## 14. Post-pivot cleanup (RAG path is dead)
+
+The full-context assistant does **not** use any of the Phase 1 RAG ingestion. To avoid confusion and cost:
+
+**Operator (console/env) — do now:**
+- [ ] **Delete the DigitalOcean Knowledge Base and its OpenSearch cluster** (the cluster bills monthly).
+- [ ] Set **`RAG_SYNC_ENABLED=false`** (or remove it) in prod so recipe writes stop uselessly pushing files to Spaces.
+- [ ] *(Optional)* delete the `rag/recipes/` objects already in the Spaces bucket.
+- [ ] Add the **`DO_INFERENCE_*`** env vars (base URL, key, model) so the chat route works.
+
+**Code cleanup — safe to remove (currently gated off, harmless):**
+- `src/lib/rag/sync.ts`, `src/lib/rag/recipeDocument.ts` (+ test), `src/app/api/admin/rag-backfill/route.ts`
+- `putRecipeDocument` / `deleteRecipeDocument` in `src/lib/storage.ts`
+- The `syncRecipeToRag` / `removeRecipeFromRag` / `syncRecipesToRag` calls in the recipe create/update/delete/copy routes and `auth.ts`
+
+> Left in place for now (inert with `RAG_SYNC_ENABLED` unset). Remove in a dedicated cleanup commit once the full-context assistant is confirmed working end-to-end, so the diff that rips it out is easy to review.
+
+### Assistant build status (post-pivot)
+- ✅ `src/lib/assistant/recipeContext.ts` (+ `recipeContext.test.ts`, 5 tests) — built
+- ✅ `src/lib/doInference.ts` — built
+- ✅ `ASSISTANT_SYSTEM_PROMPT` in `src/lib/prompts.ts` — built
+- ✅ `src/app/api/assistant/chat/route.ts` — built (Pro-gated, rate-limited, full-context)
+- ⏳ Client chat UI (Phase 3) — dashboard panel, Pro gating/`UpgradePrompt`
+- ⏳ `docs/API_REFERENCE.md` — document `POST /api/assistant/chat`
