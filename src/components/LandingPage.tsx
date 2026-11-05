@@ -1,7 +1,9 @@
 "use client";
 
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
+import Link from "next/link";
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import type { LandingRecipe } from "@/types/types";
 
 /* ───────────────────────────────────────────
    Intersection Observer hook for scroll reveal
@@ -102,24 +104,22 @@ const DEMO_STEPS = [
             </span>
             <div className="flex-1 flex gap-2">
               <span
-                className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                  i < 3
-                    ? "bg-primary/20 text-text"
-                    : "bg-border/50 text-text-secondary"
-                }`}
+                className={`text-xs px-2.5 py-1 rounded-full font-medium ${i < 3
+                  ? "bg-primary/20 text-text"
+                  : "bg-border/50 text-text-secondary"
+                  }`}
               >
                 {
                   ["🍝 Pasta", "🥗 Salad", "🌮 Tacos", "...", "..."][
-                    i
+                  i
                   ]
                 }
               </span>
               <span
-                className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                  i < 2
-                    ? "bg-secondary/30 text-text"
-                    : "bg-border/50 text-text-secondary"
-                }`}
+                className={`text-xs px-2.5 py-1 rounded-full font-medium ${i < 2
+                  ? "bg-secondary/30 text-text"
+                  : "bg-border/50 text-text-secondary"
+                  }`}
               >
                 {
                   [
@@ -180,12 +180,12 @@ type DemoRecipe = {
 };
 
 const DEMO_RECIPES: DemoRecipe[] = [
-  { id: 1, name: "Garlic Butter Pasta",    emoji: "🍝", cal: 420, protein: 12, category: "pasta",   color: "#FFEBC2" },
-  { id: 2, name: "Chicken Caesar Salad",   emoji: "🥗", cal: 380, protein: 32, category: "salad",   color: "#DDEBD3" },
-  { id: 3, name: "Beef Tacos",             emoji: "🌮", cal: 510, protein: 28, category: "beef",    color: "#F2D2D2" },
-  { id: 4, name: "Salmon & Rice Bowl",     emoji: "🐟", cal: 480, protein: 35, category: "fish",    color: "#D2E8EB" },
-  { id: 5, name: "Veggie Stir Fry",        emoji: "🥦", cal: 290, protein: 14, category: "vegetarian", color: "#E2EAD0" },
-  { id: 6, name: "BBQ Chicken Wrap",       emoji: "🌯", cal: 450, protein: 30, category: "chicken", color: "#FFE7C2" },
+  { id: 1, name: "Garlic Butter Pasta", emoji: "🍝", cal: 420, protein: 12, category: "pasta", color: "#FFEBC2" },
+  { id: 2, name: "Chicken Caesar Salad", emoji: "🥗", cal: 380, protein: 32, category: "salad", color: "#DDEBD3" },
+  { id: 3, name: "Beef Tacos", emoji: "🌮", cal: 510, protein: 28, category: "beef", color: "#F2D2D2" },
+  { id: 4, name: "Salmon & Rice Bowl", emoji: "🐟", cal: 480, protein: 35, category: "fish", color: "#D2E8EB" },
+  { id: 5, name: "Veggie Stir Fry", emoji: "🥦", cal: 290, protein: 14, category: "vegetarian", color: "#E2EAD0" },
+  { id: 6, name: "BBQ Chicken Wrap", emoji: "🌯", cal: 450, protein: 30, category: "chicken", color: "#FFE7C2" },
 ];
 
 const DEMO_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -235,7 +235,11 @@ const FEATURES = [
 /* ───────────────────────────────────────────
    Main Component
    ─────────────────────────────────────────── */
-export default function LandingPage() {
+export default function LandingPage({
+  recipes,
+}: {
+  recipes: LandingRecipe[];
+}) {
   const [activeStep, setActiveStep] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -412,20 +416,10 @@ export default function LandingPage() {
           ref={hero.ref}
           className={`relative z-10 text-center max-w-3xl mx-auto reveal ${hero.visible ? "show" : ""}`}
         >
-          {/* Badge */}
-          <div
-            className={`inline-flex items-center gap-2 bg-surface border border-border rounded-full px-4 py-1.5 mb-8  reveal ${hero.visible ? "show stagger-1" : ""}`}
-          >
-            <span className="text-sm">🔥</span>
-            <span className="text-xs font-semibold text-text-secondary tracking-wide uppercase">
-              Meal planning, simplified
-            </span>
-          </div>
-
           <h1
             className={`text-4xl sm:text-6xl md:text-7xl font-extrabold text-text leading-[1.1] mb-5 tracking-tight reveal ${hero.visible ? "show stagger-2" : ""}`}
           >
-            Stop guessing.
+            Explore and Share Recipes.
             <br />
             <span className="relative inline-block">
               <span className="relative z-10">Let Em Cook.</span>
@@ -436,33 +430,41 @@ export default function LandingPage() {
           <p
             className={`text-lg sm:text-xl text-text-secondary max-w-lg mx-auto mb-10 leading-relaxed reveal ${hero.visible ? "show stagger-3" : ""}`}
           >
-            Plan meals. Save time. Eat well.
-            <br className="hidden sm:block" />
-            Your recipes, your week, one grocery list — all in one place.
+            Discover Recipes, and make your own <br /> Plan you Meals and Grocery List <br /> Track your Macros
           </p>
+
+          {recipes.length > 0 && (
+            <div
+              className={`flex justify-center gap-3 sm:gap-4 mb-10 reveal ${hero.visible ? "show stagger-4" : ""}`}
+            >
+              {recipes.map((recipe) => (
+                <Link
+                  key={recipe.recipe_id}
+                  href={`/recipe/${recipe.recipe_id}?from=explore`}
+                  className="w-1/3 max-w-56 overflow-hidden rounded-2xl border border-border bg-surface transition-[filter] hover:brightness-[0.97]"
+                >
+                  <img
+                    src={recipe.image_url}
+                    alt={recipe.name}
+                    className="aspect-square w-full object-cover"
+                  />
+                  <p className="px-2 py-2 text-xs sm:text-sm font-semibold text-text line-clamp-2">
+                    {recipe.name}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          )}
 
           <div
             className={`flex flex-col sm:flex-row gap-3 justify-center reveal ${hero.visible ? "show stagger-4" : ""}`}
           >
             <SignUpButton mode="modal">
               <button className="bg-accent hover:bg-accent/85 border border-accent/80 text-white rounded-2xl px-8 py-3.5 text-lg font-bold transition-all duration-200">
-                Get Started — Free
+                Get Started.
               </button>
             </SignUpButton>
           </div>
-
-          {/* Scroll prompt to demo */}
-          <a
-            href="#demo"
-            className={`inline-flex flex-col items-center gap-2 mt-12 group reveal ${hero.visible ? "show stagger-5" : ""}`}
-          >
-            <span className="px-8 py-3.5 bg-surface hover:bg-muted border border-border text-text rounded-2xl text-lg font-bold transition-all duration-200">
-              See It In Action — Try The Demo
-            </span>
-            <span className="text-2xl mt-1" style={{ animation: "float 1.5s ease-in-out infinite" }}>
-              ↓
-            </span>
-          </a>
         </div>
       </section>
 
@@ -483,8 +485,7 @@ export default function LandingPage() {
             <p
               className={`text-text-secondary text-base sm:text-lg reveal ${tryit.visible ? "show stagger-2" : ""}`}
             >
-              Drag recipes into the calendar to plan your week. Go ahead — it
-              actually works.
+              Drag recipes into the calendar to plan your week's meal, and keep track of you macros.
             </p>
           </div>
 
@@ -509,9 +510,8 @@ export default function LandingPage() {
                       setDragOverSlot(null);
                     }}
                     onTouchStart={() => handleTouchStart(recipe)}
-                    className={`group border border-border rounded-2xl p-3 cursor-grab active:cursor-grabbing transition-[filter] duration-200 hover:brightness-[0.97] select-none ${
-                      dragging?.id === recipe.id ? "opacity-50 scale-95" : ""
-                    }`}
+                    className={`group border border-border rounded-2xl p-3 cursor-grab active:cursor-grabbing transition-[filter] duration-200 hover:brightness-[0.97] select-none ${dragging?.id === recipe.id ? "opacity-50 scale-95" : ""
+                      }`}
                     style={{ backgroundColor: recipe.color }}
                   >
                     <div className="flex items-center gap-2.5">
@@ -585,11 +585,10 @@ export default function LandingPage() {
                             e.preventDefault();
                             handleDrop(slotKey);
                           }}
-                          className={`min-h-[72px] sm:min-h-[88px] rounded-2xl border p-2 sm:p-2.5 transition-all duration-200 flex flex-col gap-1.5 ${
-                            isOver
-                              ? "border-primary bg-primary/10 scale-[1.03]"
-                              : "border-border bg-surface"
-                          }`}
+                          className={`min-h-[72px] sm:min-h-[88px] rounded-2xl border p-2 sm:p-2.5 transition-all duration-200 flex flex-col gap-1.5 ${isOver
+                            ? "border-primary bg-primary/10 scale-[1.03]"
+                            : "border-border bg-surface"
+                            }`}
                         >
                           {recipes.map((recipe) => (
                             <div
@@ -710,11 +709,10 @@ export default function LandingPage() {
               <button
                 key={step.title}
                 onClick={() => handleStepClick(i)}
-                className={`relative flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-2xl border font-semibold text-sm transition-all duration-300 ${
-                  activeStep === i
-                    ? `${step.accent} border-border text-text  scale-[1.04]`
-                    : "bg-surface border-border text-text-secondary hover:bg-muted"
-                }`}
+                className={`relative flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-2xl border font-semibold text-sm transition-all duration-300 ${activeStep === i
+                  ? `${step.accent} border-border text-text  scale-[1.04]`
+                  : "bg-surface border-border text-text-secondary hover:bg-muted"
+                  }`}
               >
                 <span className="font-bold">{i + 1}</span>
                 <span className="hidden sm:inline">{step.title}</span>
@@ -779,61 +777,16 @@ export default function LandingPage() {
                 <button
                   key={i}
                   onClick={() => handleStepClick(i)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    activeStep === i
-                      ? "bg-text w-6"
-                      : "bg-border hover:bg-text-secondary"
-                  }`}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${activeStep === i
+                    ? "bg-text w-6"
+                    : "bg-border hover:bg-text-secondary"
+                    }`}
                 />
               ))}
             </div>
           </div>
         </div>
       </section>
-
-      {/* ════════════════════════════════════
-          FEATURES
-         ════════════════════════════════════ */}
-      <section className="px-5 py-16 sm:py-24">
-        <div ref={features.ref} className="max-w-5xl mx-auto">
-          <div
-            className={`text-center mb-12 reveal ${features.visible ? "show" : ""}`}
-          >
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-text mb-3">
-              Everything you need to eat better
-            </h2>
-            <p className="text-text-secondary text-base sm:text-lg max-w-xl mx-auto">
-              No bloat. No complexity. Just the tools that actually help you
-              plan, cook, and stay on track.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {FEATURES.map((f, i) => (
-              <div
-                key={f.title}
-                className={`group bg-surface border border-border rounded-3xl p-6    hover:border-primary/30 transition-all duration-300 reveal ${
-                  features.visible ? `show stagger-${(i % 5) + 1}` : ""
-                }`}
-              >
-                <div
-                  className={`w-12 h-12 ${f.color} rounded-2xl flex items-center justify-center text-2xl mb-4 group- transition-transform duration-300`}
-                >
-                  {f.icon}
-                </div>
-                <h3 className="font-bold text-text text-lg mb-1.5">
-                  {f.title}
-                </h3>
-                <p className="text-text-secondary text-sm leading-relaxed">
-                  {f.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
 
       {/* ════════════════════════════════════
           FINAL CTA
@@ -846,21 +799,14 @@ export default function LandingPage() {
           <h2
             className={`text-3xl sm:text-5xl font-extrabold text-text mb-4 reveal ${cta.visible ? "show stagger-1" : ""}`}
           >
-            Ready to cook smarter?
+            Ready to cook?
           </h2>
-          <p
-            className={`text-text-secondary text-lg mb-10 reveal ${cta.visible ? "show stagger-2" : ""}`}
-          >
-            Join for free. No credit card. Start planning your first week in
-            minutes.
-          </p>
-
           <div
             className={`flex flex-col sm:flex-row gap-3 justify-center reveal ${cta.visible ? "show stagger-3" : ""}`}
           >
             <SignUpButton mode="modal">
               <button className="bg-accent hover:bg-accent/85 border border-accent/80 text-white rounded-2xl px-10 py-4 text-xl font-bold transition-all duration-200">
-                Sign Up Free
+                Sign Up
               </button>
             </SignUpButton>
             <SignInButton mode="modal">
@@ -875,8 +821,7 @@ export default function LandingPage() {
       {/* ── Footer ── */}
       <footer className="border-t border-border px-5 py-8 text-center">
         <p className="text-text-secondary text-sm">
-          © {new Date().getFullYear()} Let Em Cook. Made with 🔥 for home cooks
-          everywhere.
+          © {new Date().getFullYear()} Let Em Cook. Because the Home Chef never gets the day off.
         </p>
       </footer>
     </div>
