@@ -1,10 +1,11 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, useUser } from "@clerk/nextjs";
 import { ExploreRecipe } from "@/types/types";
 import ExploreRecipeCard from "@/components/ExploreRecipeCard";
 import UpgradePrompt from "@/components/UpgradePrompt";
+import SignUpPromptModal from "@/components/SignUpPromptModal";
 import toast from "react-hot-toast";
 import { DEFAULT_CATEGORY_LIST } from "@/lib/categoryColors";
 
@@ -29,7 +30,10 @@ const BATCH_SIZE = 18;
 
 export default function ExploreRecipes() {
   const router = useRouter();
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
+  // Signed-out visitor clicked Add — holds the recipe they wanted
+  const [promptRecipeId, setPromptRecipeId] = useState<number | null>(null);
+  const autoAddTriggeredRef = useRef(false);
   const [recipes, setRecipes] = useState<ExploreRecipe[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -151,19 +155,35 @@ export default function ExploreRecipes() {
     router.push(`/recipe/${recipeId}?from=explore`);
   };
 
-  const handleAddRecipe = async (recipeId: number) => {
+  // fromAutoAdd: triggered automatically after sign-up/sign-in from the popup
+  const handleAddRecipe = async (recipeId: number, fromAutoAdd = false) => {
     if (!user) {
-      router.push("/signin");
+      setPromptRecipeId(recipeId);
       return;
     }
 
-    const response = await fetch(`/api/recipes/${recipeId}/add`, {
-      method: "POST",
-    });
+    const postAdd = () =>
+      fetch(`/api/recipes/${recipeId}/add`, { method: "POST" });
+
+    let response = await postAdd();
+
+    // Right after sign-in the session cookie can lag behind Clerk's client
+    // state. Give it a moment and retry once.
+    if (fromAutoAdd && response.status === 401) {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      response = await postAdd();
+    }
+
+    if (fromAutoAdd && response.status === 401) {
+      throw new Error("Still Finishing up.  Please tap Add to My Recipes again.");
+    }
 
     const data = await response.json();
 
-    if (!response.ok) {
+    // After auto-add, 409 means it's already theirs (e.g. a starter recipe)
+    const alreadyAdded = fromAutoAdd && response.status === 409;
+
+    if (!response.ok && !alreadyAdded) {
       // Check if limit reached - show upgrade prompt
       if (data.limitReached) {
         setRecipeCount(data.recipeCount);
@@ -178,6 +198,25 @@ export default function ExploreRecipes() {
     setRecipes((prev) => prev.filter((r) => r.recipe_id !== recipeId));
   };
 
+  // After sign-up/sign-in from the Add popup, Clerk sends the user back with
+  // ?autoAdd=<recipeId> — finish the add for them, exactly once. Read from
+  // window.location so this static page doesn't need a Suspense boundary.
+  useEffect(() => {
+    if (!isLoaded || !user || autoAddTriggeredRef.current) return;
+    const params = new URLSearchParams(window.location.search);
+    const recipeId = Number(params.get("autoAdd"));
+    if (!Number.isInteger(recipeId) || recipeId <= 0) return;
+    autoAddTriggeredRef.current = true;
+
+    // Drop autoAdd from the URL so a refresh doesn't re-add
+    router.replace("/explore_recipes");
+
+    handleAddRecipe(recipeId, true).catch((err) => {
+      toast.error(err instanceof Error ? err.message : "Failed to add recipe");
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoaded, user]);
+
   const clearFilters = () => {
     setSearchTerm("");
     setSelectedCategory("");
@@ -191,9 +230,31 @@ export default function ExploreRecipes() {
           {/* Main Container */}
           <div className="border border-border rounded-3xl bg-surface p-6">
             {/* Header */}
-            <h1 className="text-3xl text-text font-bold mb-6">
-              Explore Recipes
-            </h1>
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+              <h1 className="text-3xl text-text font-bold">Explore Recipes</h1>
+              {isLoaded && !user && (
+                <div className="flex gap-2">
+                  <SignInButton
+                    mode="modal"
+                    forceRedirectUrl="/explore_recipes"
+                    signUpForceRedirectUrl="/explore_recipes"
+                  >
+                    <button className="px-5 py-2 bg-surface hover:bg-muted border border-border text-text rounded-xl text-sm font-bold transition-all duration-200">
+                      Log In
+                    </button>
+                  </SignInButton>
+                  <SignUpButton
+                    mode="modal"
+                    forceRedirectUrl="/explore_recipes"
+                    signInForceRedirectUrl="/explore_recipes"
+                  >
+                    <button className="px-5 py-2 bg-accent hover:bg-accent/85 border border-accent/80 text-white rounded-xl text-sm font-bold transition-all duration-200">
+                      Sign Up
+                    </button>
+                  </SignUpButton>
+                </div>
+              )}
+            </div>
 
             {/* Search Bar */}
             <div className="flex gap-2 mb-4">
@@ -319,6 +380,14 @@ export default function ExploreRecipes() {
           </button>
         </div>
       </footer>
+      {/* Sign-up prompt for signed-out visitors who click Add */}
+      <SignUpPromptModal
+        isOpen={promptRecipeId !== null}
+        onClose={() => setPromptRecipeId(null)}
+        onKeepExploring={() => setPromptRecipeId(null)}
+        showSignIn
+        redirectUrl={`/explore_recipes?autoAdd=${promptRecipeId ?? ""}`}
+      />
       {/* Upgrade Prompt Modal */}
       <UpgradePrompt
         isOpen={showUpgradePrompt}
