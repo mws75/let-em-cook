@@ -416,7 +416,7 @@ export default function LandingPage({
           ref={hero.ref}
           className={`relative z-10 text-center max-w-3xl mx-auto reveal ${hero.visible ? "show" : ""}`}
         >
-          <h1
+          <h3
             className={`text-4xl sm:text-6xl md:text-7xl font-extrabold text-text leading-[1.1] mb-5 tracking-tight reveal ${hero.visible ? "show stagger-2" : ""}`}
           >
             Explore and Share Recipes.
@@ -425,7 +425,7 @@ export default function LandingPage({
               <span className="relative z-10">Let Em Cook.</span>
               <span className="absolute bottom-1 left-0 w-full h-3 sm:h-4 bg-primary/25 -z-0 rounded-sm" />
             </span>
-          </h1>
+          </h3>
 
           <p
             className={`text-lg sm:text-xl text-text-secondary max-w-lg mx-auto mb-10 leading-relaxed reveal ${hero.visible ? "show stagger-3" : ""}`}
