@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import type { Recipe, Ingredients } from "@/types/types";
 import toast from "react-hot-toast";
 import RecipePhoto from "@/components/RecipePhoto";
+import { useAuth } from "@clerk/nextjs";
+import SignUpPromptModal from "@/components/SignUpPromptModal";
 
 export default function RecipeDetailPage() {
   const params = useParams();
@@ -15,10 +17,14 @@ export default function RecipeDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
+  const [showAddPrompt, setShowAddPrompt] = useState(false);
+  const autoAddTriggeredRef = useRef(false);
   const [checkedIngredients, setCheckedIngredients] = useState<Set<string>>(
     new Set(),
   );
   const [checkedSteps, setCheckedSteps] = useState<Set<number>>(new Set());
+  const { isLoaded, isSignedIn } = useAuth();
+  const [showBackPrompt, setShowBackPrompt] = useState(false);
 
   const fromExplore = searchParams.get("from") === "explore";
 
@@ -66,16 +72,41 @@ export default function RecipeDetailPage() {
     }
   }, [params.id]);
 
-  const handleAddRecipe = async () => {
+  // fromAutoAdd: the add was triggered automatically after sign-up/sign-in
+  const handleAddRecipe = async (fromAutoAdd = false) => {
     if (!recipe) return;
+
+    // Signed-out visitors get the sign-up pitch; the recipe is auto-added
+    // once they come back signed in (see the autoAdd effect below).
+    if (isLoaded && !isSignedIn) {
+      setShowAddPrompt(true);
+      return;
+    }
 
     setIsAdding(true);
     try {
-      const response = await fetch(`/api/recipes/${recipe.recipe_id}/add`, {
-        method: "POST",
-      });
+      const postAdd = () =>
+        fetch(`/api/recipes/${recipe.recipe_id}/add`, { method: "POST" });
 
-      if (!response.ok) {
+      let response = await postAdd();
+
+      // Right after sign-up, Clerk can report isSignedIn before the session
+      // cookie is usable by the server. Give it a moment and retry once.
+      if (response.status === 401 && isSignedIn) {
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        response = await postAdd();
+      }
+
+      // After auto-add, 409 means the recipe is already theirs (e.g. one of
+      // the starter recipes seeded for new accounts) — that's a success.
+      const alreadyAdded = fromAutoAdd && response.status === 409;
+
+      if (!response.ok && !alreadyAdded) {
+        if (response.status === 401 && isSignedIn) {
+          throw new Error(
+            "Still Finishing up.  Please tap Add to My Recipes again.",
+          );
+        }
         const data = await response.json();
         throw new Error(data.error || "Failed to add recipe");
       }
@@ -89,13 +120,79 @@ export default function RecipeDetailPage() {
     }
   };
 
+  // After sign-up from the Add prompt, Clerk sends the user back here with
+  // ?autoAdd=1 — finish the add for them, exactly once.
+  const autoAddRequested = searchParams.get("autoAdd") === "1";
+  useEffect(() => {
+    if (!autoAddRequested || autoAddTriggeredRef.current) return;
+    if (!isLoaded || !isSignedIn || !recipe) return;
+    autoAddTriggeredRef.current = true;
+
+    // Drop autoAdd from the URL (keep `from`) so a refresh doesn't re-add
+    const remaining = new URLSearchParams(searchParams.toString());
+    remaining.delete("autoAdd");
+    const qs = remaining.toString();
+    router.replace(`/recipe/${params.id}${qs ? `?${qs}` : ""}`);
+
+    if (isOwner) return;
+
+    (async () => {
+      // The recipe may have been fetched while signed out, so isOwner can be
+      // stale (e.g. an existing user signed in on their own public recipe).
+      try {
+        const res = await fetch(`/api/recipes/${recipe.recipe_id}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.isOwner) {
+            setIsOwner(true);
+            return;
+          }
+        }
+      } catch {
+        // Ownership recheck is best-effort; fall through to the add
+      }
+      handleAddRecipe(true);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoAddRequested, isLoaded, isSignedIn, recipe, isOwner]);
+
+  const addRedirectParams = new URLSearchParams(searchParams.toString());
+  addRedirectParams.set("autoAdd", "1");
+  const addPromptModal = (
+    <SignUpPromptModal
+      isOpen={showAddPrompt}
+      onClose={() => setShowAddPrompt(false)}
+      onKeepExploring={() => setShowAddPrompt(false)}
+      showSignIn
+      redirectUrl={`/recipe/${params.id}?${addRedirectParams.toString()}`}
+    />
+  );
+
   const handleBack = () => {
+    // Signed-out visitors get the sign-up pitch instead of navigating away
+    if (isLoaded && !isSignedIn) {
+      setShowBackPrompt(true);
+      return;
+    }
     if (fromExplore) {
       router.push("/explore_recipes");
     } else {
       router.push("/dashboard");
     }
   };
+
+  const backPromptModal = (
+    <SignUpPromptModal
+      isOpen={showBackPrompt}
+      onClose={() => setShowBackPrompt(false)}
+      onKeepExploring={() => {
+        setShowBackPrompt(false);
+        router.push("/explore_recipes");
+      }}
+      showSignIn
+      redirectUrl="/dashboard"
+    />
+  );
 
   if (loading) {
     return (
@@ -119,6 +216,7 @@ export default function RecipeDetailPage() {
         >
           {fromExplore ? "Back to Explore" : "Back to Dashboard"}
         </button>
+        {backPromptModal}
       </div>
     );
   }
@@ -373,7 +471,7 @@ export default function RecipeDetailPage() {
             </button>
           ) : (
             <button
-              onClick={handleAddRecipe}
+              onClick={() => handleAddRecipe()}
               disabled={isAdding}
               className="px-6 py-2 bg-accent hover:bg-accent/80 border border-border rounded-xl font-bold text-text transition-all disabled:opacity-50"
             >
@@ -387,6 +485,8 @@ export default function RecipeDetailPage() {
           Made with Let Em Cook
         </div>
       </div>
+      {backPromptModal}
+      {addPromptModal}
     </div>
   );
 }
