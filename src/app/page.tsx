@@ -2,6 +2,8 @@ import Image from "next/image";
 import LandingPage from "@/components/LandingPage";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { getLatestRecipesWithImages } from "@/lib/database/recipes";
+import type { LandingRecipe } from "@/types/types";
 
 export default async function Home() {
   const { userId } = await auth();
@@ -14,9 +16,17 @@ export default async function Home() {
     console.log("user IS NOT signed in..");
   }
 
+  // The landing page should still render if this query fails
+  let recipes: LandingRecipe[] = [];
+  try {
+    recipes = await getLatestRecipesWithImages(3);
+  } catch (error) {
+    console.error("Failed to fetch landing page recipes:", error);
+  }
+
   return (
     <main>
-      <LandingPage />
+      <LandingPage recipes={recipes} />
     </main>
   );
 }

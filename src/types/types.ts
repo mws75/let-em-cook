@@ -90,6 +90,12 @@ export type ExploreRecipe = Recipe & {
   add_count: number;
 };
 
+export type LandingRecipe = {
+  recipe_id: number;
+  name: string;
+  image_url: string;
+};
+
 export type ExploreFilters = {
   search?: string;
   category?: string;

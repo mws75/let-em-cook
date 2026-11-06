@@ -2,6 +2,7 @@ import {
   Recipe,
   ExploreRecipe,
   ExploreFilters,
+  LandingRecipe,
   STARTER_RECIPE_IDS,
 } from "@/types/types";
 import { executeQuery, withTransaction } from "./connection";
@@ -435,6 +436,34 @@ export async function getExploreRecipes(
   }));
 
   return { recipes, hasMore };
+}
+
+/**
+ * Fetches the most recently created public recipes that have a photo, for the
+ * landing page. Same public/original filters as Explore, so copies of a recipe
+ * added to someone else's library never appear.
+ */
+export async function getLatestRecipesWithImages(
+  limit: number,
+): Promise<LandingRecipe[]> {
+  const rows = await executeQuery<RecipeRow[]>(
+    `
+      SELECT recipe_id, name, image_url
+      FROM ltc_recipes
+      WHERE is_public = 1
+        AND is_created_by_user = 1
+        AND image_url IS NOT NULL
+      ORDER BY created_on DESC, recipe_id DESC
+      LIMIT ?
+    `,
+    [limit],
+  );
+
+  return rows.map((row) => ({
+    recipe_id: row.recipe_id,
+    name: row.name,
+    image_url: row.image_url as string,
+  }));
 }
 
 // ============================================================================
