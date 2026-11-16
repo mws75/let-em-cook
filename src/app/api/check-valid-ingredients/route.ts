@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openai, handleOpenAIError } from "@/lib/openai";
+import { UserFacingError } from "@/lib/errors";
 import { RECIPE_INGREDIENTS_CLASSIFIER_SYSTEM_PROMPT } from "@/lib/prompts";
 import { getAuthenticatedUserId, UnauthenticatedError } from "@/lib/auth";
 import { enforceAiRateLimit, RateLimitError } from "@/lib/rateLimit";
@@ -59,7 +60,7 @@ export async function POST(request: NextRequest) {
     const content = completion.choices[0]?.message?.content;
 
     if (!content) {
-      throw new Error(
+      throw new UserFacingError(
         "We couldn't validate your ingredients. Please try again",
       );
     }

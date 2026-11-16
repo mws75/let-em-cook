@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { UnauthenticatedError } from "./auth";
+import { UserFacingError } from "./errors";
 
 // Shared OpenAI client instance
 export const openai = new OpenAI({
@@ -19,6 +20,14 @@ export function handleOpenAIError(error: unknown): {
   }
 
   console.error("OpenAI API Error:", error);
+
+  // Messages written for users pass through; other Errors stay generic below.
+  if (error instanceof UserFacingError) {
+    return {
+      message: error.message,
+      status: error.status,
+    };
+  }
 
   if (error instanceof OpenAI.APIError) {
     return {

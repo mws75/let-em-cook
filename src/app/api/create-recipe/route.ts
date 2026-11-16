@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openai, handleOpenAIError } from "@/lib/openai";
+import { UserFacingError } from "@/lib/errors";
 import { CREATE_RECIPE_PROMPT } from "@/lib/prompts";
 import { getAuthenticatedUserId, UnauthenticatedError } from "@/lib/auth";
 import { enforceAiRateLimit, RateLimitError } from "@/lib/rateLimit";
@@ -75,7 +76,7 @@ export async function POST(request: NextRequest) {
     // check the response
     const content = completion.choices[0]?.message?.content;
     if (!content) {
-      throw new Error("We could not create the recipe, please try again");
+      throw new UserFacingError("We could not create the recipe, please try again");
     }
 
     const data = JSON.parse(content);

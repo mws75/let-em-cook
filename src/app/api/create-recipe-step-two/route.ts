@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openai, handleOpenAIError } from "@/lib/openai";
+import { UserFacingError } from "@/lib/errors";
 import { CALCULATE_MACROS } from "@/lib/prompts";
 import { getAuthenticatedUserId, getAuthenticatedUser, UnauthenticatedError } from "@/lib/auth";
 import { enforceAiRateLimit, RateLimitError } from "@/lib/rateLimit";
@@ -124,7 +125,7 @@ export async function POST(request: NextRequest) {
     const content = completion.choices[0]?.message?.content;
     if (!content) {
       console.error("OpenAI returned no content");
-      throw new Error(
+      throw new UserFacingError(
         "We could not add macros to your recipe, please try again",
       );
     }
