@@ -18,11 +18,35 @@ import {
   MealPlanData,
 } from "@/types/types";
 import { formatQuantity, shouldHideUnitOnDisplay } from "@/lib/unitConverter";
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useSyncExternalStore, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import toast from "react-hot-toast";
 import { DEFAULT_CATEGORY_LIST } from "@/lib/categoryColors";
+import {
+  RECIPE_SORT_OPTIONS,
+  DEFAULT_RECIPE_SORT,
+  RecipeSortOption,
+  isRecipeSortOption,
+  sortRecipes,
+} from "@/lib/helpers/recipeSort";
+
+const SORT_STORAGE_KEY = "ltc.dashboard.recipeSort";
+
+// Storage can throw (private mode, blocked site data) — fall back to default.
+function readSavedSort(): RecipeSortOption {
+  try {
+    const saved = localStorage.getItem(SORT_STORAGE_KEY);
+    if (saved && isRecipeSortOption(saved)) return saved;
+  } catch {
+    // ignore
+  }
+  return DEFAULT_RECIPE_SORT;
+}
+
+// localStorage has no change events within the same tab; writes go through
+// handleSortChange, which also updates React state directly.
+const subscribeNoop = () => () => {};
 
 function DashboardContent() {
   const router = useRouter();
@@ -37,6 +61,28 @@ function DashboardContent() {
   );
   const [selectedRecipes, setSelectedRecipes] = useState<Recipe[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  // Sort choice is remembered per browser. The saved value is read through
+  // useSyncExternalStore so the server render (default) and hydration agree;
+  // a choice made this session overrides it.
+  const savedSort = useSyncExternalStore(
+    subscribeNoop,
+    readSavedSort,
+    () => DEFAULT_RECIPE_SORT,
+  );
+  const [sortOverride, setSortOverride] = useState<RecipeSortOption | null>(
+    null,
+  );
+  const sortBy = sortOverride ?? savedSort;
+
+  const handleSortChange = (value: string) => {
+    if (!isRecipeSortOption(value)) return;
+    setSortOverride(value);
+    try {
+      localStorage.setItem(SORT_STORAGE_KEY, value);
+    } catch {
+      // ignore
+    }
+  };
   const [groceryList, setGroceryList] = useState<GroceryItem[]>([]);
   const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>(
     {},
@@ -178,7 +224,12 @@ function DashboardContent() {
     }
   }, [searchParams, router]);
 
-  const filteredRecipes = recipes.filter((recipe) => {
+  const filteredRecipes = sortRecipes(
+    recipes.filter((recipe) => matchesFilters(recipe)),
+    sortBy,
+  );
+
+  function matchesFilters(recipe: Recipe) {
     const searchLower = searchTerm.toLowerCase();
     const nameMatch = recipe.name.toLowerCase().includes(searchLower);
 
@@ -189,7 +240,7 @@ function DashboardContent() {
       return ingredient.name.toLowerCase().includes(searchLower);
     });
     return (nameMatch || ingredientsMatch) && categoryMatch;
-  });
+  }
 
   const handleCreateRecipeClick = () => {
     // Check if user can create more recipes
@@ -614,44 +665,70 @@ function DashboardContent() {
         {/* Recipes */}
         <section className="border border-border rounded-2xl sm:rounded-3xl bg-surface p-3 sm:p-6">
           {/* Search Bar */}
-          <div className="flex flex-col md:flex-row gap-3 p-1 sm:p-2">
+          <div className="flex flex-col gap-3 p-1 sm:p-2">
             <h2 className="text-2xl sm:text-3xl text-text font-bold">
               Recipes
             </h2>
-            <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto md:ml-auto">
-              <label
-                htmlFor="category-select"
-                className="text-text font-semibold self-start sm:self-center"
-              >
-                Category:
-              </label>
-              <select
-                id="category-select"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-2 border border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors w-full sm:w-auto sm:min-w-[150px]"
-              >
-                <option value="">All</option>
-                {categories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                  </option>
-                ))}
-              </select>
-              <input
-                type="text"
-                placeholder="Search recipes..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full md:w-96 px-4 py-2 border border-border rounded-xl bg-surface text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
-              />
-              <button
-                type="button"
-                onClick={() => setSearchTerm("")}
-                className="px-6 py-2 bg-accent hover:bg-accent/80 border border-border rounded-xl font-bold text-text transition-colors"
-              >
-                Clear
-              </button>
+            {/* Filters wrap onto extra lines instead of overflowing; each
+                label stays with its select. */}
+            <div className="flex flex-wrap items-center gap-2 w-full">
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <label
+                  htmlFor="category-select"
+                  className="text-text font-semibold whitespace-nowrap"
+                >
+                  Category:
+                </label>
+                <select
+                  id="category-select"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="flex-1 sm:flex-none px-4 py-2 border border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors sm:min-w-[150px]"
+                >
+                  <option value="">All</option>
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <label
+                  htmlFor="sort-select"
+                  className="text-text font-semibold whitespace-nowrap"
+                >
+                  Sort by:
+                </label>
+                <select
+                  id="sort-select"
+                  value={sortBy}
+                  onChange={(e) => handleSortChange(e.target.value)}
+                  className="flex-1 sm:flex-none px-4 py-2 border border-border rounded-xl bg-surface text-text focus:outline-none focus:border-accent transition-colors sm:min-w-[150px]"
+                >
+                  {RECIPE_SORT_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-center gap-2 w-full sm:w-auto sm:flex-1 sm:min-w-[16rem]">
+                <input
+                  type="text"
+                  placeholder="Search recipes..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="flex-1 min-w-0 px-4 py-2 border border-border rounded-xl bg-surface text-text placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
+                />
+                <button
+                  type="button"
+                  onClick={() => setSearchTerm("")}
+                  className="px-6 py-2 bg-accent hover:bg-accent/80 border border-border rounded-xl font-bold text-text transition-colors"
+                >
+                  Clear
+                </button>
+              </div>
             </div>
           </div>
           {/* Category */}
