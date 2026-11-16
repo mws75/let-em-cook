@@ -82,4 +82,5 @@ Canonical reference: **`docs/DATABASE_SCHEMA.md`**; DDL in `src/db/schema.sql`; 
 - Any new OpenAI-calling route must auth first **and** call `enforceAiRateLimit()` before the API call.
 - Numbers not strings for macros in API responses.
 - Calendar/meal-plan state is the most delicate area of the app (owner is deliberately re-learning it — see the 03.24 worklog entry); change it carefully and read `MEAL_PLAN_PERSISTENCE_GUIDE.md` first.
+- **MCP server:** `mcp/server.ts` (registered in `.mcp.json`, run via `npm run mcp`) — local stdio server that reuses the `src/lib/database` modules to read/modify one user's data (set by `LTC_MCP_USER_EMAIL` in `.env.local`). Imports specific modules, not `@/lib/database`, because `users.ts` pulls in Clerk. Writes hit whatever DB `.env.local` points at (currently prod).
 - Tests: `npm test` (Jest + jsdom); logic helpers (`dates`, `macros`, `openai`) have co-located tests — follow that pattern for new pure logic.
